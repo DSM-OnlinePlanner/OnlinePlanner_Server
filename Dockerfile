@@ -1,4 +1,4 @@
 FROM openjdk:8-jre-slim
-COPY ./build/lib/*.jar app.jar
-ENTRYPOINT ["java", "-Xmx300M", "-jar", "/app.jar"]
-EXPOSE 7080
+COPY ./build/libs/*.jar /App.jar
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "-Duser.timezone=Asia/Seoul", "/App.jar"]
+EXPOSE 3000
