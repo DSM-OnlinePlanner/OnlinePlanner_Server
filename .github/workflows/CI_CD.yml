@@ -21,7 +21,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --info
         
       - name: Build Docker Image
         run: docker build -t seogunhee4/op_server:latest .

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="online.planner.online_planner.OnlinePlannerApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-06-03T07:14:26" hostname="seogeonhuiui-MacBookPro.local" time="0.019">
-  <properties/>
-  <testcase name="contextLoads()" classname="online.planner.online_planner.OnlinePlannerApplicationTests" time="0.019"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
