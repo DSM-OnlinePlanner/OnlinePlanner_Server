@@ -17,12 +17,15 @@ import javax.persistence.Id;
 @NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
-
     private String email;
 
     private String password;
 
     private String nickName;
+
+    public User updateNickName(String nickName) {
+        this.nickName = nickName;
+
+        return this;
+    }
 }
