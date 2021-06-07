@@ -1,75 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>MailTemp</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
-        *{
-            margin: 0;
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 16px;
-        }
-        body{
-            position: relative;
-            width: 775px;
-            margin: 0 auto;
-        }
-        #logo-div{
-            height: 88px;
-            width: 100%;
-        }
-        #logo-img{
-            position: relative;
-            background-color: #E5F3FF;
-            width: 88px;
-            height: 100%;
-        }
-        #number-div{
-            margin-top: 16px;
-            width: 100%;
-            height: 120px;
-            background-color: #E5F3FF;
-            display: flex;
-        }
-        #contiainer{
-            margin: 48px;
-        }
-        #title{
-            font-size: 36px;
-            font-weight: bold;
-            margin-top: 16px;
-        }
-        #content-hello{
-            padding-top: 14px;
-            display: flex;
-        }
-
-    </style>
+    <link rel="stylesheet" th:href="@{../static/css/mail.css}"/>
 </head>
-<body>
-<div id=contiainer>
-    <div id = "logo-div">
-        <div id="logo-img">
+<body style="position: relative;
+    width: 775px;
+    margin: 0 auto;">
+<div id=contiainer style="margin: 48px;">
+    <div id = "logo-div" style="height: 88px; width: 100%;">
+        <div id="logo-img" style="position: relative;background-color: #E5F3FF;width: 88px;height: 100%;">
             logo
         </div>
     </div>
-    <div id="title">OnlinePlanner 이메일 인증</div>
+    <div id="title" style="
+    font-size: 36px;
+    font-weight: bold;
+    margin-top: 16px;">OnlinePlanner 이메일 인증</div>
     <div style="padding-top: 14px;display: flex;">
-        <div style="font-weight: bold;">안녕하세요&nbsp</div>
-        <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+        <div style="font-weight: bold;">안녕하세요&nbsp;</div>
         <div th:text="${name}" style="font-weight: bold;">김진근</div><div style="font-weight: bold;">님,</div>
     </div>
     <div ></div>
     <div style="display: flex;">
-        <div>회원님의 이메일 &nbsp</div>
-        <!--/*@thymesVar id="name" type="java.lang.String"*/-->
+        <div>회원님의 이메일 &nbsp;</div>
         <div th:text="${email}"></div>
         <div>로 Online Planner 계정이 생성되었으며</div>
     </div>
     <div>메일 인증을 위해 아래의 인증번호를 이용하여 이메일 인증을 완료해주시기 바랍니다.</div>
     <div>
-        <div id="number-div">
+        <div id="number-div" style="
+    margin-top: 16px;
+    width: 100%;
+    height: 120px;
+    background-color: #E5F3FF;
+    display: flex;">
             <div th:text="${code}" style="font-size: 48px; margin: auto; position: relative; font-weight: bold;"></div>
         </div>
     </div>
