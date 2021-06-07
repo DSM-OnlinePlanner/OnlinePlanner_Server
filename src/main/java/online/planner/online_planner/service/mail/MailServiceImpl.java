@@ -53,7 +53,7 @@ public class MailServiceImpl implements MailService{
     @SneakyThrows
     @Transactional
     @Async
-    public void send(String email) {
+    public void send(String email, String name) {
         if(email.isEmpty()) {
             throw new RuntimeException();
         }else if(checkSameUser(email)) {
@@ -70,6 +70,7 @@ public class MailServiceImpl implements MailService{
 
             Context context = new Context();
             context.setVariable("code", key);
+            context.setVariable("email", name);
 
             String mail = templateEngine.process("mail-template.html", context);
 
@@ -84,13 +85,13 @@ public class MailServiceImpl implements MailService{
     }
 
     @Override
-    public void sendMail(String email) {
-        send(email);
+    public void sendMail(String email, String name) {
+        send(email, name);
     }
 
     @Override
-    public void resendMail(String email) {
-        send(email);
+    public void resendMail(String email, String name) {
+        send(email, name);
     }
 
     @Transactional

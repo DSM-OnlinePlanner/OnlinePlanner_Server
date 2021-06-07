@@ -14,13 +14,15 @@ public class MailController {
     private final MailService mailService;
 
     @PostMapping
-    public void sendAuthMail(@RequestParam String email) {
-        mailService.sendMail(email);
+    public void sendAuthMail(@RequestParam String email,
+                             @RequestParam String name) {
+        mailService.sendMail(email, name);
     }
 
     @PutMapping
-    public void resendAuthMail(@RequestParam String email) {
-        mailService.resendMail(email);
+    public void resendAuthMail(@RequestParam String email,
+                               @RequestParam String name) {
+        mailService.resendMail(email, name);
     }
 
     @PostMapping("/auth")

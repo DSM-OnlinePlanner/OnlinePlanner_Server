@@ -51,9 +51,6 @@ public class JwtProvider {
     }
 
     public boolean isRefreshToken(String token) {
-        if(validateToken(token))
-            throw new RuntimeException();
-
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                 .getBody().get("type").toString().equals("refresh_token");
     }
