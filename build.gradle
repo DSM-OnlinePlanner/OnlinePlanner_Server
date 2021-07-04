@@ -34,6 +34,12 @@ dependencies {
 
     //jwt token
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    //validation check
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    //fcm push
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '6.10.0'
 }
 
 test {
