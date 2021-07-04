@@ -1,19 +1,16 @@
 package online.planner.online_planner.entity.planner;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import online.planner.online_planner.entity.exp.enums.ExpType;
+import online.planner.online_planner.entity.exp.enums.ExpTypeConvertor;
 import online.planner.online_planner.entity.planner.enums.Priority;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @NoArgsConstructor
@@ -29,17 +26,32 @@ public class Planner {
 
     private String content;
 
-    private Priority priority;
+    private Integer priority;
 
     private Boolean isSuccess;
 
+    @Convert(converter = ExpTypeConvertor.class)
     private ExpType expType;
 
     private LocalDate startDate;
 
     private LocalDate endDate;
 
-    private Integer startTime;
+    private LocalTime startTime;
 
-    private Integer endTime;
+    private LocalTime endTime;
+
+    private Boolean isPushed;
+
+    public Planner checkSuccess(Boolean isSuccess) {
+        this.isSuccess = isSuccess;
+
+        return this;
+    }
+
+    public Planner updatePush(Boolean isPushed) {
+        this.isPushed = isPushed;
+
+        return this;
+    }
 }

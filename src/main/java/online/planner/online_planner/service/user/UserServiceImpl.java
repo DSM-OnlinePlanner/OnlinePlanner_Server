@@ -4,11 +4,15 @@ import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
+import online.planner.online_planner.entity.user_level.enums.TierLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
 import online.planner.online_planner.payload.request.SignUpRequest;
+import online.planner.online_planner.payload.response.UserResponse;
 import online.planner.online_planner.util.AES256;
 import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +57,22 @@ public class UserServiceImpl implements UserService{
         userRepository.save(
                 user.updateNickName(nickName)
         );
+    }
+
+    @Override
+    public UserResponse getUserInfo(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(RuntimeException::new);
+
+        UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
+                .orElseThrow(RuntimeException::new);
+
+        return UserResponse.builder()
+                .exp(userLevel.getUserExp())
+                .nickName(user.getNickName())
+                .userLevel(userLevel.getUserLv())
+                .maxExp(userLevel.getTierLevel().getMax_exp())
+                .tier(userLevel.getTierLevel().getTier())
+                .build();
     }
 }

@@ -1,6 +1,8 @@
 package online.planner.online_planner.service.auth;
 
 import lombok.RequiredArgsConstructor;
+import online.planner.online_planner.entity.device_token.DeviceToken;
+import online.planner.online_planner.entity.device_token.repository.DeviceTokenRepository;
 import online.planner.online_planner.entity.token.Token;
 import online.planner.online_planner.entity.token.repository.TokenRepository;
 import online.planner.online_planner.entity.user.User;
@@ -17,6 +19,7 @@ public class AuthServiceImpl implements AuthService{
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final DeviceTokenRepository deviceTokenRepository;
 
     private final JwtProvider jwtProvider;
     private final AES256 aes256;
@@ -36,6 +39,15 @@ public class AuthServiceImpl implements AuthService{
                                     .refreshToken(refreshToken)
                                     .build()
                     );
+
+                    if(!deviceTokenRepository.existsByDeviceTokenAndEmail(signInRequest.getDeviceToken(), signInRequest.getEmail())) {
+                        deviceTokenRepository.save(
+                                DeviceToken.builder()
+                                        .deviceToken(signInRequest.getDeviceToken())
+                                        .deviceToken(signInRequest.getEmail())
+                                        .build()
+                        );
+                    }
 
                     return TokenResponse.builder()
                             .accessToken(accessToken)
@@ -59,7 +71,7 @@ public class AuthServiceImpl implements AuthService{
         return tokenRepository.findByRefreshToken(refreshToken)
                 .map(token -> {
                     String newRefreshToken = jwtProvider.generateRefreshToken(token.getEmail());
-                    return token.updateRefreshToken(refreshToken);
+                    return token.updateRefreshToken(newRefreshToken);
                 })
                 .map(tokenRepository::save)
                 .map(token -> {

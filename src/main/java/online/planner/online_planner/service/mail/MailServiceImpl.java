@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import online.planner.online_planner.entity.auth_code.AuthCode;
 import online.planner.online_planner.entity.auth_code.repository.AuthCodeRepository;
 import online.planner.online_planner.entity.user.repository.UserRepository;
+import online.planner.online_planner.util.AES256;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +25,8 @@ public class MailServiceImpl implements MailService{
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
+
+    private final AES256 aes256;
 
     private String getKey() {
         StringBuilder key = new StringBuilder();
@@ -62,7 +65,7 @@ public class MailServiceImpl implements MailService{
 
             authCodeRepository.save(
                     AuthCode.builder()
-                            .code(key)
+                            .code(aes256.AES_Encode(key))
                             .email(email)
                             .build()
             );
@@ -99,13 +102,15 @@ public class MailServiceImpl implements MailService{
     @Transactional
     @Override
     public void authEmail(String code, String email) {
-        AuthCode authCode = authCodeRepository.findByCodeAndEmail(code, email)
+        authCodeRepository.findByEmail(email)
+                .filter(authCode -> {
+                    if(!aes256.AES_Decode(authCode.getCode()).equals(code)) {
+                        throw new RuntimeException();
+                    }
+                    return true;
+                })
                 .orElseThrow(RuntimeException::new);
 
-        if (!authCode.getCode().equals(code)) {
-            throw new RuntimeException();
-        } else {
-            authCodeRepository.deleteByCodeAndEmail(code, email);
-        }
+        authCodeRepository.deleteByCodeAndEmail(code, email);
     }
 }
