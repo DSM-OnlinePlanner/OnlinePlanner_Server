@@ -54,6 +54,7 @@ jobs:
             cd OnlinePlanner_Server/
             git pull
             gradle build
+            docker rm -f op_server
             docker build --tag op_server .
             docker run -it --env-file .env -d -p 7001:7001 --name op_server op_server
 
