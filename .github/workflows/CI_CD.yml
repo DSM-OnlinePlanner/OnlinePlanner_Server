@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      OP_URL: ${{ secret.OP_URL }}
-      OP_USERNAME: ${{ secret.OP_USERNAME }}
-      OP_PASSWORD: ${{ secret.OP_PASSWORD }}
-      OP_MAIL_USERNAME: ${{ secret.OP_MAIL_USERNAME }}
-      OP_MAIL_PASSWORD: ${{ secret.OP_MAIL_PASSWORD }}
-      OP_JWT_ACCESS: ${{ secret.OP_JWT_ACCESS }}
-      OP_JWT_REFRESH: ${{ secret.OP_JWT_REFRESH }}
-      OP_JWT_KEY: ${{ secret.OP_JWT_KEY }}
+      OP_URL: ${{ secrets.OP_URL }}
+      OP_USERNAME: ${{ secrets.OP_USERNAME }}
+      OP_PASSWORD: ${{ secrets.OP_PASSWORD }}
+      OP_MAIL_USERNAME: ${{ secrets.OP_MAIL_USERNAME }}
+      OP_MAIL_PASSWORD: ${{ secrets.OP_MAIL_PASSWORD }}
+      OP_JWT_ACCESS: ${{ secrets.OP_JWT_ACCESS }}
+      OP_JWT_REFRESH: ${{ secrets.OP_JWT_REFRESH }}
+      OP_JWT_KEY: ${{ secrets.OP_JWT_KEY }}
     
     steps:
       - uses: actions/checkout@v2
