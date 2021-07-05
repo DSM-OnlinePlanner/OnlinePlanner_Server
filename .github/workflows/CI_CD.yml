@@ -10,6 +10,16 @@ on:
 jobs:
   CI-CD:
     runs-on: ubuntu-latest
+
+    env:
+      OP_URL: ${{ secret.OP_URL }}
+      OP_USERNAME: ${{ secret.OP_USERNAME }}
+      OP_PASSWORD: ${{ secret.OP_PASSWORD }}
+      OP_MAIL_USERNAME: ${{ secret.OP_MAIL_USERNAME }}
+      OP_MAIL_PASSWORD: ${{ secret.OP_MAIL_PASSWORD }}
+      OP_JWT_ACCESS: ${{ secret.OP_JWT_ACCESS }}
+      OP_JWT_REFRESH: ${{ secret.OP_JWT_REFRESH }}
+      OP_JWT_KEY: ${{ secret.OP_JWT_KEY }}
     
     steps:
       - uses: actions/checkout@v2
@@ -32,4 +42,19 @@ jobs:
           name: seogunhee4/op_server:tagname
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-        
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_SSH_ID }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script: |
+            cd OnlinePlanner_Server/
+            git pull
+            gradle build
+            docker build --tag op_server .
+            docker run -it --env-file .env -d -p 7001:7001 --name op_server op_server
+
+
