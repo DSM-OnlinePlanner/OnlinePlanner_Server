@@ -56,6 +56,6 @@ jobs:
             gradle build
             docker rm -f op_server
             docker build --tag op_server .
-            docker run -it --env-file /home/ubuntu/.env -d -p 7070:3000 --name op_server op_server
+            docker run -it --env-file /home/ubuntu/.env -d -p 7070:7070 --name op_server op_server
 
 
