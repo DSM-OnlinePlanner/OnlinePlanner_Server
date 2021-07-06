@@ -20,6 +20,7 @@ jobs:
       OP_JWT_ACCESS: ${{ secrets.OP_JWT_ACCESS }}
       OP_JWT_REFRESH: ${{ secrets.OP_JWT_REFRESH }}
       OP_JWT_KEY: ${{ secrets.OP_JWT_KEY }}
+      OP_FCM_DIR: ${{ secrets.OP_FCM_DIR }}
     
     steps:
       - uses: actions/checkout@v2
