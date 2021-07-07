@@ -41,7 +41,7 @@ public class PlannerController {
         plannerService.postPlanner(token, plannerRequest);
     }
 
-    @PutMapping("/{plannerId}")
+    @PutMapping("/check/{plannerId}")
     public void checkSuccess(@PathVariable Long plannerId,
                              @RequestHeader("Authorization") String token) {
         plannerService.checkSuccess(token, plannerId);
