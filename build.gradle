@@ -29,6 +29,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+    //spring docs
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.5.9'
+
     //mail send library
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
