@@ -54,8 +54,8 @@ jobs:
           script: |
             cd OnlinePlanner_Server/
             git fetch --all
-            git reset --hard origin/master
-            git pull origin master
+            git reset --hard origin/main
+            git pull origin main
             gradle build
             docker rm -f op_server
             docker build --tag op_server .
