@@ -53,7 +53,9 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             cd OnlinePlanner_Server/
-            git pull
+            git fetch --all
+            git reset --hard origin/master
+            git pull origin master
             gradle build
             docker rm -f op_server
             docker build --tag op_server .
