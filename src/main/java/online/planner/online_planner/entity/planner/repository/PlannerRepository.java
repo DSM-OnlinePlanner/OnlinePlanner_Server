@@ -16,6 +16,5 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
     Optional<Planner> findByPlannerId(Long plannerId);
     int countAllByIsSuccessAndEmail(Boolean isSuccess, String email);
     List<Planner> findAllByIsSuccessAndStartTimeAfterAndEndTimeBefore(Boolean isSuccess, LocalTime startTime, LocalTime endTime);
-    List<Planner> findDistinctByIsSuccessAndStartTimeAfterAndEndTimeBefore(Boolean isSuccess, LocalTime startTime, LocalTime endTime);
     int countDistinctByEmailAndIsSuccessAndStartTimeAfterAndEndTimeBefore(String email, Boolean isSuccess, LocalTime startTime, LocalTime endTime);
 }

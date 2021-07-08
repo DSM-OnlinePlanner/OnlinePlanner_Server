@@ -7,6 +7,7 @@ import online.planner.online_planner.entity.token.Token;
 import online.planner.online_planner.entity.token.repository.TokenRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
+import online.planner.online_planner.payload.request.NDSignInRequest;
 import online.planner.online_planner.payload.request.SignInRequest;
 import online.planner.online_planner.payload.response.TokenResponse;
 import online.planner.online_planner.util.AES256;
@@ -54,6 +55,30 @@ public class AuthServiceImpl implements AuthService{
                             .refreshToken(refreshToken)
                             .build();
                 }).orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public TokenResponse signIn(NDSignInRequest ndSignInRequest) {
+        return userRepository.findByEmail(ndSignInRequest.getEmail())
+                .filter(user -> user.getPassword().equals(aes256.AES_Decode(user.getPassword())))
+                .map(User::getEmail)
+                .map(email -> {
+                    String accessToken = jwtProvider.generateAccessToken(email);
+                    String refreshToken = jwtProvider.generateRefreshToken(email);
+
+                    tokenRepository.save(
+                            Token.builder()
+                                    .refreshToken(refreshToken)
+                                    .email(email)
+                                    .build()
+                    );
+
+                    return TokenResponse.builder()
+                            .accessToken(accessToken)
+                            .refreshToken(refreshToken)
+                            .build();
+                })
+                .orElseThrow(RuntimeException::new);
     }
 
     @Override
