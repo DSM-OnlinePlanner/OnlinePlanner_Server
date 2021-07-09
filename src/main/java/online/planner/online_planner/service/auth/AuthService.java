@@ -6,6 +6,6 @@ import online.planner.online_planner.payload.response.TokenResponse;
 
 public interface AuthService {
     TokenResponse signIn(SignInRequest signInRequest);
-    TokenResponse signIn(NDSignInRequest ndSignInRequest);
+    TokenResponse signInND(NDSignInRequest ndSignInRequest);
     TokenResponse refreshToken(String refreshToken);
 }

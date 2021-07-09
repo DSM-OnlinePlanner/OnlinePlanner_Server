@@ -27,8 +27,9 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public TokenResponse signIn(SignInRequest signInRequest) {
+        System.out.println(signInRequest.getEmail());
         return userRepository.findByEmail(signInRequest.getEmail())
-                .filter(user -> user.getPassword().equals(aes256.AES_Decode(signInRequest.getPassword())))
+                .filter(user -> signInRequest.getPassword().equals(aes256.AES_Decode(user.getPassword())))
                 .map(User::getEmail)
                 .map(email -> {
                     String accessToken = jwtProvider.generateAccessToken(email);
@@ -58,9 +59,11 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public TokenResponse signIn(NDSignInRequest ndSignInRequest) {
+    public TokenResponse signInND(NDSignInRequest ndSignInRequest) {
+        System.out.println(ndSignInRequest.getEmail());
+
         return userRepository.findByEmail(ndSignInRequest.getEmail())
-                .filter(user -> user.getPassword().equals(aes256.AES_Decode(user.getPassword())))
+                .filter(user -> ndSignInRequest.getPassword().equals(aes256.AES_Decode(user.getPassword())))
                 .map(User::getEmail)
                 .map(email -> {
                     String accessToken = jwtProvider.generateAccessToken(email);

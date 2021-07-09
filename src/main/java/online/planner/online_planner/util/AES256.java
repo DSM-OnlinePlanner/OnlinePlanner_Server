@@ -19,8 +19,6 @@ import java.security.NoSuchAlgorithmException;
 @Component
 public class AES256 {
 
-    private static volatile AES256 instance;
-
     static String iv;
 
     SecretKeySpec keySpec;

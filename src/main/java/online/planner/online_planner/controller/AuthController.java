@@ -24,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/nd")
     public TokenResponse signIn(@Valid @RequestBody NDSignInRequest ndSignInRequest) {
-        return authService.signIn(ndSignInRequest);
+        return authService.signInND(ndSignInRequest);
     }
 
     @PutMapping

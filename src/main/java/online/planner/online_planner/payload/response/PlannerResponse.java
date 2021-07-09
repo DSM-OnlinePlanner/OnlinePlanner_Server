@@ -21,4 +21,5 @@ public class PlannerResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean isSuccess;
+    private Boolean isPushed;
 }

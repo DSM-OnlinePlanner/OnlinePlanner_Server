@@ -9,7 +9,6 @@ import online.planner.online_planner.entity.planner.repository.PlannerRepository
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
-import online.planner.online_planner.entity.user_level.enums.TierLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
 import online.planner.online_planner.payload.request.PlannerRequest;
 import online.planner.online_planner.payload.request.UpdateDateRequest;
@@ -17,6 +16,8 @@ import online.planner.online_planner.payload.request.UpdateTimeRequest;
 import online.planner.online_planner.payload.request.UpdateTitleAndContentRequest;
 import online.planner.online_planner.payload.response.PlannerResponse;
 import online.planner.online_planner.util.JwtProvider;
+import online.planner.online_planner.util.NotNull;
+import online.planner.online_planner.util.UserLevelUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @Service
@@ -36,13 +36,11 @@ public class PlannerServiceImpl implements PlannerService{
     private final UserLevelRepository userLevelRepository;
 
     private final JwtProvider jwtProvider;
+    private final UserLevelUtil userLevelUtil;
 
     public static final Integer MAX_PLANNER_PAGE = 10;
 
-    private <T> void setIfNotNull(Consumer<T> setter, T value) {
-        if(value != null)
-            setter.accept(value);
-    }
+    private final NotNull notNull;
 
     //convert enum by Integer
     private Want setWant(Planner planner) {
@@ -169,26 +167,7 @@ public class PlannerServiceImpl implements PlannerService{
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
-        TierLevel tierLevel;
-        int exp, level;
-
-            exp = userLevel.getUserExp() + planner.getExpType().getGiveExp();
-            if(userLevel.getTierLevel().getMax_exp() < exp) {
-                exp = 0;
-                level = userLevel.getUserLv() + 1;
-                if(level > userLevel.getTierLevel().getEndLevel()) {
-                    tierLevel = Stream.of(TierLevel.values())
-                            .filter(tierLevel1 -> tierLevel1.getStartLevel().equals(level))
-                            .findFirst()
-                            .orElseThrow(RuntimeException::new);
-                    userLevelRepository.save(
-                            userLevel.updateTier(tierLevel)
-                    );
-                }
-                userLevelRepository.save(
-                        userLevel.levelUp(exp, level)
-                );
-            }
+        userLevelUtil.userLevelManagement(userLevel, planner.getExpType());
     }
 
     @Override
@@ -199,8 +178,8 @@ public class PlannerServiceImpl implements PlannerService{
         Planner planner = plannerRepository.findByPlannerId(plannerId)
                 .orElseThrow(RuntimeException::new);
 
-        setIfNotNull(planner::setTitle, updateTitleAndContentRequest.getTitle());
-        setIfNotNull(planner::setContent, updateTitleAndContentRequest.getContent());
+        notNull.setIfNotNull(planner::setTitle, updateTitleAndContentRequest.getTitle());
+        notNull.setIfNotNull(planner::setContent, updateTitleAndContentRequest.getContent());
 
         plannerRepository.save(planner);
     }
@@ -213,8 +192,8 @@ public class PlannerServiceImpl implements PlannerService{
         Planner planner = plannerRepository.findByPlannerId(plannerId)
                 .orElseThrow(RuntimeException::new);
 
-        setIfNotNull(planner::setStartDate, updateDateRequest.getStartDate());
-        setIfNotNull(planner::setEndDate, updateDateRequest.getEndDate());
+        notNull.setIfNotNull(planner::setStartDate, updateDateRequest.getStartDate());
+        notNull.setIfNotNull(planner::setEndDate, updateDateRequest.getEndDate());
 
         plannerRepository.save(planner);
     }
@@ -227,8 +206,8 @@ public class PlannerServiceImpl implements PlannerService{
         Planner planner = plannerRepository.findByPlannerId(plannerId)
                 .orElseThrow(RuntimeException::new);
 
-        setIfNotNull(planner::setStartTime, updateTimeRequest.getStartTime());
-        setIfNotNull(planner::setEndTime, updateTimeRequest.getEndTime());
+        notNull.setIfNotNull(planner::setStartTime, updateTimeRequest.getStartTime());
+        notNull.setIfNotNull(planner::setEndTime, updateTimeRequest.getEndTime());
 
         plannerRepository.save(planner);
     }
