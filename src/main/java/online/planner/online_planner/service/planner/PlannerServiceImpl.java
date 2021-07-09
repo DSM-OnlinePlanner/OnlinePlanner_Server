@@ -213,6 +213,20 @@ public class PlannerServiceImpl implements PlannerService{
     }
 
     @Override
+    public void updatePlannerPushed(String token, Long plannerId) {
+        userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(RuntimeException::new);
+
+        Planner planner = plannerRepository.findByPlannerId(plannerId)
+                .orElseThrow(RuntimeException::new);
+
+        if(planner.getIsPushed())
+            planner.setIsPushed(false);
+        else
+            planner.setIsPushed(true);
+    }
+
+    @Override
     public void deletePlanner(String token, Long plannerId) {
         userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);

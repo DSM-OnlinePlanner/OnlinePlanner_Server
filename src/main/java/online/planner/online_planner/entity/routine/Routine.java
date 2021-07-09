@@ -1,16 +1,16 @@
 package online.planner.online_planner.entity.routine;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import online.planner.online_planner.entity.exp.enums.ExpType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalTime;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @NoArgsConstructor
@@ -20,11 +20,19 @@ public class Routine {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long routineId;
 
+    private String email;
+
     private String title;
 
     private String content;
 
-    private Integer startTime;
+    private LocalTime startTime;
 
-    private Integer endTime;
+    private LocalTime endTime;
+
+    private ExpType expType;
+
+    private Boolean isSucceed;
+
+    private Boolean isPushed;
 }

@@ -16,5 +16,6 @@ public interface PlannerService {
     void updatePlannerTitleAndContent(String token, UpdateTitleAndContentRequest updateTitleAndContentRequest, Long plannerId);
     void updatePlannerDate(String token, UpdateDateRequest updateDateRequest, Long plannerId);
     void updatePlannerTime(String token, UpdateTimeRequest updateTimeRequest, Long plannerId);
+    void updatePlannerPushed(String token, Long routineId);
     void deletePlanner(String token, Long plannerId);
 }
