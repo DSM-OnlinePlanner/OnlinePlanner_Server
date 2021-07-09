@@ -56,7 +56,7 @@ public class JwtProvider {
     }
 
     public String getEmail(String token) {
-        if(validateToken(token))
+        if(!validateToken(token))
             throw new RuntimeException();
 
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
