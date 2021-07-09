@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ExpType {
-    PLANNER(20);
+    PLANNER(20), ROUTINE(10);
 
     private Integer giveExp;
 }

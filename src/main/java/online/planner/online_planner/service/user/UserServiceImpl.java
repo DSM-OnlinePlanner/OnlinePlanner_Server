@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService{
         userLevelRepository.save(
                 UserLevel.builder()
                         .email(mine.getEmail())
+                        .tierLevel(TierLevel.ZERO_LV)
                         .userExp(0)
                         .userLv(1)
                         .build()
