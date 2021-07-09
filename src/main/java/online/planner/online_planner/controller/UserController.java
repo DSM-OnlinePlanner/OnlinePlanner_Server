@@ -6,7 +6,10 @@ import online.planner.online_planner.payload.response.UserResponse;
 import online.planner.online_planner.service.user.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
+@CrossOrigin
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
@@ -19,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping
-    public void signUp(@RequestBody SignUpRequest signUpRequest) {
+    public void signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         userService.signUp(signUpRequest);
     }
 

@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/planner")
 @RequiredArgsConstructor
 public class PlannerController {
@@ -33,10 +34,7 @@ public class PlannerController {
 
     @PostMapping
     public void postPlanner(@RequestHeader("Authorization") String token,
-                            @Valid @RequestBody PlannerRequest plannerRequest,
-                            BindingResult bindingResult) {
-        if(bindingResult.hasErrors())
-            throw new RuntimeException();
+                            @Valid @RequestBody PlannerRequest plannerRequest) {
 
         plannerService.postPlanner(token, plannerRequest);
     }
@@ -49,21 +47,21 @@ public class PlannerController {
 
     @PutMapping("/{plannerId}")
     public void updateTitleAndContent(@RequestHeader("Authorization") String token,
-                                      @RequestBody UpdateTitleAndContentRequest updateTitleAndContentRequest,
+                                      @Valid @RequestBody UpdateTitleAndContentRequest updateTitleAndContentRequest,
                                       @PathVariable Long plannerId) {
         plannerService.updatePlannerTitleAndContent(token, updateTitleAndContentRequest, plannerId);
     }
 
     @PutMapping("/date/{plannerId}")
     public void updatePlannerDare(@RequestHeader("Authorization") String token,
-                                  @RequestBody UpdateDateRequest updateDateRequest,
+                                  @Valid @RequestBody UpdateDateRequest updateDateRequest,
                                   @PathVariable Long plannerId) {
         plannerService.updatePlannerDate(token, updateDateRequest, plannerId);
     }
 
     @PutMapping("/time/{plannerId}")
     public void updatePlannerTime(@RequestHeader("Authorization") String token,
-                                  @RequestBody UpdateTimeRequest updateTimeRequest,
+                                  @Valid @RequestBody UpdateTimeRequest updateTimeRequest,
                                   @PathVariable Long plannerId) {
         plannerService.updatePlannerTime(token, updateTimeRequest, plannerId);
     }

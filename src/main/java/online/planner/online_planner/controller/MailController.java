@@ -6,7 +6,10 @@ import online.planner.online_planner.payload.request.MailRequest;
 import online.planner.online_planner.service.mail.MailService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
+@CrossOrigin
 @RequestMapping("/mail")
 @RequiredArgsConstructor
 public class MailController {
@@ -26,7 +29,7 @@ public class MailController {
     }
 
     @PostMapping("/auth")
-    public void authMail(@RequestBody MailAuthRequest mailAuthRequest) {
+    public void authMail(@Valid @RequestBody MailAuthRequest mailAuthRequest) {
         mailService.authEmail(mailAuthRequest.getCode(), mailAuthRequest.getEmail());
     }
 }

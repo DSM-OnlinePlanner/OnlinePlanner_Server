@@ -7,7 +7,10 @@ import online.planner.online_planner.payload.response.TokenResponse;
 import online.planner.online_planner.service.auth.AuthService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
+@CrossOrigin
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -15,12 +18,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping
-    public TokenResponse signIn(@RequestBody SignInRequest signInRequest) {
+    public TokenResponse signIn(@Valid @RequestBody SignInRequest signInRequest) {
         return authService.signIn(signInRequest);
     }
 
     @PostMapping("/nd")
-    public TokenResponse signIn(@RequestBody NDSignInRequest ndSignInRequest) {
+    public TokenResponse signIn(@Valid @RequestBody NDSignInRequest ndSignInRequest) {
         return authService.signIn(ndSignInRequest);
     }
 
