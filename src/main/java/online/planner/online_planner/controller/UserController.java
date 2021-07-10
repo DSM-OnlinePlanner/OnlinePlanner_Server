@@ -26,6 +26,12 @@ public class UserController {
         userService.signUp(signUpRequest);
     }
 
+    @PostMapping("/date")
+    public void setSaveDate(@RequestHeader("Authorization") String token,
+                            @RequestParam Integer saveDate) {
+        userService.setUserSaveDate(token, saveDate);
+    }
+
     @PutMapping
     public void updateName(@RequestHeader("Authorization") String token,
                            @RequestParam String name) {

@@ -43,14 +43,14 @@ public class Planner {
 
     private Boolean isPushed;
 
-    public Planner checkSuccess(Boolean isSuccess) {
-        this.isSuccess = isSuccess;
+    public Planner checkSuccess() {
+        this.isSuccess = !isSuccess;
 
         return this;
     }
 
-    public Planner updatePush(Boolean isPushed) {
-        this.isPushed = isPushed;
+    public Planner updatePush() {
+        this.isPushed = !isPushed;
 
         return this;
     }

@@ -13,6 +13,7 @@ import online.planner.online_planner.payload.response.TokenResponse;
 import online.planner.online_planner.util.AES256;
 import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,9 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public TokenResponse signIn(SignInRequest signInRequest) {
         System.out.println(signInRequest.getEmail());
+
+
+
         return userRepository.findByEmail(signInRequest.getEmail())
                 .filter(user -> signInRequest.getPassword().equals(aes256.AES_Decode(user.getPassword())))
                 .map(User::getEmail)
@@ -62,6 +66,8 @@ public class AuthServiceImpl implements AuthService{
     public TokenResponse signInND(NDSignInRequest ndSignInRequest) {
         System.out.println(ndSignInRequest.getEmail());
 
+
+
         return userRepository.findByEmail(ndSignInRequest.getEmail())
                 .filter(user -> ndSignInRequest.getPassword().equals(aes256.AES_Decode(user.getPassword())))
                 .map(User::getEmail)
@@ -85,16 +91,15 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
+    @Transactional
     public TokenResponse refreshToken(String refreshToken) {
-        if(!jwtProvider.isRefreshToken(refreshToken)) {
-            tokenRepository.deleteByRefreshToken(refreshToken);
+        if(jwtProvider.isRefreshToken(refreshToken)) {
             throw new RuntimeException();
         }
 
-        if(jwtProvider.validateToken(refreshToken)) {
-            tokenRepository.deleteByRefreshToken(refreshToken);
+        if(!jwtProvider.validateToken(refreshToken))
             throw new RuntimeException();
-        }
+        
 
         return tokenRepository.findByRefreshToken(refreshToken)
                 .map(token -> {

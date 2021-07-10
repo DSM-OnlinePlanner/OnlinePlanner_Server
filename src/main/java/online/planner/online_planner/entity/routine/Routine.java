@@ -35,4 +35,16 @@ public class Routine {
     private Boolean isSucceed;
 
     private Boolean isPushed;
+
+    public Routine updateSucceed() {
+        this.isSucceed = !isSucceed;
+
+        return this;
+    }
+
+    public Routine updatePushed() {
+        this.isPushed = !isPushed;
+
+        return this;
+    }
 }

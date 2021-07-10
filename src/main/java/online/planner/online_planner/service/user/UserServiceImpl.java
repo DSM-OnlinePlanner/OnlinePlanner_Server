@@ -10,6 +10,7 @@ import online.planner.online_planner.payload.request.SignUpRequest;
 import online.planner.online_planner.payload.response.UserResponse;
 import online.planner.online_planner.util.AES256;
 import online.planner.online_planner.util.JwtProvider;
+import online.planner.online_planner.util.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService{
 
     private final JwtProvider jwtProvider;
     private final AES256 aes256;
+    private final NotNull notNull;
 
     @Override
     public void signUp(SignUpRequest signUpRequest) {
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService{
                         .email(signUpRequest.getEmail())
                         .nickName(signUpRequest.getNickName())
                         .password(aes256.AES_Encode(signUpRequest.getPassword()))
+                        .saveDate(365)
                         .build()
         );
 
@@ -58,6 +61,14 @@ public class UserServiceImpl implements UserService{
         userRepository.save(
                 user.updateNickName(nickName)
         );
+    }
+
+    @Override
+    public void setUserSaveDate(String token, Integer saveDate) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(RuntimeException::new);
+
+        notNull.setIfNotNull(user::setSaveDate, saveDate);
     }
 
     @Override

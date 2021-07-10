@@ -168,6 +168,10 @@ public class PlannerServiceImpl implements PlannerService{
                 .orElseThrow(RuntimeException::new);
 
         userLevelUtil.userLevelManagement(userLevel, planner.getExpType());
+
+        plannerRepository.save(
+                planner.checkSuccess()
+        );
     }
 
     @Override
@@ -220,10 +224,7 @@ public class PlannerServiceImpl implements PlannerService{
         Planner planner = plannerRepository.findByPlannerId(plannerId)
                 .orElseThrow(RuntimeException::new);
 
-        if(planner.getIsPushed())
-            planner.setIsPushed(false);
-        else
-            planner.setIsPushed(true);
+        planner.updatePush();
     }
 
     @Override

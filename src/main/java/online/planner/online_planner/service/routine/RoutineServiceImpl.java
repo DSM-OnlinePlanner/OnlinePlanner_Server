@@ -194,10 +194,9 @@ public class RoutineServiceImpl implements RoutineService{
         Routine routine = routineRepository.findByRoutineId(routineId)
                 .orElseThrow(RuntimeException::new);
 
-        if(routine.getIsPushed())
-            routine.setIsPushed(false);
-        else
-            routine.setIsPushed(true);
+        routineRepository.save(
+                routine.updatePushed()
+        );
     }
 
     @Override
@@ -213,6 +212,10 @@ public class RoutineServiceImpl implements RoutineService{
                 .orElseThrow(RuntimeException::new);
 
         userLevelUtil.userLevelManagement(userLevel, routine.getExpType());
+
+        routineRepository.save(
+                routine.updateSucceed()
+        );
     }
 
     @Override
