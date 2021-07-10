@@ -93,13 +93,13 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public TokenResponse refreshToken(String refreshToken) {
-        if(jwtProvider.isRefreshToken(refreshToken)) {
+        if(!jwtProvider.isRefreshToken(refreshToken))
             throw new RuntimeException();
-        }
+
 
         if(!jwtProvider.validateToken(refreshToken))
             throw new RuntimeException();
-        
+
 
         return tokenRepository.findByRefreshToken(refreshToken)
                 .map(token -> {
