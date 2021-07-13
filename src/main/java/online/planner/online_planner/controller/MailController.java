@@ -22,14 +22,24 @@ public class MailController {
         mailService.sendMail(email, name);
     }
 
+    @PostMapping("/password")
+    public void sendPasswordChangeMail(@RequestParam String email) {
+        mailService.changePasswordMail(email);
+    }
+
+    @PostMapping("/auth")
+    public void authMail(@Valid @RequestBody MailAuthRequest mailAuthRequest) {
+        mailService.authEmail(mailAuthRequest.getCode(), mailAuthRequest.getEmail());
+    }
+
     @PutMapping
     public void resendAuthMail(@RequestParam String email,
                                @RequestParam String name) {
         mailService.resendMail(email, name);
     }
 
-    @PostMapping("/auth")
-    public void authMail(@Valid @RequestBody MailAuthRequest mailAuthRequest) {
-        mailService.authEmail(mailAuthRequest.getCode(), mailAuthRequest.getEmail());
+    @PutMapping("/password")
+    public void resendPasswordChangeMail(@RequestParam String email) {
+        mailService.changePasswordMailResend(email);
     }
 }

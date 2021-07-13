@@ -25,4 +25,10 @@ public class User {
 
         return this;
     }
+
+    public User updatePassword(String password) {
+        this.password = password;
+
+        return this;
+    }
 }

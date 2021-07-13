@@ -6,6 +6,7 @@ import online.planner.online_planner.entity.auth_code.AuthCode;
 import online.planner.online_planner.entity.auth_code.repository.AuthCodeRepository;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.util.AES256;
+import org.springframework.mail.MailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -87,6 +88,34 @@ public class MailServiceImpl implements MailService{
         }
     }
 
+    @SneakyThrows
+    @Transactional
+    public void sendPasswordMail(String email) {
+        if (checkSameUser(email))
+            throw new RuntimeException();
+        else {
+            String key = getKey();
+
+            authCodeRepository.save(
+                    AuthCode.builder()
+                            .email(email)
+                            .code(key)
+                            .build()
+            );
+
+            String title = "OnlinePlanner를 이용해 주셔서 감사합니다.";
+            String content = "비밀번호를 바꾸기 위해 다음 인증 코드를 입력해주세요!\n" + key;
+
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, false, "UTF-8");
+            mimeMessageHelper.setSubject(title);
+            mimeMessageHelper.setText(content);
+            mimeMessageHelper.setTo(email);
+
+            javaMailSender.send(message);
+        }
+    }
+
     @Override
     @Async
     public void sendMail(String email, String name) {
@@ -97,6 +126,16 @@ public class MailServiceImpl implements MailService{
     @Async
     public void resendMail(String email, String name) {
         send(email, name);
+    }
+
+    @Override
+    public void changePasswordMail(String email) {
+        sendPasswordMail(email);
+    }
+
+    @Override
+    public void changePasswordMailResend(String email) {
+        sendPasswordMail(email);
     }
 
     @Transactional

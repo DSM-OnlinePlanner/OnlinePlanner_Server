@@ -6,6 +6,7 @@ import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.enums.TierLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
+import online.planner.online_planner.payload.request.PasswordChangeRequest;
 import online.planner.online_planner.payload.request.SignUpRequest;
 import online.planner.online_planner.payload.response.UserResponse;
 import online.planner.online_planner.util.AES256;
@@ -86,5 +87,13 @@ public class UserServiceImpl implements UserService{
                 .maxExp(userLevel.getTierLevel().getMax_exp())
                 .tier(userLevel.getTierLevel().getTier())
                 .build();
+    }
+
+    @Override
+    public void changePassword(PasswordChangeRequest passwordChangeRequest) {
+        userRepository.findByEmail(passwordChangeRequest.getEmail())
+                .map(user -> user.updatePassword(aes256.AES_Encode(passwordChangeRequest.getPassword())))
+                .map(userRepository::save)
+                .orElseThrow(RuntimeException::new);
     }
 }

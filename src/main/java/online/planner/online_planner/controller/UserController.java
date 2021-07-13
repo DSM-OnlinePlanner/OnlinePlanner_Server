@@ -1,6 +1,7 @@
 package online.planner.online_planner.controller;
 
 import lombok.RequiredArgsConstructor;
+import online.planner.online_planner.payload.request.PasswordChangeRequest;
 import online.planner.online_planner.payload.request.SignUpRequest;
 import online.planner.online_planner.payload.response.UserResponse;
 import online.planner.online_planner.service.user.UserService;
@@ -36,5 +37,10 @@ public class UserController {
     public void updateName(@RequestHeader("Authorization") String token,
                            @RequestParam String name) {
         userService.updateName(token, name);
+    }
+
+    @PutMapping("/password")
+    public void updatePassword(@RequestBody PasswordChangeRequest passwordChangeRequest) {
+        userService.changePassword(passwordChangeRequest);
     }
 }
