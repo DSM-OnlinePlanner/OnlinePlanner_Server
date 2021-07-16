@@ -10,10 +10,7 @@ import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
-import online.planner.online_planner.payload.request.PlannerRequest;
-import online.planner.online_planner.payload.request.UpdateDateRequest;
-import online.planner.online_planner.payload.request.UpdateTimeRequest;
-import online.planner.online_planner.payload.request.UpdateTitleAndContentRequest;
+import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
 import online.planner.online_planner.util.JwtProvider;
 import online.planner.online_planner.util.NotNull;
@@ -74,32 +71,35 @@ public class PlannerServiceImpl implements PlannerService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
+        System.out.println(plannerRequest.getEndTime());
+
         plannerRepository.save(
                 Planner.builder()
-                        .email(user.getEmail())
-                        .title(plannerRequest.getTitle())
-                        .content(plannerRequest.getContent())
-                        .endDate(plannerRequest.getEndDate())
-                        .startDate(plannerRequest.getStartDate())
-                        .startTime(plannerRequest.getStartTime())
-                        .endTime(plannerRequest.getEndTime())
-                        .isSuccess(true)
-                        .priority(plannerRequest.getPriority().getPriority() + plannerRequest.getWant().getWant())
-                        .expType(ExpType.PLANNER)
-                        .build()
+                .email(user.getEmail())
+                .title(plannerRequest.getTitle())
+                .content(plannerRequest.getContent())
+                .endDate(plannerRequest.getEndDate())
+                .startDate(plannerRequest.getStartDate())
+                .startTime(plannerRequest.getStartTime())
+                .endTime(plannerRequest.getEndTime())
+                .isSuccess(false)
+                .priority(plannerRequest.getPriority().getPriority() + plannerRequest.getWant().getWant())
+                .expType(ExpType.PLANNER)
+                .isPushed(plannerRequest.getIsPushed())
+                .build()
         );
     }
 
     @Override
-    public List<PlannerResponse> readPlanner(String token, Integer pageNum) {
+    public List<PlannerResponse> readPlanner(String token, PlannerReadRequest plannerReadRequest, Integer pageNum) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
         Page<Planner> planners = plannerRepository
-                .findAllByEmailAndStartDateAfterAndEndDateBeforeOrderByStartTimeAsc(
+                .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
-                        LocalDate.now(),
-                        LocalDate.now(),
+                        plannerReadRequest.getStartDate(),
+                        plannerReadRequest.getEndDate(),
                         PageRequest.of(pageNum, MAX_PLANNER_PAGE)
                 );
         List<PlannerResponse> responses = new ArrayList<>();
@@ -124,15 +124,15 @@ public class PlannerServiceImpl implements PlannerService{
     }
 
     @Override
-    public List<PlannerResponse> mainPlanner(String token) {
+    public List<PlannerResponse> mainPlanner(String token, PlannerReadRequest plannerReadRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
         Page<Planner> planners = plannerRepository
-                .findAllByEmailAndStartDateAfterAndEndDateBeforeOrderByStartTimeAsc(
+                .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
-                        LocalDate.now(),
-                        LocalDate.now(),
+                        plannerReadRequest.getStartDate(),
+                        plannerReadRequest.getEndDate(),
                         PageRequest.of(1, 3)
                 );
         List<PlannerResponse> plannerResponses = new ArrayList<>();
@@ -224,7 +224,7 @@ public class PlannerServiceImpl implements PlannerService{
         Planner planner = plannerRepository.findByPlannerId(plannerId)
                 .orElseThrow(RuntimeException::new);
 
-        planner.updatePush();
+        plannerRepository.save(planner.updatePush());
     }
 
     @Override

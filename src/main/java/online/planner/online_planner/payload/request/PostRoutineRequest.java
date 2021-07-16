@@ -1,5 +1,6 @@
 package online.planner.online_planner.payload.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import online.planner.online_planner.entity.routine_date.enums.Weeks;
 
@@ -16,8 +17,10 @@ public class PostRoutineRequest {
     private String content;
     @NotBlank
     private List<Weeks> weeks;
+    @JsonFormat(pattern = "HH:mm:ss")
     @NotBlank(message = "startTime is empty")
     private LocalTime startTime;
+    @JsonFormat(pattern = "HH:mm:ss")
     @NotBlank(message = "endTime is empty")
     private LocalTime endTime;
     @NotBlank(message = "push is empty")

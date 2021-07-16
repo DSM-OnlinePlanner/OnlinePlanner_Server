@@ -1,7 +1,9 @@
 package online.planner.online_planner.entity.routine;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import online.planner.online_planner.entity.exp.enums.ExpType;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,8 +28,10 @@ public class Routine {
 
     private String content;
 
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime startTime;
 
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime endTime;
 
     private ExpType expType;

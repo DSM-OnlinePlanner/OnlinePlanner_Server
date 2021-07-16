@@ -1,10 +1,7 @@
 package online.planner.online_planner.controller;
 
 import lombok.RequiredArgsConstructor;
-import online.planner.online_planner.payload.request.PlannerRequest;
-import online.planner.online_planner.payload.request.UpdateDateRequest;
-import online.planner.online_planner.payload.request.UpdateTimeRequest;
-import online.planner.online_planner.payload.request.UpdateTitleAndContentRequest;
+import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
 import online.planner.online_planner.service.planner.PlannerService;
 import org.springframework.validation.BindingResult;
@@ -23,19 +20,22 @@ public class PlannerController {
 
     @GetMapping("/{pageNum}")
     public List<PlannerResponse> readPlanner(@RequestHeader("Authorization") String token,
+                                             @Valid @RequestBody PlannerReadRequest plannerReadRequest,
                                              @PathVariable Integer pageNum) {
-        return plannerService.readPlanner(token, pageNum);
+        return plannerService.readPlanner(token, plannerReadRequest, pageNum);
     }
 
     @GetMapping("/main")
-    public List<PlannerResponse> getMainPlannerList(@RequestHeader("Authorization") String token) {
-        return plannerService.mainPlanner(token);
+    public List<PlannerResponse> getMainPlannerList(@RequestHeader("Authorization") String token,
+                                                    @RequestBody PlannerReadRequest plannerReadRequest) {
+        return plannerService.mainPlanner(token, plannerReadRequest);
     }
 
     @PostMapping
     public void postPlanner(@RequestHeader("Authorization") String token,
                             @Valid @RequestBody PlannerRequest plannerRequest) {
-
+        System.out.println(plannerRequest.getEndDate());
+        System.out.println(plannerRequest.getEndTime());
         plannerService.postPlanner(token, plannerRequest);
     }
 
@@ -64,6 +64,12 @@ public class PlannerController {
                                   @Valid @RequestBody UpdateTimeRequest updateTimeRequest,
                                   @PathVariable Long plannerId) {
         plannerService.updatePlannerTime(token, updateTimeRequest, plannerId);
+    }
+
+    @PutMapping("/push/{plannerId}")
+    public void updatePlannerPushed(@RequestHeader("Authorization") String token,
+                                    @PathVariable Long plannerId) {
+        plannerService.updatePlannerPushed(token, plannerId);
     }
 
     @DeleteMapping("/{plannerId}")

@@ -1,5 +1,6 @@
 package online.planner.online_planner.payload.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import online.planner.online_planner.entity.planner.enums.Priority;
@@ -16,7 +17,9 @@ public class PlannerResponse {
     private String content;
     private Priority priority;
     private Want want;
+    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalTime startTime;
+    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalTime endTime;
     private LocalDate startDate;
     private LocalDate endDate;

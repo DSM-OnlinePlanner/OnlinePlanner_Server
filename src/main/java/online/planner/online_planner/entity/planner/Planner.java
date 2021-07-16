@@ -3,7 +3,7 @@ package online.planner.online_planner.entity.planner;
 import lombok.*;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.exp.enums.ExpTypeConvertor;
-import online.planner.online_planner.entity.planner.enums.Priority;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -37,8 +37,10 @@ public class Planner {
 
     private LocalDate endDate;
 
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime startTime;
 
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime endTime;
 
     private Boolean isPushed;
