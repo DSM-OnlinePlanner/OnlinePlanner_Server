@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
-    Page<Routine> findAllByEmailAndStartTimeAfterAndEndTimeBeforeOrderByStartTimeDesc(String email, LocalTime startTime, LocalTime endTime, Pageable pageable);
+    Page<Routine> findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(String email, LocalTime startTime, LocalTime endTime, Pageable pageable);
     Optional<Routine> findByRoutineId(Long routineId);
     void deleteByRoutineId(long routineId);
 }

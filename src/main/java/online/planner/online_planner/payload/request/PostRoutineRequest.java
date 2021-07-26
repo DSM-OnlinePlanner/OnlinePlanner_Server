@@ -24,5 +24,5 @@ public class PostRoutineRequest {
     @NotBlank(message = "endTime is empty")
     private LocalTime endTime;
     @NotBlank(message = "push is empty")
-    private Boolean isPushed;
+    private boolean isPushed;
 }

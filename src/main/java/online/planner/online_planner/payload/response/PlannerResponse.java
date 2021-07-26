@@ -23,6 +23,6 @@ public class PlannerResponse {
     private LocalTime endTime;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Boolean isSuccess;
-    private Boolean isPushed;
+    private boolean isSuccess;
+    private boolean isPushed;
 }

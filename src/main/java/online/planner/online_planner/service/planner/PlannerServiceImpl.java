@@ -85,7 +85,7 @@ public class PlannerServiceImpl implements PlannerService{
                 .isSuccess(false)
                 .priority(plannerRequest.getPriority().getPriority() + plannerRequest.getWant().getWant())
                 .expType(ExpType.PLANNER)
-                .isPushed(plannerRequest.getIsPushed())
+                .isPushed(plannerRequest.isPushed())
                 .build()
         );
     }
@@ -98,8 +98,8 @@ public class PlannerServiceImpl implements PlannerService{
         Page<Planner> planners = plannerRepository
                 .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
-                        plannerReadRequest.getStartDate(),
-                        plannerReadRequest.getEndDate(),
+                        plannerReadRequest.getDate(),
+                        plannerReadRequest.getDate(),
                         PageRequest.of(pageNum, MAX_PLANNER_PAGE)
                 );
         List<PlannerResponse> responses = new ArrayList<>();
@@ -131,9 +131,9 @@ public class PlannerServiceImpl implements PlannerService{
         Page<Planner> planners = plannerRepository
                 .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
-                        plannerReadRequest.getStartDate(),
-                        plannerReadRequest.getEndDate(),
-                        PageRequest.of(1, 3)
+                        plannerReadRequest.getDate(),
+                        plannerReadRequest.getDate(),
+                        PageRequest.of(0, 3)
                 );
         List<PlannerResponse> plannerResponses = new ArrayList<>();
 
@@ -237,6 +237,4 @@ public class PlannerServiceImpl implements PlannerService{
 
         plannerRepository.deleteByPlannerId(plannerId);
     }
-
-
 }

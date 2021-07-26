@@ -6,6 +6,5 @@ import java.time.LocalDate;
 
 @Getter
 public class PlannerReadRequest {
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDate date;
 }

@@ -52,7 +52,7 @@ public class RoutineServiceImpl implements RoutineService{
         for(RoutineWeek routineWeek : routineWeeks) {
             weeks.add(
                     Stream.of(Weeks.values())
-                    .filter(weeks1 -> weeks1.getDayOfWeek().equals(routineWeek.getDayOfWeek()))
+                    .filter(week -> week.getDayOfWeek().equals(routineWeek.getDayOfWeek()))
                     .findFirst()
                     .orElseThrow(RuntimeException::new).name()
             );
@@ -75,6 +75,8 @@ public class RoutineServiceImpl implements RoutineService{
                     .endTime(routine.getEndTime())
                     .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
                     .build();
+
+            responses.add(routineResponse);
         }
 
         return responses;
@@ -93,7 +95,7 @@ public class RoutineServiceImpl implements RoutineService{
                         .endTime(postRoutineRequest.getEndTime())
                         .startTime(postRoutineRequest.getStartTime())
                         .expType(ExpType.ROUTINE)
-                        .isPushed(postRoutineRequest.getIsPushed())
+                        .isPushed(postRoutineRequest.isPushed())
                         .isSucceed(false)
                         .build()
         );
@@ -115,7 +117,7 @@ public class RoutineServiceImpl implements RoutineService{
                 .orElseThrow(RuntimeException::new);
 
         Page<Routine> routines = routineRepository
-                .findAllByEmailAndStartTimeAfterAndEndTimeBeforeOrderByStartTimeDesc(
+                .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
                         user.getEmail(),
                         LocalTime.now(),
                         LocalTime.now(),
@@ -131,7 +133,7 @@ public class RoutineServiceImpl implements RoutineService{
                 .orElseThrow(RuntimeException::new);
 
         Page<Routine> routines = routineRepository
-                .findAllByEmailAndStartTimeAfterAndEndTimeBeforeOrderByStartTimeDesc(
+                .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
                         user.getEmail(),
                         LocalTime.now(),
                         LocalTime.now(),

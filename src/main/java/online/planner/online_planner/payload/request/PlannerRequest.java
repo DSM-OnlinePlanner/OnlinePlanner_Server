@@ -24,5 +24,5 @@ public class PlannerRequest {
     private LocalTime startTime;
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime endTime;
-    private Boolean isPushed;
+    private boolean isPushed;
 }

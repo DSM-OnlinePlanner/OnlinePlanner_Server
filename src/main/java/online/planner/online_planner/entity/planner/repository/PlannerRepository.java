@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface PlannerRepository extends JpaRepository<Planner, Long> {
     Page<Planner> findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(String email, LocalDate startDate, LocalDate endDate, Pageable pageable);
+    List<Planner> findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrStartDateGreaterThanEqualAndEndDateLessThanEqualOrderByStartDateAsc(String email, LocalDate startDate, LocalDate endDate, LocalDate startDate2, LocalDate endDate2);
     void deleteByPlannerId(long plannerId);
     Optional<Planner> findByPlannerId(Long plannerId);
     int countAllByIsSuccessAndEmail(Boolean isSuccess, String email);
