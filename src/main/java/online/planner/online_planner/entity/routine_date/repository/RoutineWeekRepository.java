@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface RoutineWeekRepository extends JpaRepository<RoutineWeek, Long> {
     boolean existsByRoutineIdAndDayOfWeek(long routineId, int dayOfWeek);
-    List<RoutineWeek> findAllByRoutineId(long routineId);
+    <T> List<T> findAllByRoutineId(long routineId);
     void deleteAllByRoutineId(long routineId);
 }

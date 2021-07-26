@@ -1,6 +1,7 @@
 package online.planner.online_planner.service.routine;
 
 import lombok.RequiredArgsConstructor;
+import online.planner.online_planner.entity.achivement.repository.AchievementRepository;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.routine.Routine;
 import online.planner.online_planner.entity.routine.repository.RoutineRepository;
@@ -11,11 +12,9 @@ import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
-import online.planner.online_planner.payload.request.PostRoutineRequest;
-import online.planner.online_planner.payload.request.UpdateDayOfWeekRequest;
-import online.planner.online_planner.payload.request.UpdateTimeRequest;
-import online.planner.online_planner.payload.request.UpdateTitleAndContentRequest;
+import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.RoutineResponse;
+import online.planner.online_planner.util.AchieveUtil;
 import online.planner.online_planner.util.JwtProvider;
 import online.planner.online_planner.util.NotNull;
 import online.planner.online_planner.util.UserLevelUtil;
@@ -37,10 +36,12 @@ public class RoutineServiceImpl implements RoutineService{
     private final RoutineRepository routineRepository;
     private final RoutineWeekRepository routineWeekRepository;
     private final UserLevelRepository userLevelRepository;
+    private final AchievementRepository achievementRepository;
 
     private final JwtProvider jwtProvider;
     private final UserLevelUtil userLevelUtil;
     private final NotNull notNull;
+    private final AchieveUtil achieveUtil;
 
     private final int PAGE_NUM = 10;
     private final int MAIN_PAGE_NUM = 3;
@@ -61,30 +62,12 @@ public class RoutineServiceImpl implements RoutineService{
         return weeks;
     }
 
-    private List<RoutineResponse> setRoutineResponse(Page<Routine> routines) {
-        List<RoutineResponse> responses = new ArrayList<>();
-
-        for(Routine routine : routines) {
-            RoutineResponse routineResponse = RoutineResponse.builder()
-                    .routineId(routine.getRoutineId())
-                    .title(routine.getTitle())
-                    .content(routine.getContent())
-                    .isSuccess(routine.getIsSucceed())
-                    .isPushed(routine.getIsPushed())
-                    .startTime(routine.getStartTime())
-                    .endTime(routine.getEndTime())
-                    .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
-                    .build();
-
-            responses.add(routineResponse);
-        }
-
-        return responses;
-    }
-
     @Override
     public void writeRoutine(String token, PostRoutineRequest postRoutineRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(RuntimeException::new);
+
+        UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         Routine routine = routineRepository.save(
@@ -93,6 +76,7 @@ public class RoutineServiceImpl implements RoutineService{
                         .content(postRoutineRequest.getContent())
                         .email(user.getEmail())
                         .endTime(postRoutineRequest.getEndTime())
+                        .priority(postRoutineRequest.getPriority())
                         .startTime(postRoutineRequest.getStartTime())
                         .expType(ExpType.ROUTINE)
                         .isPushed(postRoutineRequest.isPushed())
@@ -109,6 +93,13 @@ public class RoutineServiceImpl implements RoutineService{
                                 .build()
                 );
         }
+
+        achieveUtil.achievePlannerNum(
+                routineRepository.countByEmail(user.getEmail()),
+                userLevel,
+                true,
+                true
+        );
     }
 
     @Override
@@ -116,7 +107,7 @@ public class RoutineServiceImpl implements RoutineService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Page<Routine> routines = routineRepository
+        Page<RoutineResponse> routines = routineRepository
                 .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
                         user.getEmail(),
                         LocalTime.now(),
@@ -124,7 +115,7 @@ public class RoutineServiceImpl implements RoutineService{
                         PageRequest.of(pageNum, PAGE_NUM)
                 );
 
-        return setRoutineResponse(routines);
+        return routines.toList();
     }
 
     @Override
@@ -132,7 +123,7 @@ public class RoutineServiceImpl implements RoutineService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Page<Routine> routines = routineRepository
+        Page<RoutineResponse> routines = routineRepository
                 .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
                         user.getEmail(),
                         LocalTime.now(),
@@ -140,16 +131,16 @@ public class RoutineServiceImpl implements RoutineService{
                         PageRequest.of(0, MAIN_PAGE_NUM)
                 );
 
-        return setRoutineResponse(routines);
+        return routines.toList();
     }
 
     @Override
     @Transactional
     public void updateRoutineWeek(String token, UpdateDayOfWeekRequest updateDayOfWeekRequest, Long routineId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Routine routine = routineRepository.findByRoutineId(routineId)
+        Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         routineWeekRepository.deleteAllByRoutineId(routine.getRoutineId());
@@ -166,10 +157,10 @@ public class RoutineServiceImpl implements RoutineService{
 
     @Override
     public void updateRoutineTime(String token, UpdateTimeRequest updateTimeRequest, Long routineId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Routine routine = routineRepository.findByRoutineId(routineId)
+        Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         notNull.setIfNotNull(routine::setStartTime, updateTimeRequest.getStartTime());
@@ -178,10 +169,10 @@ public class RoutineServiceImpl implements RoutineService{
 
     @Override
     public void updateTitleAndContent(String token, UpdateTitleAndContentRequest updateTitleAndContentRequest, Long routineId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Routine routine = routineRepository.findByRoutineId(routineId)
+        Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         notNull.setIfNotNull(routine::setTitle, updateTitleAndContentRequest.getTitle());
@@ -190,10 +181,10 @@ public class RoutineServiceImpl implements RoutineService{
 
     @Override
     public void updateIsPushed(String token, Long routineId) {
-        userRepository.findByEmail(jwtProvider.getEmail(jwtProvider.getEmail(token)))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(jwtProvider.getEmail(token)))
                 .orElseThrow(RuntimeException::new);
 
-        Routine routine = routineRepository.findByRoutineId(routineId)
+        Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         routineRepository.save(
@@ -202,11 +193,24 @@ public class RoutineServiceImpl implements RoutineService{
     }
 
     @Override
+    public void updatePriority(String token, UpdateRoutinePriorityRequest updateRoutinePriorityRequest, Long routineId) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(RuntimeException::new);
+
+        Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
+                .orElseThrow(RuntimeException::new);
+
+        routineRepository.save(
+                routine.updatePriority(updateRoutinePriorityRequest.getPriority())
+        );
+    }
+
+    @Override
     public void checkRoutine(String token, Long routineId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Routine routine = routineRepository.findByRoutineId(routineId)
+        Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
 
@@ -218,15 +222,22 @@ public class RoutineServiceImpl implements RoutineService{
         routineRepository.save(
                 routine.updateSucceed()
         );
+
+        achieveUtil.achievePlannerNum(
+                routineRepository.countByIsSucceedAndEmail(true, user.getEmail()),
+                userLevel,
+                false,
+                true
+        );
     }
 
     @Override
     @Transactional
     public void deleteRoutine(String token, Long routineId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Routine routine = routineRepository.findByRoutineId(routineId)
+        Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         routineRepository.deleteByRoutineId(routine.getRoutineId());

@@ -1,13 +1,16 @@
 package online.planner.online_planner.entity.device_token.repository;
 
 import online.planner.online_planner.entity.device_token.DeviceToken;
+import online.planner.online_planner.entity.device_token.DeviceTokenId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface DeviceTokenRepository extends JpaRepository<DeviceToken, String> {
+public interface DeviceTokenRepository extends JpaRepository<DeviceToken, DeviceTokenId> {
     boolean existsByDeviceTokenAndEmail(String deviceToken, String email);
-    List<DeviceToken> findAllByEmail(String email);
+    Optional<DeviceToken> findByEmailAndDeviceToken(String email, String deviceToken);
+    void deleteByEmailAndDeviceToken(String email, String deviceToken);
 }

@@ -2,6 +2,7 @@ package online.planner.online_planner.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
+import online.planner.online_planner.entity.planner.enums.Priority;
 import online.planner.online_planner.entity.routine_date.enums.Weeks;
 
 import javax.validation.constraints.NotBlank;
@@ -25,4 +26,5 @@ public class PostRoutineRequest {
     private LocalTime endTime;
     @NotBlank(message = "push is empty")
     private boolean isPushed;
+    private Priority priority;
 }

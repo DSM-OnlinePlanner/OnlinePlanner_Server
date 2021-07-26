@@ -3,6 +3,7 @@ package online.planner.online_planner.entity.planner;
 import lombok.*;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.exp.enums.ExpTypeConvertor;
+import online.planner.online_planner.entity.planner.enums.Priority;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -53,6 +54,12 @@ public class Planner {
 
     public Planner updatePush() {
         this.isPushed = !isPushed;
+
+        return this;
+    }
+
+    public Planner updatePriority(Integer priority) {
+        this.priority = priority;
 
         return this;
     }

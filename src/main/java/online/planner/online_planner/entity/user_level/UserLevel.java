@@ -23,16 +23,18 @@ public class UserLevel {
 
     private Integer userLv;
 
-    public UserLevel levelUp(Integer userExp, Integer userLv) {
+    public void levelUp(Integer userExp, Integer userLv) {
         this.userLv = userLv;
         this.userExp = userExp;
-
-        return this;
     }
 
     public UserLevel updateTier(TierLevel tierLevel) {
         this.tierLevel = tierLevel;
 
         return this;
+    }
+
+    public void plusExp(Integer userExp) {
+        this.userExp = userExp;
     }
 }

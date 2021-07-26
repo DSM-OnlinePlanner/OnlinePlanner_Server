@@ -70,6 +70,9 @@ public class RoutineController {
         routineService.updateIsPushed(token, routineId);
     }
 
+    @PutMapping("/priority/{routineId}")
+    
+
     @DeleteMapping("/{routineId}")
     public void deleteRoutine(@RequestHeader("Authorization") String token,
                               @PathVariable Long routineId) {

@@ -36,24 +36,6 @@ public class GoalServiceImpl implements GoalService {
     private final JwtProvider jwtProvider;
     private final UserLevelUtil userLevelUtil;
 
-    private List<GoalResponse> setGoalList(List<Goal> goals) {
-        List<GoalResponse> goalResponses = new ArrayList<>();
-
-        for(Goal goal : goals) {
-            goalResponses.add(
-                    GoalResponse.builder()
-                            .goalDate(goal.getGoalDate())
-                            .goalId(goal.getGoalId())
-                            .goal(goal.getGoal())
-                            .goalType(goal.getGoalType())
-                            .isAchieve(goal.isAchieve())
-                            .build()
-            );
-        }
-
-        return goalResponses;
-    }
-
     @Override
     public void writeGoal(String token, PostGoalRequest postGoalRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
@@ -82,28 +64,29 @@ public class GoalServiceImpl implements GoalService {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
+        YearMonth yearMonth = YearMonth.from(date);
         LocalDate weekStart = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
         LocalDate weekEnd = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 7);
         LocalDate yearStart = YearMonth.of(date.getYear(), 1).atDay(1);
         LocalDate yearEnd = YearMonth.of(date.getYear(), 12).atEndOfMonth();
-        LocalDate monthStart = YearMonth.now().atDay(1);
-        LocalDate monthEnd = YearMonth.now().atEndOfMonth();
+        LocalDate monthStart = yearMonth.atDay(1);
+        LocalDate monthEnd = yearMonth.atEndOfMonth();
 
-        List<Goal> weekGoal = goalRepository
+        List<GoalResponse> weekGoal = goalRepository
                 .findAllByEmailAndGoalTypeAndGoalDateGreaterThanEqualAndGoalDateLessThanEqualOrderByGoalDateAsc(
                         user.getEmail(),
                         GoalType.WEEK,
                         weekStart,
                         weekEnd
                 );
-        List<Goal> monthGoal = goalRepository
+        List<GoalResponse> monthGoal = goalRepository
                 .findAllByEmailAndGoalTypeAndGoalDateGreaterThanEqualAndGoalDateLessThanEqualOrderByGoalDateAsc(
                         user.getEmail(),
                         GoalType.MONTH,
                         monthStart,
                         monthEnd
                 );
-        List<Goal> yearGoal = goalRepository
+        List<GoalResponse> yearGoal = goalRepository
                 .findAllByEmailAndGoalTypeAndGoalDateGreaterThanEqualAndGoalDateLessThanEqualOrderByGoalDateAsc(
                         user.getEmail(),
                         GoalType.YEAR,
@@ -111,18 +94,10 @@ public class GoalServiceImpl implements GoalService {
                         yearEnd
                 );
 
-        List<GoalResponse> weekGoals;
-        List<GoalResponse> monthGoals;
-        List<GoalResponse> yearGoals;
-
-        weekGoals = setGoalList(weekGoal);
-        monthGoals = setGoalList(monthGoal);
-        yearGoals = setGoalList(yearGoal);
-
         return GoalResponses.builder()
-                .weekGoals(weekGoals)
-                .monthGoals(monthGoals)
-                .yearGoals(yearGoals)
+                .weekGoals(weekGoal)
+                .monthGoals(monthGoal)
+                .yearGoals(yearGoal)
                 .build();
     }
 

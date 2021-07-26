@@ -11,11 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlannerRepository extends JpaRepository<Planner, Long> {
-    Page<Planner> findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(String email, LocalDate startDate, LocalDate endDate, Pageable pageable);
-    List<Planner> findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrStartDateGreaterThanEqualAndEndDateLessThanEqualOrderByStartDateAsc(String email, LocalDate startDate, LocalDate endDate, LocalDate startDate2, LocalDate endDate2);
-    void deleteByPlannerId(long plannerId);
-    Optional<Planner> findByPlannerId(Long plannerId);
-    int countAllByIsSuccessAndEmail(Boolean isSuccess, String email);
-    List<Planner> findAllByIsSuccessAndStartTimeAfterAndEndTimeBefore(Boolean isSuccess, LocalTime startTime, LocalTime endTime);
-    int countDistinctByEmailAndIsSuccessAndStartTimeAfterAndEndTimeBefore(String email, Boolean isSuccess, LocalTime startTime, LocalTime endTime);
+    <T> Page<T> findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(String email, LocalDate startDate, LocalDate endDate, Pageable pageable);
+    void deleteByPlannerIdAndEmail(long plannerId, String email);
+    Optional<Planner> findByPlannerIdAndEmail(Long plannerId, String email);
+    <T> List<T> findAllByEmailAndStartDateGreaterThanEqualOrStartDateLessThanEqualAndEndDateGreaterThanEqualOrEndDateLessThanEqual(String email, LocalDate startDate, LocalDate startDate2, LocalDate endDate, LocalDate endDate2);
+    int countByIsSuccessAndEmail(Boolean isSuccess, String email);
+    int countByEmail(String email);
 }

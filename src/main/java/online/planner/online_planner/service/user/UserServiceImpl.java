@@ -1,6 +1,11 @@
 package online.planner.online_planner.service.user;
 
 import lombok.RequiredArgsConstructor;
+import online.planner.online_planner.entity.achivement.Achievement;
+import online.planner.online_planner.entity.achivement.enums.Achieve;
+import online.planner.online_planner.entity.achivement.repository.AchievementRepository;
+import online.planner.online_planner.entity.device_token.DeviceToken;
+import online.planner.online_planner.entity.device_token.repository.DeviceTokenRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
@@ -13,6 +18,7 @@ import online.planner.online_planner.util.AES256;
 import online.planner.online_planner.util.JwtProvider;
 import online.planner.online_planner.util.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Stream;
 
@@ -22,6 +28,8 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final UserLevelRepository userLevelRepository;
+    private final DeviceTokenRepository deviceTokenRepository;
+    private final AchievementRepository achievementRepository;
 
     private final JwtProvider jwtProvider;
     private final AES256 aes256;
@@ -52,6 +60,28 @@ public class UserServiceImpl implements UserService{
                         .userLv(1)
                         .build()
         );
+
+        for(Achieve achieve : Achieve.values()) {
+            achievementRepository.save(
+                    Achievement.builder()
+                            .achieve(achieve)
+                            .email(mine.getEmail())
+                            .isSucceed(false)
+                            .build()
+            );
+        }
+    }
+
+    @Override
+    @Transactional
+    public void logout(String token, String deviceToken) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(RuntimeException::new);
+
+        deviceTokenRepository.findByEmailAndDeviceToken(user.getEmail(), deviceToken)
+                .orElseThrow(RuntimeException::new);
+
+        deviceTokenRepository.deleteByEmailAndDeviceToken(user.getEmail(), deviceToken);
     }
 
     @Override

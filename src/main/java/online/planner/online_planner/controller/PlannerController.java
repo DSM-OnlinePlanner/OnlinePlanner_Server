@@ -72,6 +72,20 @@ public class PlannerController {
         plannerService.updatePlannerPushed(token, plannerId);
     }
 
+    @PutMapping("/priority/{plannerId}")
+    public void updatePlannerPriority(@RequestHeader("Authorization") String token,
+                                      @RequestHeader UpdatePlannerPriorityRequest updatePlannerPriorityRequest,
+                                      @PathVariable Long plannerId) {
+        plannerService.updatePriority(token, updatePlannerPriorityRequest, plannerId);
+    }
+
+    @PutMapping("/late/{plannerId}")
+    public void latePlanner(@RequestHeader("Authorization") String token,
+                            @RequestBody LatePlannerRequest latePlannerRequest,
+                            @PathVariable Long plannerId) {
+        plannerService.latePlanner(token, latePlannerRequest, plannerId);
+    }
+
     @DeleteMapping("/{plannerId}")
     public void deletePlanner(@RequestHeader("Authorization") String token,
                               @PathVariable Long plannerId) {

@@ -3,6 +3,7 @@ package online.planner.online_planner.payload.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
+import online.planner.online_planner.entity.planner.enums.Priority;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -19,5 +20,6 @@ public class RoutineResponse {
     private LocalTime endTime;
     private Boolean isSuccess;
     private Boolean isPushed;
+    private Priority priority;
     private List<String> dayOfWeeks;
 }

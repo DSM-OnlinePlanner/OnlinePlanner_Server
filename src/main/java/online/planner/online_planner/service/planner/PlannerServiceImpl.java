@@ -3,8 +3,6 @@ package online.planner.online_planner.service.planner;
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.planner.Planner;
-import online.planner.online_planner.entity.planner.enums.Priority;
-import online.planner.online_planner.entity.planner.enums.Want;
 import online.planner.online_planner.entity.planner.repository.PlannerRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
@@ -12,17 +10,13 @@ import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
-import online.planner.online_planner.util.JwtProvider;
-import online.planner.online_planner.util.NotNull;
-import online.planner.online_planner.util.UserLevelUtil;
+import online.planner.online_planner.util.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -34,44 +28,19 @@ public class PlannerServiceImpl implements PlannerService{
 
     private final JwtProvider jwtProvider;
     private final UserLevelUtil userLevelUtil;
+    private final NotNull notNull;
+    private final ConverterPlanner converterPlanner;
+    private final AchieveUtil achieveUtil;
 
     public static final Integer MAX_PLANNER_PAGE = 10;
-
-    private final NotNull notNull;
-
-    //convert enum by Integer
-    private Want setWant(Planner planner) {
-        Integer wantNum = planner.getPriority() % 5;
-        if(wantNum.equals(0))
-            wantNum = 5;
-
-        Integer nWant = wantNum;
-
-        return Stream.of(Want.values())
-                .filter(want1 -> want1.getWant().equals(nWant))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-    }
-
-    private Priority setPriority(Planner planner) {
-        Integer wantNum = planner.getPriority() % 5;
-        if(wantNum.equals(0))
-            wantNum = 5;
-
-        Integer pri = planner.getPriority() - wantNum;
-
-        return Stream.of(Priority.values())
-                .filter(priority1 -> priority1.getPriority().equals(pri))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
-    }
 
     @Override
     public void postPlanner(String token,PlannerRequest plannerRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        System.out.println(plannerRequest.getEndTime());
+        UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
+                .orElseThrow(RuntimeException::new);
 
         plannerRepository.save(
                 Planner.builder()
@@ -88,6 +57,13 @@ public class PlannerServiceImpl implements PlannerService{
                 .isPushed(plannerRequest.isPushed())
                 .build()
         );
+
+        achieveUtil.achievePlannerNum(
+                plannerRepository.countByEmail(user.getEmail()),
+                userLevel,
+                true,
+                false
+        );
     }
 
     @Override
@@ -95,32 +71,15 @@ public class PlannerServiceImpl implements PlannerService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Page<Planner> planners = plannerRepository
+        Page<PlannerResponse> planners = plannerRepository
                 .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
                         plannerReadRequest.getDate(),
                         plannerReadRequest.getDate(),
                         PageRequest.of(pageNum, MAX_PLANNER_PAGE)
                 );
-        List<PlannerResponse> responses = new ArrayList<>();
 
-        for(Planner planner : planners) {
-            PlannerResponse plannerResponse = PlannerResponse.builder()
-                    .plannerId(planner.getPlannerId())
-                    .title(planner.getTitle())
-                    .content(planner.getContent())
-                    .startTime(planner.getStartTime())
-                    .endTime(planner.getEndTime())
-                    .startDate(planner.getStartDate())
-                    .endDate(planner.getEndDate())
-                    .isSuccess(planner.getIsSuccess())
-                    .priority(setPriority(planner))
-                    .want(setWant(planner))
-                    .build();
-
-            responses.add(plannerResponse);
-        }
-        return responses;
+        return planners.toList();
     }
 
     @Override
@@ -128,32 +87,15 @@ public class PlannerServiceImpl implements PlannerService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Page<Planner> planners = plannerRepository
+        Page<PlannerResponse> planners = plannerRepository
                 .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
                         plannerReadRequest.getDate(),
                         plannerReadRequest.getDate(),
                         PageRequest.of(0, 3)
                 );
-        List<PlannerResponse> plannerResponses = new ArrayList<>();
 
-        for(Planner planner : planners) {
-            PlannerResponse plannerResponse = PlannerResponse.builder()
-                    .plannerId(planner.getPlannerId())
-                    .title(planner.getTitle())
-                    .content(planner.getContent())
-                    .want(setWant(planner))
-                    .priority(setPriority(planner))
-                    .startDate(planner.getStartDate())
-                    .endDate(planner.getEndDate())
-                    .startTime(planner.getStartTime())
-                    .endTime(planner.getEndTime())
-                    .isSuccess(planner.getIsSuccess())
-                    .build();
-            plannerResponses.add(plannerResponse);
-        }
-
-        return plannerResponses;
+        return planners.toList();
     }
 
     @Override
@@ -161,13 +103,20 @@ public class PlannerServiceImpl implements PlannerService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Planner planner = plannerRepository.findByPlannerId(plannerId)
+        Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         userLevelUtil.userLevelManagement(userLevel, planner.getExpType());
+
+        achieveUtil.achievePlannerNum(
+                plannerRepository.countByIsSuccessAndEmail(true, user.getEmail()),
+                userLevel,
+                false,
+                false
+        );
 
         plannerRepository.save(
                 planner.checkSuccess()
@@ -176,10 +125,10 @@ public class PlannerServiceImpl implements PlannerService{
 
     @Override
     public void updatePlannerTitleAndContent(String token, UpdateTitleAndContentRequest updateTitleAndContentRequest, Long plannerId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Planner planner = plannerRepository.findByPlannerId(plannerId)
+        Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         notNull.setIfNotNull(planner::setTitle, updateTitleAndContentRequest.getTitle());
@@ -190,10 +139,10 @@ public class PlannerServiceImpl implements PlannerService{
 
     @Override
     public void updatePlannerDate(String token, UpdateDateRequest updateDateRequest, Long plannerId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Planner planner = plannerRepository.findByPlannerId(plannerId)
+        Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         notNull.setIfNotNull(planner::setStartDate, updateDateRequest.getStartDate());
@@ -204,10 +153,10 @@ public class PlannerServiceImpl implements PlannerService{
 
     @Override
     public void updatePlannerTime(String token, UpdateTimeRequest updateTimeRequest, Long plannerId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user =userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Planner planner = plannerRepository.findByPlannerId(plannerId)
+        Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         notNull.setIfNotNull(planner::setStartTime, updateTimeRequest.getStartTime());
@@ -218,23 +167,52 @@ public class PlannerServiceImpl implements PlannerService{
 
     @Override
     public void updatePlannerPushed(String token, Long plannerId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Planner planner = plannerRepository.findByPlannerId(plannerId)
+        Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
         plannerRepository.save(planner.updatePush());
     }
 
     @Override
+    public void updatePriority(String token, UpdatePlannerPriorityRequest updatePlannerPriorityRequest, Long plannerId) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(RuntimeException::new);
+
+        Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
+                .orElseThrow(RuntimeException::new);
+
+        plannerRepository.save(planner.updatePriority(
+                updatePlannerPriorityRequest.getPriority().getPriority() + updatePlannerPriorityRequest.getWant().getWant())
+        );
+    }
+
+    @Override
+    public void latePlanner(String token, LatePlannerRequest latePlannerRequest, Long plannerId) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(RuntimeException::new);
+
+        Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
+                .orElseThrow(RuntimeException::new);
+
+        notNull.setIfNotNull(planner::setStartDate, latePlannerRequest.getStartDate());
+        notNull.setIfNotNull(planner::setEndDate, latePlannerRequest.getEndDate());
+        notNull.setIfNotNull(planner::setStartTime, latePlannerRequest.getStartTime());
+        notNull.setIfNotNull(planner::setEndTime, latePlannerRequest.getEndTime());
+
+        plannerRepository.save(planner);
+    }
+
+    @Override
     public void deletePlanner(String token, Long plannerId) {
-        userRepository.findByEmail(jwtProvider.getEmail(token))
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        plannerRepository.findByPlannerId(plannerId)
+        plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
-        plannerRepository.deleteByPlannerId(plannerId);
+        plannerRepository.deleteByPlannerIdAndEmail(plannerId, user.getEmail());
     }
 }

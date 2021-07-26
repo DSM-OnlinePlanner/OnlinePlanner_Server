@@ -36,23 +36,6 @@ public class MemoServiceImpl implements MemoService {
     private final JwtProvider jwtProvider;
     private final UserLevelUtil userLevelUtil;
 
-    private List<MemoResponse> setMemoList(List<Memo> memos) {
-        List<MemoResponse> memoResponses = new ArrayList<>();
-
-        for(Memo memo : memos) {
-            memoResponses.add(
-                    MemoResponse.builder()
-                            .memoId(memo.getMemoId())
-                            .memoType(memo.getMemoType())
-                            .memo(memo.getContent())
-                            .memoAt(memo.getMemoAt())
-                            .build()
-            );
-        }
-
-        return memoResponses;
-    }
-
     @Override
     public void writeMemo(String token, PostMemoRequest postMemoRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
@@ -84,15 +67,15 @@ public class MemoServiceImpl implements MemoService {
         LocalDate monthStart = YearMonth.now().atDay(1);
         LocalDate monthEnd = YearMonth.now().atEndOfMonth();
 
-        List<Memo> todayMemos = memoRepository.findAllByEmailAndMemoTypeAndMemoAtOrderByMemoAtAsc(user.getEmail(), MemoType.TODAY, date);
-        List<Memo> weekMemos = memoRepository
+        List<MemoResponse> todayMemos = memoRepository.findAllByEmailAndMemoTypeAndMemoAtOrderByMemoAtAsc(user.getEmail(), MemoType.TODAY, date);
+        List<MemoResponse> weekMemos = memoRepository
                 .findAllByEmailAndMemoTypeAndMemoAtLessThanEqualAndMemoAtGreaterThanEqual(
                         user.getEmail(),
                         MemoType.WEEK,
                         weekEnd,
                         weekStart
                 );
-        List<Memo> monthMemos = memoRepository
+        List<MemoResponse> monthMemos = memoRepository
                 .findAllByEmailAndMemoTypeAndMemoAtLessThanEqualAndMemoAtGreaterThanEqual(
                         user.getEmail(),
                         MemoType.MONTH,
@@ -100,18 +83,10 @@ public class MemoServiceImpl implements MemoService {
                         monthStart
                 );
 
-        List<MemoResponse> todayMemoResponse;
-        List<MemoResponse> monthMemoResponse;
-        List<MemoResponse> weekMemoResponse;
-
-        todayMemoResponse = setMemoList(todayMemos);
-        monthMemoResponse = setMemoList(monthMemos);
-        weekMemoResponse = setMemoList(weekMemos);
-
         return MemoResponses.builder()
-                .todayMemo(todayMemoResponse)
-                .weekMemo(weekMemoResponse)
-                .monthMemo(monthMemoResponse)
+                .todayMemo(todayMemos)
+                .weekMemo(weekMemos)
+                .monthMemo(monthMemos)
                 .build();
     }
 
