@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.goal.enums.GoalType;
 
 import javax.persistence.Entity;
@@ -17,11 +18,29 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Goal {
     @Id
+    private Long goalId;
+
     private String email;
 
     private String goal;
 
     private GoalType goalType;
 
-    private LocalDate endDate;
+    private LocalDate goalDate;
+
+    private boolean isAchieve;
+
+    private ExpType expType;
+
+    public Goal updateGoal(String goal) {
+        this.goal = goal;
+
+        return this;
+    }
+
+    public Goal updateAchieve() {
+        this.isAchieve = !isAchieve;
+
+        return this;
+    }
 }

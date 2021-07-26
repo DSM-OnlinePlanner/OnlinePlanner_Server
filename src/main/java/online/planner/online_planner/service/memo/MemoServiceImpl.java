@@ -1,23 +1,25 @@
 package online.planner.online_planner.service.memo;
 
 import lombok.RequiredArgsConstructor;
+import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.memo.Memo;
 import online.planner.online_planner.entity.memo.enums.MemoType;
 import online.planner.online_planner.entity.memo.repository.MemoRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
+import online.planner.online_planner.entity.user_level.UserLevel;
+import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
 import online.planner.online_planner.payload.request.PostMemoRequest;
 import online.planner.online_planner.payload.request.UpdateMemoRequest;
 import online.planner.online_planner.payload.response.MemoResponse;
 import online.planner.online_planner.payload.response.MemoResponses;
 import online.planner.online_planner.util.JwtProvider;
-import org.springframework.scheduling.annotation.Async;
+import online.planner.online_planner.util.UserLevelUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +31,38 @@ public class MemoServiceImpl implements MemoService {
 
     private final MemoRepository memoRepository;
     private final UserRepository userRepository;
+    private final UserLevelRepository userLevelRepository;
 
     private final JwtProvider jwtProvider;
+    private final UserLevelUtil userLevelUtil;
+
+    private List<MemoResponse> setMemoList(List<Memo> memos) {
+        List<MemoResponse> memoResponses = new ArrayList<>();
+
+        for(Memo memo : memos) {
+            memoResponses.add(
+                    MemoResponse.builder()
+                            .memoId(memo.getMemoId())
+                            .memoType(memo.getMemoType())
+                            .memo(memo.getContent())
+                            .memoAt(memo.getMemoAt())
+                            .build()
+            );
+        }
+
+        return memoResponses;
+    }
 
     @Override
     public void writeMemo(String token, PostMemoRequest postMemoRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
+
+        UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
+                .orElseThrow(RuntimeException::new);
+
+        if(memoRepository.countByEmail(user.getEmail()) <= 0)
+            userLevelUtil.userLevelManagement(userLevel, ExpType.FIRST_MEMO);
 
         memoRepository.save(
                 Memo.builder()
@@ -73,40 +100,13 @@ public class MemoServiceImpl implements MemoService {
                         monthStart
                 );
 
-        List<MemoResponse> todayMemoResponse = new ArrayList<>();
-        List<MemoResponse> weekMemoResponse = new ArrayList<>();
-        List<MemoResponse> monthMemoResponse = new ArrayList<>();
+        List<MemoResponse> todayMemoResponse;
+        List<MemoResponse> monthMemoResponse;
+        List<MemoResponse> weekMemoResponse;
 
-        for(Memo memo : todayMemos) {
-            todayMemoResponse.add(
-                    MemoResponse.builder()
-                            .memoId(memo.getMemoId())
-                            .memoType(memo.getMemoType())
-                            .memo(memo.getContent())
-                            .memoAt(memo.getMemoAt())
-                            .build()
-            );
-        }
-        for(Memo memo : weekMemos) {
-            weekMemoResponse.add(
-                    MemoResponse.builder()
-                            .memoId(memo.getMemoId())
-                            .memo(memo.getContent())
-                            .memoAt(memo.getMemoAt())
-                            .memoType(memo.getMemoType())
-                            .build()
-            );
-        }
-        for(Memo memo : monthMemos) {
-            monthMemoResponse.add(
-                    MemoResponse.builder()
-                            .memoId(memo.getMemoId())
-                            .memoType(memo.getMemoType())
-                            .memoAt(memo.getMemoAt())
-                            .memo(memo.getContent())
-                            .build()
-            );
-        }
+        todayMemoResponse = setMemoList(todayMemos);
+        monthMemoResponse = setMemoList(monthMemos);
+        weekMemoResponse = setMemoList(weekMemos);
 
         return MemoResponses.builder()
                 .todayMemo(todayMemoResponse)
@@ -120,14 +120,11 @@ public class MemoServiceImpl implements MemoService {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Memo memo = memoRepository.findByMemoId(memoId)
+        Memo memo = memoRepository.findByMemoIdAndEmail(memoId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
-        if(!memo.getEmail().equals(user.getEmail()))
-            throw new RuntimeException("not my memo");
-
         memoRepository.save(
-                memo.updateMemo(updateMemoRequest.getUpdateMsg())
+                memo.updateMemo(updateMemoRequest.getUpdateMemo())
         );
     }
 
@@ -137,12 +134,9 @@ public class MemoServiceImpl implements MemoService {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(RuntimeException::new);
 
-        Memo memo = memoRepository.findByMemoId(memoId)
+        memoRepository.findByMemoIdAndEmail(memoId, user.getEmail())
                 .orElseThrow(RuntimeException::new);
 
-        if(!user.getEmail().equals(memo.getEmail()))
-            throw new RuntimeException("not my memo");
-
-        memoRepository.deleteByMemoId(memoId);
+        memoRepository.deleteByMemoIdAndEmail(memoId, user.getEmail());
     }
 }

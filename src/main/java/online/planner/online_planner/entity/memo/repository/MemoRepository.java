@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface MemoRepository extends JpaRepository<Memo, Long> {
     List<Memo> findAllByEmailAndMemoTypeAndMemoAtOrderByMemoAtAsc(String email, MemoType memoType, LocalDate memoAt);
     List<Memo> findAllByEmailAndMemoTypeAndMemoAtLessThanEqualAndMemoAtGreaterThanEqual(String email, MemoType memoType, LocalDate memoAt, LocalDate memoAt2);
-    Optional<Memo> findByMemoId(long memoId);
-    void deleteByMemoId(long memoId);
+    Optional<Memo> findByMemoIdAndEmail(long memoId, String email);
+    void deleteByMemoIdAndEmail(long memoId, String email);
+    int countByEmail(String email);
 }
