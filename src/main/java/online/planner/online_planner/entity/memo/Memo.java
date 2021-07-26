@@ -28,5 +28,11 @@ public class Memo {
 
     private MemoType memoType;
 
-    private LocalDate localDate;
+    private LocalDate memoAt;
+
+    public Memo updateMemo(String content) {
+        this.content = content;
+
+        return this;
+    }
 }
