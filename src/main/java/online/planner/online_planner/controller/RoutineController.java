@@ -1,14 +1,12 @@
 package online.planner.online_planner.controller;
 
 import lombok.RequiredArgsConstructor;
-import online.planner.online_planner.payload.request.PostRoutineRequest;
-import online.planner.online_planner.payload.request.UpdateDayOfWeekRequest;
-import online.planner.online_planner.payload.request.UpdateTimeRequest;
-import online.planner.online_planner.payload.request.UpdateTitleAndContentRequest;
+import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.RoutineResponse;
 import online.planner.online_planner.service.routine.RoutineService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Entity;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -71,7 +69,11 @@ public class RoutineController {
     }
 
     @PutMapping("/priority/{routineId}")
-    
+    public void updateRoutinePriority(@RequestHeader("Authorization") String token,
+                                      @PathVariable Long routineId,
+                                      @RequestBody UpdateRoutinePriorityRequest updateRoutinePriorityRequest) {
+        routineService.updatePriority(token, updateRoutinePriorityRequest, routineId);
+    }
 
     @DeleteMapping("/{routineId}")
     public void deleteRoutine(@RequestHeader("Authorization") String token,
