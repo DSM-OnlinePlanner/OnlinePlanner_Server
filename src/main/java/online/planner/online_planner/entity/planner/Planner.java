@@ -46,6 +46,8 @@ public class Planner {
 
     private Boolean isPushed;
 
+    private LocalDate writeAt;
+
     public Planner checkSuccess() {
         this.isSuccess = !isSuccess;
 

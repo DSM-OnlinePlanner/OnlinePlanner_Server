@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
@@ -42,6 +43,8 @@ public class Routine {
     private Boolean isSucceed;
 
     private Boolean isPushed;
+
+    private LocalDate writeAt;
 
     public Routine updateSucceed() {
         this.isSucceed = !isSucceed;

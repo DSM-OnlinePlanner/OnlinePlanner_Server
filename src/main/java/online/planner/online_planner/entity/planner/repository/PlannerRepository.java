@@ -17,4 +17,6 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
     <T> List<T> findAllByEmailAndStartDateGreaterThanEqualOrStartDateLessThanEqualAndEndDateGreaterThanEqualOrEndDateLessThanEqual(String email, LocalDate startDate, LocalDate startDate2, LocalDate endDate, LocalDate endDate2);
     int countByIsSuccessAndEmail(Boolean isSuccess, String email);
     int countByEmail(String email);
+    int countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, LocalDate writeAt, LocalDate writeAt2);
+    int countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, Boolean isSuccess, LocalDate writeAt, LocalDate writeAt2);
 }

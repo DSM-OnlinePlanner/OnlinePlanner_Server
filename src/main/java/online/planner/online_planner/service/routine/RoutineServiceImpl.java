@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,7 @@ public class RoutineServiceImpl implements RoutineService{
                         .startTime(postRoutineRequest.getStartTime())
                         .expType(ExpType.ROUTINE)
                         .isPushed(postRoutineRequest.isPushed())
+                        .writeAt(LocalDate.now())
                         .isSucceed(false)
                         .build()
         );

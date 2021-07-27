@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class PlannerServiceImpl implements PlannerService{
                 .priority(plannerRequest.getPriority().getPriority() + plannerRequest.getWant().getWant())
                 .expType(ExpType.PLANNER)
                 .isPushed(plannerRequest.isPushed())
+                .writeAt(LocalDate.now())
                 .build()
         );
 
