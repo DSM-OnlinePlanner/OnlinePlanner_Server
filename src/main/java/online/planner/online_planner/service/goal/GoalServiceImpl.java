@@ -9,6 +9,9 @@ import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
+import online.planner.online_planner.error.exceptions.GoalNotFoundException;
+import online.planner.online_planner.error.exceptions.UserLevelNotFoundException;
+import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.request.PostGoalRequest;
 import online.planner.online_planner.payload.request.UpdateGoalRequest;
 import online.planner.online_planner.payload.response.GoalResponse;
@@ -39,10 +42,10 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public void writeGoal(String token, PostGoalRequest postGoalRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserLevelNotFoundException::new);
 
         if(goalRepository.countByEmail(user.getEmail()) <= 0)
             userLevelUtil.userLevelManagement(userLevel, ExpType.FIRST_GOAL);
@@ -62,7 +65,7 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public GoalResponses readGoal(String token, LocalDate date) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         YearMonth yearMonth = YearMonth.from(date);
         LocalDate weekStart = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
@@ -104,10 +107,10 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public void updateGoal(String token, Long goalId, UpdateGoalRequest updateGoalRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Goal goal = goalRepository.findByGoalIdAndEmail(goalId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(GoalNotFoundException::new);
 
         goalRepository.save(
                 goal.updateGoal(updateGoalRequest.getUpdateGoal())
@@ -118,7 +121,7 @@ public class GoalServiceImpl implements GoalService {
     @Transactional
     public void deleteGoal(String token, Long goalId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         goalRepository.deleteByGoalIdAndEmail(goalId, user.getEmail());
     }
@@ -126,13 +129,13 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public void achieveGoal(String token, Long goalId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserLevelNotFoundException::new);
 
         Goal goal = goalRepository.findByGoalIdAndEmail(goalId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(GoalNotFoundException::new);
 
         userLevelUtil.userLevelManagement(userLevel, goal.getExpType());
 

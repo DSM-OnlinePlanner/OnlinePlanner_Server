@@ -5,6 +5,7 @@ import online.planner.online_planner.entity.planner.Planner;
 import online.planner.online_planner.entity.planner.repository.PlannerRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
+import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.response.CalenderResponse;
 import online.planner.online_planner.util.ConverterPlanner;
 import online.planner.online_planner.util.JwtProvider;
@@ -28,7 +29,7 @@ public class CalenderServiceImpl implements CalendarService {
     @Override
     public List<CalenderResponse> getCalenders(String token, LocalDate date) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         YearMonth yearMonth = YearMonth.from(date);
         LocalDate startDate = yearMonth.atDay(1);

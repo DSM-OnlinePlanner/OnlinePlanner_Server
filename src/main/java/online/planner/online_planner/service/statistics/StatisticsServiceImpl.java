@@ -5,6 +5,7 @@ import online.planner.online_planner.entity.planner.repository.PlannerRepository
 import online.planner.online_planner.entity.routine.repository.RoutineRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
+import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.response.StatisticsResponse;
 import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public StatisticsResponse getMyStatistics(String token) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         LocalDate today = LocalDate.now();
         LocalDate weekStart = today.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);

@@ -1,6 +1,7 @@
 package online.planner.online_planner.util;
 
 import lombok.SneakyThrows;
+import online.planner.online_planner.error.exceptions.DecodeFailedException;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public class AES256 {
 
     @SneakyThrows
     public AES256() {
-        String secretKey = "asdfasdfasdfasdfasdfasdfasdfasdfadfsadfadfadfafasldkjhflaksdhflakhsjdflaksdh";
+        String secretKey = System.getenv("AES_KEY");
         iv = secretKey.substring(0, 16);
 
         byte[] keyBytes = new byte[16];
@@ -60,7 +61,7 @@ public class AES256 {
 
             return new String(c.doFinal(byteStr), StandardCharsets.UTF_8);
         }catch (Exception e) {
-            throw new RuntimeException();
+            throw new DecodeFailedException();
         }
     }
 }

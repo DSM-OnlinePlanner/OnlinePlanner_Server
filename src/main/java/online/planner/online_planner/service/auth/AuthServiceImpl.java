@@ -7,6 +7,10 @@ import online.planner.online_planner.entity.token.Token;
 import online.planner.online_planner.entity.token.repository.TokenRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
+import online.planner.online_planner.error.exceptions.InvalidTokenException;
+import online.planner.online_planner.error.exceptions.IsNotRefreshTokenException;
+import online.planner.online_planner.error.exceptions.LoginFailedException;
+import online.planner.online_planner.error.exceptions.RefreshTokenNotFoundException;
 import online.planner.online_planner.payload.request.NDSignInRequest;
 import online.planner.online_planner.payload.request.SignInRequest;
 import online.planner.online_planner.payload.response.TokenResponse;
@@ -59,7 +63,7 @@ public class AuthServiceImpl implements AuthService{
                             .accessToken(accessToken)
                             .refreshToken(refreshToken)
                             .build();
-                }).orElseThrow(RuntimeException::new);
+                }).orElseThrow(LoginFailedException::new);
     }
 
     @Override
@@ -87,18 +91,18 @@ public class AuthServiceImpl implements AuthService{
                             .refreshToken(refreshToken)
                             .build();
                 })
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(LoginFailedException::new);
     }
 
     @Override
     @Transactional
     public TokenResponse refreshToken(String refreshToken) {
         if(!jwtProvider.isRefreshToken(refreshToken))
-            throw new RuntimeException();
+            throw new IsNotRefreshTokenException();
 
 
         if(!jwtProvider.validateToken(refreshToken))
-            throw new RuntimeException();
+            throw new InvalidTokenException();
 
 
         return tokenRepository.findByRefreshToken(refreshToken)
@@ -113,6 +117,6 @@ public class AuthServiceImpl implements AuthService{
                             .accessToken(accessToken)
                             .refreshToken(token.getRefreshToken())
                             .build();
-                }).orElseThrow(RuntimeException::new);
+                }).orElseThrow(RefreshTokenNotFoundException::new);
     }
 }

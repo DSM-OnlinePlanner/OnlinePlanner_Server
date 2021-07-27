@@ -9,6 +9,9 @@ import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
+import online.planner.online_planner.error.exceptions.MemoNotFoundException;
+import online.planner.online_planner.error.exceptions.UserLevelNotFoundException;
+import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.request.PostMemoRequest;
 import online.planner.online_planner.payload.request.UpdateMemoRequest;
 import online.planner.online_planner.payload.response.MemoResponse;
@@ -39,10 +42,10 @@ public class MemoServiceImpl implements MemoService {
     @Override
     public void writeMemo(String token, PostMemoRequest postMemoRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserLevelNotFoundException::new);
 
         if(memoRepository.countByEmail(user.getEmail()) <= 0)
             userLevelUtil.userLevelManagement(userLevel, ExpType.FIRST_MEMO);
@@ -60,7 +63,7 @@ public class MemoServiceImpl implements MemoService {
     @Override
     public MemoResponses readMemo(String token, LocalDate date) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         LocalDate weekStart = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
         LocalDate weekEnd = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 7);
@@ -93,10 +96,10 @@ public class MemoServiceImpl implements MemoService {
     @Override
     public void updateMemo(String token, Long memoId, UpdateMemoRequest updateMemoRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Memo memo = memoRepository.findByMemoIdAndEmail(memoId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(MemoNotFoundException::new);
 
         memoRepository.save(
                 memo.updateMemo(updateMemoRequest.getUpdateMemo())
@@ -107,10 +110,10 @@ public class MemoServiceImpl implements MemoService {
     @Transactional
     public void deleteMemo(String token, Long memoId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         memoRepository.findByMemoIdAndEmail(memoId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(MemoNotFoundException::new);
 
         memoRepository.deleteByMemoIdAndEmail(memoId, user.getEmail());
     }

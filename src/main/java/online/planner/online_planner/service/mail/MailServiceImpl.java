@@ -5,6 +5,9 @@ import lombok.SneakyThrows;
 import online.planner.online_planner.entity.auth_code.AuthCode;
 import online.planner.online_planner.entity.auth_code.repository.AuthCodeRepository;
 import online.planner.online_planner.entity.user.repository.UserRepository;
+import online.planner.online_planner.error.exceptions.AlreadyMailSendException;
+import online.planner.online_planner.error.exceptions.AuthCodeNotFoundException;
+import online.planner.online_planner.error.exceptions.EmailBadRequestException;
 import online.planner.online_planner.util.AES256;
 import org.springframework.mail.MailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -58,9 +61,9 @@ public class MailServiceImpl implements MailService{
     @Transactional
     public void send(String email, String name) {
         if(email.isEmpty()) {
-            throw new RuntimeException();
+            throw new EmailBadRequestException();
         }else if(checkSameUser(email)) {
-            throw new RuntimeException();
+            throw new AlreadyMailSendException();
         }else {
             String key = getKey();
 
@@ -92,7 +95,7 @@ public class MailServiceImpl implements MailService{
     @Transactional
     public void sendPasswordMail(String email) {
         if (checkSameUser(email))
-            throw new RuntimeException();
+            throw new AlreadyMailSendException();
         else {
             String key = getKey();
 
@@ -148,7 +151,7 @@ public class MailServiceImpl implements MailService{
                     }
                     return true;
                 })
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(AuthCodeNotFoundException::new);
 
         authCodeRepository.deleteByCodeAndEmail(code, email);
     }

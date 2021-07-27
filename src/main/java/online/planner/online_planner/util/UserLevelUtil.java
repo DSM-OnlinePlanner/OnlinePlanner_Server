@@ -8,6 +8,8 @@ import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.enums.TierLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
+import online.planner.online_planner.error.exceptions.AchievementNotFoundException;
+import online.planner.online_planner.error.exceptions.ConvertFailedException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -33,31 +35,23 @@ public class UserLevelUtil {
                 tierLevel = Stream.of(TierLevel.values())
                         .filter(tierLevel1 -> tierLevel1.getStartLevel().equals(level))
                         .findFirst()
-                        .orElseThrow(RuntimeException::new);
+                        .orElseThrow(ConvertFailedException::new);
                 userLevelRepository.save(
                         userLevel.updateTier(tierLevel)
                 );
             }
 
-            Achievement achievement;
+            Achieve achieve = null;
 
-            if(level == 10 && achievementRepository.existsByEmailAndIsSucceedAndAchieve(userLevel.getEmail(), false, Achieve.LV_10)) {
-                achievement = achievementRepository.findByEmailAndAchieve(userLevel.getEmail(), Achieve.LV_10)
-                        .orElseThrow(RuntimeException::new);
-
-                achievementRepository.save(
-                        achievement.succeed()
-                );
-            }else if(level == 50 && achievementRepository.existsByEmailAndIsSucceedAndAchieve(userLevel.getEmail(), false, Achieve.LV_50)) {
-                achievement = achievementRepository.findByEmailAndAchieve(userLevel.getEmail(), Achieve.LV_50)
-                        .orElseThrow(RuntimeException::new);
-
-                achievementRepository.save(
-                        achievement.succeed()
-                );
-            }else if(level == 100 && achievementRepository.existsByEmailAndIsSucceedAndAchieve(userLevel.getEmail(), false, Achieve.LV_100)) {
-                achievement = achievementRepository.findByEmailAndAchieve(userLevel.getEmail(), Achieve.LV_100)
-                        .orElseThrow(RuntimeException::new);
+            if(level == 10 && achievementRepository.existsByEmailAndIsSucceedAndAchieve(userLevel.getEmail(), false, Achieve.LV_10))
+                achieve = Achieve.LV_10;
+            else if(level == 50 && achievementRepository.existsByEmailAndIsSucceedAndAchieve(userLevel.getEmail(), false, Achieve.LV_50))
+                achieve = Achieve.LV_50;
+            else if(level == 100 && achievementRepository.existsByEmailAndIsSucceedAndAchieve(userLevel.getEmail(), false, Achieve.LV_100))
+                achieve = Achieve.LV_100;
+            if(achieve != null) {
+                Achievement achievement = achievementRepository.findByEmailAndAchieve(userLevel.getEmail(), achieve)
+                        .orElseThrow(AchievementNotFoundException::new);
 
                 achievementRepository.save(
                         achievement.succeed()

@@ -8,6 +8,9 @@ import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
+import online.planner.online_planner.error.exceptions.PlannerNotFoundException;
+import online.planner.online_planner.error.exceptions.UserLevelNotFoundException;
+import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
 import online.planner.online_planner.util.*;
@@ -38,10 +41,10 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void postPlanner(String token,PlannerRequest plannerRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserLevelNotFoundException::new);
 
         plannerRepository.save(
                 Planner.builder()
@@ -71,7 +74,7 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public List<PlannerResponse> readPlanner(String token, PlannerReadRequest plannerReadRequest, Integer pageNum) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Page<PlannerResponse> planners = plannerRepository
                 .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
@@ -87,7 +90,7 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public List<PlannerResponse> mainPlanner(String token, PlannerReadRequest plannerReadRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Page<PlannerResponse> planners = plannerRepository
                 .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
@@ -103,13 +106,13 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void checkSuccess(String token, Long plannerId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PlannerNotFoundException::new);
 
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserLevelNotFoundException::new);
 
         userLevelUtil.userLevelManagement(userLevel, planner.getExpType());
 
@@ -128,10 +131,10 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void updatePlannerTitleAndContent(String token, UpdateTitleAndContentRequest updateTitleAndContentRequest, Long plannerId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PlannerNotFoundException::new);
 
         notNull.setIfNotNull(planner::setTitle, updateTitleAndContentRequest.getTitle());
         notNull.setIfNotNull(planner::setContent, updateTitleAndContentRequest.getContent());
@@ -142,10 +145,10 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void updatePlannerDate(String token, UpdateDateRequest updateDateRequest, Long plannerId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PlannerNotFoundException::new);
 
         notNull.setIfNotNull(planner::setStartDate, updateDateRequest.getStartDate());
         notNull.setIfNotNull(planner::setEndDate, updateDateRequest.getEndDate());
@@ -156,10 +159,10 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void updatePlannerTime(String token, UpdateTimeRequest updateTimeRequest, Long plannerId) {
         User user =userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PlannerNotFoundException::new);
 
         notNull.setIfNotNull(planner::setStartTime, updateTimeRequest.getStartTime());
         notNull.setIfNotNull(planner::setEndTime, updateTimeRequest.getEndTime());
@@ -170,10 +173,10 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void updatePlannerPushed(String token, Long plannerId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PlannerNotFoundException::new);
 
         plannerRepository.save(planner.updatePush());
     }
@@ -181,10 +184,10 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void updatePriority(String token, UpdatePlannerPriorityRequest updatePlannerPriorityRequest, Long plannerId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PlannerNotFoundException::new);
 
         plannerRepository.save(planner.updatePriority(
                 updatePlannerPriorityRequest.getPriority().getPriority() + updatePlannerPriorityRequest.getWant().getWant())
@@ -194,10 +197,10 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void latePlanner(String token, LatePlannerRequest latePlannerRequest, Long plannerId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PlannerNotFoundException::new);
 
         notNull.setIfNotNull(planner::setStartDate, latePlannerRequest.getStartDate());
         notNull.setIfNotNull(planner::setEndDate, latePlannerRequest.getEndDate());
@@ -210,10 +213,10 @@ public class PlannerServiceImpl implements PlannerService{
     @Override
     public void deletePlanner(String token, Long plannerId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PlannerNotFoundException::new);
 
         plannerRepository.deleteByPlannerIdAndEmail(plannerId, user.getEmail());
     }

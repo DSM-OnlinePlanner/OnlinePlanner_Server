@@ -2,6 +2,7 @@ package online.planner.online_planner.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import online.planner.online_planner.error.exceptions.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +58,7 @@ public class JwtProvider {
 
     public String getEmail(String token) {
         if(!validateToken(token))
-            throw new RuntimeException();
+            throw new InvalidTokenException();
 
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                 .getBody().getSubject();

@@ -11,6 +11,10 @@ import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.enums.TierLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
+import online.planner.online_planner.error.exceptions.AlreadyUserSignedException;
+import online.planner.online_planner.error.exceptions.DeviceTokenNotFoundException;
+import online.planner.online_planner.error.exceptions.UserLevelNotFoundException;
+import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.request.PasswordChangeRequest;
 import online.planner.online_planner.payload.request.SignUpRequest;
 import online.planner.online_planner.payload.response.UserResponse;
@@ -41,7 +45,7 @@ public class UserServiceImpl implements UserService{
                 .orElse(null);
 
         if(user != null)
-            throw new RuntimeException();
+            throw new AlreadyUserSignedException();
 
         User mine = userRepository.save(
                 User.builder()
@@ -76,10 +80,10 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void logout(String token, String deviceToken) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         deviceTokenRepository.findByEmailAndDeviceToken(user.getEmail(), deviceToken)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(DeviceTokenNotFoundException::new);
 
         deviceTokenRepository.deleteByEmailAndDeviceToken(user.getEmail(), deviceToken);
     }
@@ -87,7 +91,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void updateName(String token, String nickName) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         userRepository.save(
                 user.updateNickName(nickName)
@@ -97,7 +101,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void setUserSaveDate(String token, Integer saveDate) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         notNull.setIfNotNull(user::setSaveDate, saveDate);
     }
@@ -105,10 +109,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponse getUserInfo(String token) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserLevelNotFoundException::new);
 
         return UserResponse.builder()
                 .exp(userLevel.getUserExp())
@@ -124,6 +128,6 @@ public class UserServiceImpl implements UserService{
         userRepository.findByEmail(passwordChangeRequest.getEmail())
                 .map(user -> user.updatePassword(aes256.AES_Encode(passwordChangeRequest.getPassword())))
                 .map(userRepository::save)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
     }
 }

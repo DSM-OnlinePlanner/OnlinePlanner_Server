@@ -6,6 +6,7 @@ import online.planner.online_planner.entity.achivement.enums.Achieve;
 import online.planner.online_planner.entity.achivement.repository.AchievementRepository;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.user_level.UserLevel;
+import online.planner.online_planner.error.exceptions.AchievementNotFoundException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class AchieveUtil {
     @Async
     public void achieveManagement(UserLevel user, Achieve achieve) {
         Achievement achievement = achievementRepository.findByEmailAndAchieve(user.getEmail(), achieve)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(AchievementNotFoundException::new);
 
         achievementRepository.save(
                 achievement.succeed()
