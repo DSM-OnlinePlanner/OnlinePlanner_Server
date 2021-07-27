@@ -6,6 +6,7 @@ import online.planner.online_planner.entity.routine.repository.RoutineRepository
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.error.exceptions.UserNotFoundException;
+import online.planner.online_planner.payload.response.PointResponse;
 import online.planner.online_planner.payload.response.StatisticsResponse;
 import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.WeekFields;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -90,11 +93,31 @@ public class StatisticsServiceImpl implements StatisticsService {
                         monthEnd
                 );
 
+        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+        List<PointResponse> pointResponses = new ArrayList<>();
+
+        for(int i = 0; i < 7; i++) {
+            int succeedPlanner = plannerRepository
+                    .countByEmailAndIsSuccessAndWriteAt(user.getEmail(), true, sevenDaysAgo);
+            int succeedRoutine = routineRepository
+                    .countByEmailAndIsSucceedAndWriteAt(user.getEmail(), true, sevenDaysAgo);
+
+            pointResponses.add(
+                    PointResponse.builder()
+                            .date(sevenDaysAgo.getDayOfMonth())
+                            .succeedNum(succeedPlanner + succeedRoutine)
+                            .build()
+            );
+
+            sevenDaysAgo.plusDays(1);
+        }
+
         return StatisticsResponse.builder()
                 .maxWeek(maxPlannerWeek + maxRoutineWeek)
                 .weekSucceed(succeedPlannerWeek + succeedRoutineWeek)
                 .maxMonth(maxPlannerMonth + maxRoutineMonth)
                 .monthSucceed(succeedPlannerMonth + succeedRoutineMonth)
+                .pointResponses(pointResponses)
                 .build();
     }
 }
