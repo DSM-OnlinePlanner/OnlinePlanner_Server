@@ -53,7 +53,7 @@ public class RoutineServiceImpl implements RoutineService{
 
     private List<String> setRoutineWeeks(Long routineId) {
         List<String> weeks = new ArrayList<>();
-        List<RoutineWeek> routineWeeks = routineWeekRepository.findAllByRoutineId(routineId);
+        List<RoutineWeek> routineWeeks = routineWeekRepository.findAllByRoutine_RoutineId(routineId);
 
         for(RoutineWeek routineWeek : routineWeeks) {
             weeks.add(
@@ -91,10 +91,10 @@ public class RoutineServiceImpl implements RoutineService{
         );
 
         for(Weeks weeks : postRoutineRequest.getWeeks()) {
-            if(routineWeekRepository.existsByRoutineIdAndDayOfWeek(routine.getRoutineId(), weeks.getDayOfWeek()))
+            if(routineWeekRepository.existsByRoutine_RoutineIdAndDayOfWeek(routine.getRoutineId(), weeks.getDayOfWeek()))
                 routineWeekRepository.save(
                         RoutineWeek.builder()
-                                .routineId(routine.getRoutineId())
+                                .routine(routine)
                                 .dayOfWeek(weeks.getDayOfWeek())
                                 .build()
                 );
@@ -149,13 +149,13 @@ public class RoutineServiceImpl implements RoutineService{
         Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RoutineNotFounException::new);
 
-        routineWeekRepository.deleteAllByRoutineId(routine.getRoutineId());
+        routineWeekRepository.deleteAllByRoutine_RoutineId(routine.getRoutineId());
 
         for(Weeks weeks : updateDayOfWeekRequest.getDayOfWeeks()) {
             routineWeekRepository.save(
                     RoutineWeek.builder()
                             .dayOfWeek(weeks.getDayOfWeek())
-                            .routineId(routine.getRoutineId())
+                            .routine(routine)
                             .build()
             );
         }
@@ -247,6 +247,6 @@ public class RoutineServiceImpl implements RoutineService{
                 .orElseThrow(RoutineNotFounException::new);
 
         routineRepository.deleteByRoutineId(routine.getRoutineId());
-        routineWeekRepository.deleteAllByRoutineId(routine.getRoutineId());
+        routineWeekRepository.deleteAllByRoutine_RoutineId(routine.getRoutineId());
     }
 }

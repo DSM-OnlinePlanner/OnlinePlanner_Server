@@ -20,4 +20,6 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
     int countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, LocalDate writeAt, LocalDate writeAt2);
     int countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, Boolean isSuccess, LocalDate writeAt, LocalDate writeAt2);
     int countByEmailAndIsSuccessAndWriteAt(String email, Boolean isSuccess, LocalDate writeAt);
+
+    List<Planner> findAllByIsPushedAndStartDateGreaterThanEqualAndEndDateLessThanEqual(Boolean isPushed, LocalDate startDate, LocalDate endDate);
 }

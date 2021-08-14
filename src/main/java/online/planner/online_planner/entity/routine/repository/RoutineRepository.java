@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
@@ -18,4 +19,6 @@ public interface RoutineRepository extends JpaRepository<Routine, Long> {
     int countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, LocalDate writeAt, LocalDate writeAt2);
     int countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, Boolean isSuccess, LocalDate writeAt, LocalDate writeAt2);
     int countByEmailAndIsSucceedAndWriteAt(String email, Boolean isSucceed, LocalDate writeAt);
+
+    List<Routine> findAllByIsPushed(Boolean isPushed);
 }

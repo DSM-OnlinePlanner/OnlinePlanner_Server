@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import online.planner.online_planner.entity.routine.Routine;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Builder
@@ -15,7 +15,12 @@ import javax.persistence.Id;
 @AllArgsConstructor
 public class RoutineWeek {
     @Id
-    private long routineId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer routineWeekId;
+
+    @ManyToOne
+    @JoinColumn(name = "routine_id")
+    private Routine routine;
 
     private int dayOfWeek;
 }
