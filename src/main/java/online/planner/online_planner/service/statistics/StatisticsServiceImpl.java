@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +94,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                         monthEnd
                 );
 
-        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+        LocalDate sevenDaysAgo = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(7);
         List<PointResponse> pointResponses = new ArrayList<>();
 
         for(int i = 0; i < 7; i++) {

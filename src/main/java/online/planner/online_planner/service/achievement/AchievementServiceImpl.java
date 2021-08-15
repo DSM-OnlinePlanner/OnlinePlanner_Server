@@ -1,7 +1,6 @@
 package online.planner.online_planner.service.achievement;
 
 import lombok.RequiredArgsConstructor;
-import online.planner.online_planner.entity.achivement.Achievement;
 import online.planner.online_planner.entity.achivement.repository.AchievementRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
@@ -11,7 +10,6 @@ import online.planner.online_planner.payload.response.AchievementResponse;
 import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,8 +26,6 @@ public class AchievementServiceImpl implements AchievementService {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
-        List<AchievementResponse> achievements = achievementRepository.findByEmailAndIsSucceed(user.getEmail(), achieveRequest.isSucceed());
-
-        return achievements;
+        return achievementRepository.findByEmailAndIsSucceed(user.getEmail(), achieveRequest.isSucceed());
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class GoalServiceImpl implements GoalService {
                         .email(user.getEmail())
                         .goal(postGoalRequest.getGoal())
                         .goalType(postGoalRequest.getGoalType())
-                        .goalDate(LocalDate.now())
+                        .goalDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
                         .isAchieve(false)
                         .expType(ExpType.GOAL)
                         .build()

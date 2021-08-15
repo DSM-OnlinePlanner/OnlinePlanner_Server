@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.temporal.WeekFields;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,8 +67,8 @@ public class MemoServiceImpl implements MemoService {
 
         LocalDate weekStart = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
         LocalDate weekEnd = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 7);
-        LocalDate monthStart = YearMonth.now().atDay(1);
-        LocalDate monthEnd = YearMonth.now().atEndOfMonth();
+        LocalDate monthStart = YearMonth.now(ZoneId.of("Asia/Seoul")).atDay(1);
+        LocalDate monthEnd = YearMonth.now(ZoneId.of("Asia/Seoul")).atEndOfMonth();
 
         List<MemoResponse> todayMemos = memoRepository.findAllByEmailAndMemoTypeAndMemoAtOrderByMemoAtAsc(user.getEmail(), MemoType.TODAY, date);
         List<MemoResponse> weekMemos = memoRepository

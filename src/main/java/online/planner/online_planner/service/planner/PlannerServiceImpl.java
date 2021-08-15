@@ -19,7 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -33,7 +33,6 @@ public class PlannerServiceImpl implements PlannerService{
     private final JwtProvider jwtProvider;
     private final UserLevelUtil userLevelUtil;
     private final NotNull notNull;
-    private final ConverterPlanner converterPlanner;
     private final AchieveUtil achieveUtil;
 
     public static final Integer MAX_PLANNER_PAGE = 10;
@@ -59,7 +58,7 @@ public class PlannerServiceImpl implements PlannerService{
                 .priority(plannerRequest.getPriority().getPriority() + plannerRequest.getWant().getWant())
                 .expType(ExpType.PLANNER)
                 .isPushed(plannerRequest.isPushed())
-                .writeAt(LocalDate.now())
+                .writeAt(LocalDate.now(ZoneId.of("Asia/Seoul")))
                 .build()
         );
 

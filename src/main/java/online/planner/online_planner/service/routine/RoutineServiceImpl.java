@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -85,7 +86,7 @@ public class RoutineServiceImpl implements RoutineService{
                         .startTime(postRoutineRequest.getStartTime())
                         .expType(ExpType.ROUTINE)
                         .isPushed(postRoutineRequest.isPushed())
-                        .writeAt(LocalDate.now())
+                        .writeAt(LocalDate.now(ZoneId.of("Asia/Seoul")))
                         .isSucceed(false)
                         .build()
         );
@@ -116,8 +117,8 @@ public class RoutineServiceImpl implements RoutineService{
         Page<RoutineResponse> routines = routineRepository
                 .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
                         user.getEmail(),
-                        LocalTime.now(),
-                        LocalTime.now(),
+                        LocalTime.now(ZoneId.of("Asia/Seoul")),
+                        LocalTime.now(ZoneId.of("Asia/Seoul")),
                         PageRequest.of(pageNum, PAGE_NUM)
                 );
 
@@ -132,8 +133,8 @@ public class RoutineServiceImpl implements RoutineService{
         Page<RoutineResponse> routines = routineRepository
                 .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
                         user.getEmail(),
-                        LocalTime.now(),
-                        LocalTime.now(),
+                        LocalTime.now(ZoneId.of("Asia/Seoul")),
+                        LocalTime.now(ZoneId.of("Asia/Seoul")),
                         PageRequest.of(0, MAIN_PAGE_NUM)
                 );
 
