@@ -22,6 +22,7 @@ public enum ErrorCode {
     ROUTINE_NOT_FOUND("routine not found", 404),
     DEVICE_TOKEN_NOT_FOUND("device token not found", 404),
     ACHIEVEMENT_NOT_FOUND("achievement not found", 404),
+    NOT_SEND_EMAIL("user email not found", 404),
     ALREADY_USER_SIGNED("already user signed", 409),
     ALREADY_USER_MAIL_SEND("mail already send", 409),
     CONVERT_FAILED("convert failed", 500),

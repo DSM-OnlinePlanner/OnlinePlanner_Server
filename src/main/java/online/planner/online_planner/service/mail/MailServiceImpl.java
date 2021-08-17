@@ -5,9 +5,7 @@ import lombok.SneakyThrows;
 import online.planner.online_planner.entity.auth_code.AuthCode;
 import online.planner.online_planner.entity.auth_code.repository.AuthCodeRepository;
 import online.planner.online_planner.entity.user.repository.UserRepository;
-import online.planner.online_planner.error.exceptions.AlreadyMailSendException;
-import online.planner.online_planner.error.exceptions.AuthCodeNotFoundException;
-import online.planner.online_planner.error.exceptions.EmailBadRequestException;
+import online.planner.online_planner.error.exceptions.*;
 import online.planner.online_planner.util.AES256;
 import org.springframework.mail.MailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -49,11 +47,23 @@ public class MailServiceImpl implements MailService{
 
     private boolean checkSameUser(String email) {
         try {
-            userRepository.findByEmail(email);
+            userRepository.findByEmail(email)
+                    .orElseThrow(AlreadyUserSignedException::new);
 
-            return false;
-        }catch (Exception e) {
             return true;
+        }catch (AlreadyUserSignedException ignored) {
+            return false;
+        }
+    }
+
+    private boolean checkAlreadySendMail(String email) {
+        try {
+            authCodeRepository.findByEmail(email)
+                    .orElseThrow(AlreadyMailSendException::new);
+
+            return true;
+        }catch (AlreadyMailSendException e) {
+            return false;
         }
     }
 
@@ -63,7 +73,7 @@ public class MailServiceImpl implements MailService{
         if(email.isEmpty()) {
             throw new EmailBadRequestException();
         }else if(checkSameUser(email)) {
-            throw new AlreadyMailSendException();
+            throw new AlreadyUserSignedException();
         }else {
             String key = getKey();
 
@@ -119,12 +129,19 @@ public class MailServiceImpl implements MailService{
 
     @Override
     public void sendMail(String email, String name) {
-        send(email, name);
+        if(checkAlreadySendMail(email)) {
+            throw new AlreadyMailSendException();
+        }else {
+            send(email, name);
+        }
     }
 
     @Override
     public void resendMail(String email, String name) {
-        send(email, name);
+        if(checkAlreadySendMail(email))
+            send(email, name);
+        else
+            throw new  UserEmailNotFoundException();
     }
 
     @Override
