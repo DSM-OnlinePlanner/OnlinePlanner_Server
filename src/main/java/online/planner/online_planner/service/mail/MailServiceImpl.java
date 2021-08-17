@@ -79,13 +79,11 @@ public class MailServiceImpl implements MailService{
             context.setVariable("email", email);
             context.setVariable("name", name);
 
-            String mail = templateEngine.process("mail-template.html", context);
-
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, false, "UTF-8");
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setSubject("OnlinePlanner를 이용해주셔서 감사합니다.");
-            mimeMessageHelper.setText(mail, true);
+            mimeMessageHelper.setText("인증번호 : " + key);
 
             javaMailSender.send(message);
         }
