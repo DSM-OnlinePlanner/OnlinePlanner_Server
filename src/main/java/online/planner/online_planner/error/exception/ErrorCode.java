@@ -25,6 +25,7 @@ public enum ErrorCode {
     NOT_SEND_EMAIL("user email not found", 404),
     ALREADY_USER_SIGNED("already user signed", 409),
     ALREADY_USER_MAIL_SEND("mail already send", 409),
+    AUTH_CODE_FAILED("Auth Code auth Failed", 409),
     CONVERT_FAILED("convert failed", 500),
     DECODING_FAILED("aes256 decode failed", 500);
 

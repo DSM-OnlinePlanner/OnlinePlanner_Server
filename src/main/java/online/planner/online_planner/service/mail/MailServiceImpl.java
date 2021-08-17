@@ -160,7 +160,7 @@ public class MailServiceImpl implements MailService{
         authCodeRepository.findByEmail(email)
                 .filter(authCode -> {
                     if(!aes256.AES_Decode(authCode.getCode()).equals(code)) {
-                        throw new RuntimeException();
+                        throw new AuthCodeAuthFailedException();
                     }
                     return true;
                 })
