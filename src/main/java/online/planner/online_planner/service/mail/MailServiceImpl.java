@@ -157,15 +157,12 @@ public class MailServiceImpl implements MailService{
     @Transactional
     @Override
     public void authEmail(String code, String email) {
-        authCodeRepository.findByEmail(email)
-                .filter(authCode -> {
-                    if(!aes256.AES_Decode(authCode.getCode()).equals(code)) {
-                        throw new AuthCodeAuthFailedException();
-                    }
-                    return true;
-                })
+        AuthCode authCode = authCodeRepository.findByEmail(email)
                 .orElseThrow(AuthCodeNotFoundException::new);
 
-        authCodeRepository.deleteByCodeAndEmail(code, email);
+        if(aes256.AES_Decode(authCode.getCode()).equals(code))
+            authCodeRepository.deleteByCodeAndEmail(code, email);
+        else
+            throw new AuthCodeAuthFailedException();
     }
 }
