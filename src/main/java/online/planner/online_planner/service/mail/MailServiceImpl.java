@@ -151,7 +151,7 @@ public class MailServiceImpl implements MailService{
                 .orElseThrow(AuthCodeNotFoundException::new);
 
         if(aes256.AES_Decode(authCode.getCode()).equals(code))
-            authCodeRepository.deleteByCodeAndEmail(code, email);
+            authCodeRepository.deleteByEmail(email);
         else
             throw new AuthCodeAuthFailedException();
     }

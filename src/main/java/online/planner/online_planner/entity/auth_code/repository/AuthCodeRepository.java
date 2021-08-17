@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface AuthCodeRepository extends JpaRepository<AuthCode, String> {
     Optional<AuthCode> findByCodeAndEmail(String code, String email);
-    void deleteByCodeAndEmail(String code, String email);
+    void deleteByEmail(String email);
     Optional<AuthCode> findByEmail(String email);
 }
