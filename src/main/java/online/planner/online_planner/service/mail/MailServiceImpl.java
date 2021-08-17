@@ -7,16 +7,12 @@ import online.planner.online_planner.entity.auth_code.repository.AuthCodeReposit
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.error.exceptions.*;
 import online.planner.online_planner.util.AES256;
-import org.springframework.mail.MailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.MimeMessage;
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +22,6 @@ public class MailServiceImpl implements MailService{
     private final UserRepository userRepository;
 
     private final JavaMailSender javaMailSender;
-    private final TemplateEngine templateEngine;
 
     private final AES256 aes256;
 
@@ -83,11 +78,6 @@ public class MailServiceImpl implements MailService{
                             .email(email)
                             .build()
             );
-
-            Context context = new Context();
-            context.setVariable("code", key);
-            context.setVariable("email", email);
-            context.setVariable("name", name);
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, false, "UTF-8");
@@ -154,8 +144,8 @@ public class MailServiceImpl implements MailService{
         sendPasswordMail(email);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void authEmail(String code, String email) {
         AuthCode authCode = authCodeRepository.findByEmail(email)
                 .orElseThrow(AuthCodeNotFoundException::new);
