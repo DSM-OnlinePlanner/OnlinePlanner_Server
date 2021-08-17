@@ -118,13 +118,11 @@ public class MailServiceImpl implements MailService{
     }
 
     @Override
-    @Async
     public void sendMail(String email, String name) {
         send(email, name);
     }
 
     @Override
-    @Async
     public void resendMail(String email, String name) {
         send(email, name);
     }
