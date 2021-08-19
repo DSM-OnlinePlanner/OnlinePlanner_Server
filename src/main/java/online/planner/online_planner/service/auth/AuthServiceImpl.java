@@ -32,9 +32,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public TokenResponse signIn(SignInRequest signInRequest) {
-        System.out.println(signInRequest.getEmail());
-
-
+        System.out.println(signInRequest.getEmail() + "\n" + signInRequest.getDeviceToken());
 
         return userRepository.findByEmail(signInRequest.getEmail())
                 .filter(user -> signInRequest.getPassword().equals(aes256.AES_Decode(user.getPassword())))

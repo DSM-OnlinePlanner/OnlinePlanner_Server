@@ -6,7 +6,7 @@ import online.planner.online_planner.payload.response.UserResponse;
 
 public interface UserService {
     void signUp(SignUpRequest signUpRequest);
-    void logout(String token, String deviceToken);
+    void logout(String deviceToken);
     void updateName(String token, String nickName);
     void setUserSaveDate(String token, Integer saveDate);
     UserResponse getUserInfo(String token);

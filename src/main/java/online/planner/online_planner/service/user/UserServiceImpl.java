@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.entity.achivement.Achievement;
 import online.planner.online_planner.entity.achivement.enums.Achieve;
 import online.planner.online_planner.entity.achivement.repository.AchievementRepository;
-import online.planner.online_planner.entity.device_token.DeviceToken;
 import online.planner.online_planner.entity.device_token.repository.DeviceTokenRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
@@ -23,8 +22,6 @@ import online.planner.online_planner.util.JwtProvider;
 import online.planner.online_planner.util.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -78,14 +75,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void logout(String token, String deviceToken) {
-        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
-                .orElseThrow(UserNotFoundException::new);
-
-        deviceTokenRepository.findByEmailAndDeviceToken(user.getEmail(), deviceToken)
+    public void logout(String deviceToken) {
+        deviceTokenRepository.findByDeviceToken(deviceToken)
                 .orElseThrow(DeviceTokenNotFoundException::new);
 
-        deviceTokenRepository.deleteByEmailAndDeviceToken(user.getEmail(), deviceToken);
+        deviceTokenRepository.deleteByDeviceToken(deviceToken);
     }
 
     @Override

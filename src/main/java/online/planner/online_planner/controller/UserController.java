@@ -43,4 +43,9 @@ public class UserController {
     public void updatePassword(@RequestBody PasswordChangeRequest passwordChangeRequest) {
         userService.changePassword(passwordChangeRequest);
     }
+
+    @DeleteMapping("/logout")
+    public void logout(@RequestHeader String deviceToken) {
+        userService.logout(deviceToken);
+    }
 }
