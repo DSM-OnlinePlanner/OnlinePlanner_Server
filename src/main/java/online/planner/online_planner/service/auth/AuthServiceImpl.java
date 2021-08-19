@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService{
                         deviceTokenRepository.save(
                                 DeviceToken.builder()
                                         .deviceToken(signInRequest.getDeviceToken())
-                                        .deviceToken(signInRequest.getEmail())
+                                        .email(signInRequest.getEmail())
                                         .build()
                         );
                     }
@@ -67,8 +67,6 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public TokenResponse signInND(NDSignInRequest ndSignInRequest) {
         System.out.println(ndSignInRequest.getEmail());
-
-
 
         return userRepository.findByEmail(ndSignInRequest.getEmail())
                 .filter(user -> ndSignInRequest.getPassword().equals(aes256.AES_Decode(user.getPassword())))
