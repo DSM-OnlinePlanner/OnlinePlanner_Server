@@ -2,11 +2,12 @@ package online.planner.online_planner.controller;
 
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.payload.request.PostGoalRequest;
-import online.planner.online_planner.payload.request.ReadGoalRequest;
 import online.planner.online_planner.payload.request.UpdateGoalRequest;
 import online.planner.online_planner.payload.response.GoalResponses;
 import online.planner.online_planner.service.goal.GoalService;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/goal")
@@ -17,8 +18,8 @@ public class GoalController {
 
     @GetMapping
     public GoalResponses getMyGoals(@RequestHeader("Authorization") String token,
-                                    @RequestBody ReadGoalRequest readGoalRequest) {
-        return goalService.readGoal(token, readGoalRequest.getDate());
+                                    @RequestParam LocalDate date) {
+        return goalService.readGoal(token, date);
     }
 
     @PostMapping

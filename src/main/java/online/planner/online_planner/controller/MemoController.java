@@ -2,7 +2,6 @@ package online.planner.online_planner.controller;
 
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.payload.request.PostMemoRequest;
-import online.planner.online_planner.payload.request.ReadMemoRequest;
 import online.planner.online_planner.payload.request.UpdateMemoRequest;
 import online.planner.online_planner.payload.response.MemoResponses;
 import online.planner.online_planner.service.memo.MemoService;
@@ -19,8 +18,8 @@ public class MemoController {
 
     @GetMapping
     public MemoResponses getMyMemos(@RequestHeader("Authorization") String token,
-                                    @RequestBody ReadMemoRequest readMemoRequest) {
-        return memoService.readMemo(token, readMemoRequest.getDate());
+                                    @RequestParam LocalDate date) {
+        return memoService.readMemo(token, date);
     }
 
     @PostMapping

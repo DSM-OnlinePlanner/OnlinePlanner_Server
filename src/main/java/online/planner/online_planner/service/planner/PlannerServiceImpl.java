@@ -71,15 +71,15 @@ public class PlannerServiceImpl implements PlannerService{
     }
 
     @Override
-    public List<PlannerResponse> readPlanner(String token, PlannerReadRequest plannerReadRequest, Integer pageNum) {
+    public List<PlannerResponse> readPlanner(String token, LocalDate date, Integer pageNum) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
         Page<PlannerResponse> planners = plannerRepository
                 .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
-                        plannerReadRequest.getDate(),
-                        plannerReadRequest.getDate(),
+                        date,
+                        date,
                         PageRequest.of(pageNum, MAX_PLANNER_PAGE)
                 );
 
@@ -87,15 +87,15 @@ public class PlannerServiceImpl implements PlannerService{
     }
 
     @Override
-    public List<PlannerResponse> mainPlanner(String token, PlannerReadRequest plannerReadRequest) {
+    public List<PlannerResponse> mainPlanner(String token, LocalDate date) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
         Page<PlannerResponse> planners = plannerRepository
                 .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
-                        plannerReadRequest.getDate(),
-                        plannerReadRequest.getDate(),
+                        date,
+                        date,
                         PageRequest.of(0, 3)
                 );
 

@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,15 +21,19 @@ public class PlannerController {
 
     @GetMapping("/{pageNum}")
     public List<PlannerResponse> readPlanner(@RequestHeader("Authorization") String token,
-                                             @Valid @RequestBody PlannerReadRequest plannerReadRequest,
+                                             @RequestParam LocalDate date,
                                              @PathVariable Integer pageNum) {
-        return plannerService.readPlanner(token, plannerReadRequest, pageNum);
+        return plannerService.readPlanner(
+                token,
+                date,
+                pageNum
+        );
     }
 
     @GetMapping("/main")
     public List<PlannerResponse> getMainPlannerList(@RequestHeader("Authorization") String token,
-                                                    @RequestBody PlannerReadRequest plannerReadRequest) {
-        return plannerService.mainPlanner(token, plannerReadRequest);
+                                                    @RequestParam LocalDate date) {
+        return plannerService.mainPlanner(token, date);
     }
 
     @PostMapping
