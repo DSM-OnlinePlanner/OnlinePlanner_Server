@@ -5,6 +5,7 @@ import online.planner.online_planner.payload.request.PostGoalRequest;
 import online.planner.online_planner.payload.request.UpdateGoalRequest;
 import online.planner.online_planner.payload.response.GoalResponses;
 import online.planner.online_planner.service.goal.GoalService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ public class GoalController {
 
     @GetMapping
     public GoalResponses getMyGoals(@RequestHeader("Authorization") String token,
-                                    @RequestParam LocalDate date) {
+                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return goalService.readGoal(token, date);
     }
 

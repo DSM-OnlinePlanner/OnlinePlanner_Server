@@ -5,6 +5,7 @@ import online.planner.online_planner.payload.request.PostMemoRequest;
 import online.planner.online_planner.payload.request.UpdateMemoRequest;
 import online.planner.online_planner.payload.response.MemoResponses;
 import online.planner.online_planner.service.memo.MemoService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ public class MemoController {
 
     @GetMapping
     public MemoResponses getMyMemos(@RequestHeader("Authorization") String token,
-                                    @RequestParam LocalDate date) {
+                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return memoService.readMemo(token, date);
     }
 

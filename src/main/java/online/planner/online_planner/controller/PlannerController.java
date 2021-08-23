@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
 import online.planner.online_planner.service.planner.PlannerService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class PlannerController {
 
     @GetMapping("/{pageNum}")
     public List<PlannerResponse> readPlanner(@RequestHeader("Authorization") String token,
-                                             @RequestParam LocalDate date,
+                                             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                              @PathVariable Integer pageNum) {
         return plannerService.readPlanner(
                 token,
@@ -32,7 +33,7 @@ public class PlannerController {
 
     @GetMapping("/main")
     public List<PlannerResponse> getMainPlannerList(@RequestHeader("Authorization") String token,
-                                                    @RequestParam LocalDate date) {
+                                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return plannerService.mainPlanner(token, date);
     }
 
