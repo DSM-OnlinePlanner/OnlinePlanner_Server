@@ -4,6 +4,7 @@ import lombok.*;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.exp.enums.ExpTypeConvertor;
 import online.planner.online_planner.entity.planner.enums.Priority;
+import online.planner.online_planner.entity.planner.enums.Want;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -27,7 +28,9 @@ public class Planner {
 
     private String content;
 
-    private Integer priority;
+    private Priority priority;
+
+    private Want want;
 
     private Boolean isSuccess;
 
@@ -60,8 +63,9 @@ public class Planner {
         return this;
     }
 
-    public Planner updatePriority(Integer priority) {
+    public Planner updatePriority(Priority priority, Want want) {
         this.priority = priority;
+        this.want = want;
 
         return this;
     }

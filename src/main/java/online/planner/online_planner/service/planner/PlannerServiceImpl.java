@@ -3,6 +3,8 @@ package online.planner.online_planner.service.planner;
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.planner.Planner;
+import online.planner.online_planner.entity.planner.enums.Priority;
+import online.planner.online_planner.entity.planner.enums.Want;
 import online.planner.online_planner.entity.planner.repository.PlannerRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -47,19 +50,20 @@ public class PlannerServiceImpl implements PlannerService{
 
         plannerRepository.save(
                 Planner.builder()
-                .email(user.getEmail())
-                .title(plannerRequest.getTitle())
-                .content(plannerRequest.getContent())
-                .endDate(plannerRequest.getEndDate())
-                .startDate(plannerRequest.getStartDate())
-                .startTime(plannerRequest.getStartTime())
-                .endTime(plannerRequest.getEndTime())
-                .isSuccess(false)
-                .priority(plannerRequest.getPriority().getPriority() + plannerRequest.getWant().getWant())
-                .expType(ExpType.PLANNER)
-                .isPushed(plannerRequest.isPushed())
-                .writeAt(LocalDate.now(ZoneId.of("Asia/Seoul")))
-                .build()
+                        .email(user.getEmail())
+                        .title(plannerRequest.getTitle())
+                        .content(plannerRequest.getContent())
+                        .endDate(plannerRequest.getEndDate())
+                        .startDate(plannerRequest.getStartDate())
+                        .startTime(plannerRequest.getStartTime())
+                        .endTime(plannerRequest.getEndTime())
+                        .isSuccess(false)
+                        .priority(plannerRequest.getPriority())
+                        .want(plannerRequest.getWant())
+                        .expType(ExpType.PLANNER)
+                        .isPushed(plannerRequest.isPushed())
+                        .writeAt(LocalDate.now(ZoneId.of("Asia/Seoul")))
+                        .build()
         );
 
         achieveUtil.achievePlannerNum(
@@ -189,7 +193,7 @@ public class PlannerServiceImpl implements PlannerService{
                 .orElseThrow(PlannerNotFoundException::new);
 
         plannerRepository.save(planner.updatePriority(
-                updatePlannerPriorityRequest.getPriority().getPriority() + updatePlannerPriorityRequest.getWant().getWant())
+                updatePlannerPriorityRequest.getPriority(), updatePlannerPriorityRequest.getWant())
         );
     }
 

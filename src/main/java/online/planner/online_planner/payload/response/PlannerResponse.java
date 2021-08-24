@@ -25,4 +25,9 @@ public class PlannerResponse {
     private LocalDate endDate;
     private boolean isSuccess;
     private boolean isPushed;
+
+    public void setPriorityAndWant(Want want, Priority priority) {
+        this.want = want;
+        this.priority = priority;
+    }
 }
