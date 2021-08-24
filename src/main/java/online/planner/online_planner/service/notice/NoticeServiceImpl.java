@@ -1,7 +1,6 @@
 package online.planner.online_planner.service.notice;
 
 import lombok.RequiredArgsConstructor;
-import online.planner.online_planner.entity.notice.Notice;
 import online.planner.online_planner.entity.notice.repository.NoticeRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

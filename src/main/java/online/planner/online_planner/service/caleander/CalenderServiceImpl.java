@@ -1,19 +1,16 @@
 package online.planner.online_planner.service.caleander;
 
 import lombok.RequiredArgsConstructor;
-import online.planner.online_planner.entity.planner.Planner;
 import online.planner.online_planner.entity.planner.repository.PlannerRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.response.CalenderResponse;
-import online.planner.online_planner.util.ConverterPlanner;
 import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +21,6 @@ public class CalenderServiceImpl implements CalendarService {
     private final PlannerRepository plannerRepository;
 
     private final JwtProvider jwtProvider;
-    private final ConverterPlanner converterPlanner;
 
     @Override
     public List<CalenderResponse> getCalenders(String token, LocalDate date) {

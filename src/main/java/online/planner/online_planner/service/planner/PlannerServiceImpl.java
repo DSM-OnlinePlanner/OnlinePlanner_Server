@@ -3,8 +3,6 @@ package online.planner.online_planner.service.planner;
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.planner.Planner;
-import online.planner.online_planner.entity.planner.enums.Priority;
-import online.planner.online_planner.entity.planner.enums.Want;
 import online.planner.online_planner.entity.planner.repository.PlannerRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
@@ -15,7 +13,10 @@ import online.planner.online_planner.error.exceptions.UserLevelNotFoundException
 import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
-import online.planner.online_planner.util.*;
+import online.planner.online_planner.util.AchieveUtil;
+import online.planner.online_planner.util.JwtProvider;
+import online.planner.online_planner.util.NotNull;
+import online.planner.online_planner.util.UserLevelUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
