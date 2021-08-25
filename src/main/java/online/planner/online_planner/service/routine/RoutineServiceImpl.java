@@ -159,7 +159,29 @@ public class RoutineServiceImpl implements RoutineService{
                         )
                 );
 
-        return setRoutineResponse(routines);
+        List<RoutineResponse> responses = new ArrayList<>();
+
+        for(RoutineWeek routineWeek : routines) {
+            Routine routine = routineRepository.findByRoutineId(routineWeek.getRouId())
+                    .orElseThrow(RoutineNotFounException::new);
+
+            responses.add(
+                    RoutineResponse.builder()
+                            .routineId(routine.getRoutineId())
+                            .title(routine.getTitle())
+                            .content(routine.getContent())
+                            .isSuccess(routine.getIsSucceed())
+                            .isPushed(routine.getIsPushed())
+                            .startTime(routine.getStartTime())
+                            .endTime(routine.getEndTime())
+                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
+                            .build()
+            );
+
+            System.out.println(routine.getTitle() + routine);
+        }
+
+        return responses;
     }
 
     @Override
@@ -188,8 +210,30 @@ public class RoutineServiceImpl implements RoutineService{
         if(!routines.isEmpty()) {
             System.out.println(routines.toList().get(0).getDayOfWeek());
         }
+        
+        List<RoutineResponse> responses = new ArrayList<>();
 
-        return setRoutineResponse(routines);
+        for(RoutineWeek routineWeek : routines) {
+            Routine routine = routineRepository.findByRoutineId(routineWeek.getRouId())
+                    .orElseThrow(RoutineNotFounException::new);
+
+            responses.add(
+                    RoutineResponse.builder()
+                            .routineId(routine.getRoutineId())
+                            .title(routine.getTitle())
+                            .content(routine.getContent())
+                            .isSuccess(routine.getIsSucceed())
+                            .isPushed(routine.getIsPushed())
+                            .startTime(routine.getStartTime())
+                            .endTime(routine.getEndTime())
+                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
+                            .build()
+            );
+
+            System.out.println(routine.getTitle() + routine);
+        }
+
+        return responses;
     }
 
     @Override
