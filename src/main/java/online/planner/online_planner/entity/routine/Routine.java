@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.planner.enums.Priority;
+import online.planner.online_planner.entity.routine_date.RoutineWeek;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +44,9 @@ public class Routine {
     private Boolean isPushed;
 
     private LocalDate writeAt;
+
+    @OneToMany(mappedBy = "routineId", cascade = CascadeType.ALL)
+    private List<RoutineWeek> routineWeeks;
 
     public Routine updateSucceed() {
         this.isSucceed = !isSucceed;

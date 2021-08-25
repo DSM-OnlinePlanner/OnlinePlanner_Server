@@ -27,10 +27,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -59,13 +59,36 @@ public class RoutineServiceImpl implements RoutineService{
         for(RoutineWeek routineWeek : routineWeeks) {
             weeks.add(
                     Stream.of(Weeks.values())
-                    .filter(week -> week.getDayOfWeek().equals(routineWeek.getDayOfWeek()))
-                    .findFirst()
-                    .orElseThrow(ConvertFailedException::new).name()
+                            .filter(weeks1 -> weeks1.getDayOfWeek().equals(routineWeek.getDayOfWeek()))
+                            .findFirst()
+                            .orElseThrow(RuntimeException::new).name()
             );
         }
 
         return weeks;
+    }
+
+    private List<RoutineResponse> setRoutineResponse(Page<RoutineWeek> routines) {
+        List<RoutineResponse> responses = new ArrayList<>();
+
+        for(RoutineWeek routineWeek : routines) {
+            Routine routine = routineWeek.getRoutine();
+
+            RoutineResponse routineResponse = RoutineResponse.builder()
+                    .routineId(routine.getRoutineId())
+                    .title(routine.getTitle())
+                    .content(routine.getContent())
+                    .isSuccess(routine.getIsSucceed())
+                    .isPushed(routine.getIsPushed())
+                    .startTime(routine.getStartTime())
+                    .endTime(routine.getEndTime())
+                    .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
+                    .build();
+
+            responses.add(routineResponse);
+        }
+
+        return responses;
     }
 
     @Override
@@ -114,15 +137,23 @@ public class RoutineServiceImpl implements RoutineService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
-        Page<RoutineResponse> routines = routineRepository
-                .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
+        LocalTime end = ChronoUnit.HOURS.addTo(LocalDateTime.now(ZoneId.of("Asia/Seoul")), 1).toLocalTime();
+
+        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        Page<RoutineWeek> routines = routineWeekRepository
+                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
                         user.getEmail(),
-                        LocalTime.now(ZoneId.of("Asia/Seoul")),
-                        LocalTime.now(ZoneId.of("Asia/Seoul")),
-                        PageRequest.of(pageNum, PAGE_NUM)
+                        dayOfWeek,
+                        LocalTime.now(),
+                        end,
+                        PageRequest.of(
+                                pageNum,
+                                PAGE_NUM
+                        )
                 );
 
-        return routines.toList();
+        return setRoutineResponse(routines);
     }
 
     @Override
@@ -132,15 +163,23 @@ public class RoutineServiceImpl implements RoutineService{
 
         System.out.println(LocalTime.now(ZoneId.of("Asia/Seoul")));
 
-        Page<RoutineResponse> routines = routineRepository
-                .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
+        LocalTime end = ChronoUnit.HOURS.addTo(LocalDateTime.now(ZoneId.of("Asia/Seoul")), 1).toLocalTime();
+
+        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        Page<RoutineWeek> routines = routineWeekRepository
+                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
                         user.getEmail(),
-                        LocalTime.now(ZoneId.of("Asia/Seoul")),
-                        LocalTime.now(ZoneId.of("Asia/Seoul")),
-                        PageRequest.of(0, MAIN_PAGE_NUM)
+                        dayOfWeek,
+                        LocalTime.now(),
+                        end,
+                        PageRequest.of(
+                                0,
+                                MAIN_PAGE_NUM
+                        )
                 );
 
-        return routines.toList();
+        return setRoutineResponse(routines);
     }
 
     @Override
