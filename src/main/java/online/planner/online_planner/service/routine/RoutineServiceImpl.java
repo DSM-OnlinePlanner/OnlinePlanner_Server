@@ -130,6 +130,8 @@ public class RoutineServiceImpl implements RoutineService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
+        System.out.println(LocalTime.now(ZoneId.of("Asia/Seoul")));
+
         Page<RoutineResponse> routines = routineRepository
                 .findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(
                         user.getEmail(),
