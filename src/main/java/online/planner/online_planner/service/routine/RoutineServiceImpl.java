@@ -68,6 +68,32 @@ public class RoutineServiceImpl implements RoutineService{
         return weeks;
     }
 
+    private List<RoutineResponse> setRoutineResponse(Page<RoutineWeek> routines) {
+        List<RoutineResponse> responses = new ArrayList<>();
+
+        for(RoutineWeek routineWeek : routines) {
+            Routine routine = routineRepository.findByRoutineId(routineWeek.getRouId())
+                    .orElseThrow(RoutineNotFounException::new);
+
+            responses.add(
+                    RoutineResponse.builder()
+                            .routineId(routine.getRoutineId())
+                            .title(routine.getTitle())
+                            .content(routine.getContent())
+                            .isSuccess(routine.getIsSucceed())
+                            .isPushed(routine.getIsPushed())
+                            .startTime(routine.getStartTime())
+                            .endTime(routine.getEndTime())
+                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
+                            .build()
+            );
+
+            System.out.println(routine.getTitle() + routine);
+        }
+
+        return responses;
+    }
+
     @Override
     public void writeRoutine(String token, PostRoutineRequest postRoutineRequest) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
@@ -120,10 +146,9 @@ public class RoutineServiceImpl implements RoutineService{
         int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
         System.out.println(dayOfWeek);
-        List<RoutineResponse> responses = new ArrayList<>();
 
         Page<RoutineWeek> routines = routineWeekRepository
-                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
+                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeLessThanEqualAndRoutine_EndTimeGreaterThanEqual(
                         user.getEmail(),
                         dayOfWeek,
                         LocalTime.now(),
@@ -134,26 +159,7 @@ public class RoutineServiceImpl implements RoutineService{
                         )
                 );
 
-        for(RoutineWeek routineWeek : routines) {
-            Routine routine = routineWeek.getRoutine();
-
-            responses.add(
-                    RoutineResponse.builder()
-                            .routineId(routineWeek.getRoutine().getRoutineId())
-                            .title(routine.getTitle())
-                            .content(routine.getContent())
-                            .isSuccess(routine.getIsSucceed())
-                            .isPushed(routine.getIsPushed())
-                            .startTime(routine.getStartTime())
-                            .endTime(routine.getEndTime())
-                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
-                            .build()
-            );
-
-            System.out.println(routine.getTitle() + routine);
-        }
-
-        return responses;
+        return setRoutineResponse(routines);
     }
 
     @Override
@@ -168,7 +174,7 @@ public class RoutineServiceImpl implements RoutineService{
         System.out.println(dayOfWeek);
 
         Page<RoutineWeek> routines = routineWeekRepository
-                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
+                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeLessThanEqualAndRoutine_EndTimeGreaterThanEqual(
                         user.getEmail(),
                         dayOfWeek,
                         LocalTime.now(),
@@ -183,28 +189,7 @@ public class RoutineServiceImpl implements RoutineService{
             System.out.println(routines.toList().get(0).getDayOfWeek());
         }
 
-        List<RoutineResponse> responses = new ArrayList<>();
-
-        for(RoutineWeek routineWeek : routines) {
-            Routine routine = routineWeek.getRoutine();
-
-            responses.add(
-                    RoutineResponse.builder()
-                            .routineId(routineWeek.getRoutine().getRoutineId())
-                            .title(routine.getTitle())
-                            .content(routine.getContent())
-                            .isSuccess(routine.getIsSucceed())
-                            .isPushed(routine.getIsPushed())
-                            .startTime(routine.getStartTime())
-                            .endTime(routine.getEndTime())
-                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
-                            .build()
-            );
-
-            System.out.println(routine.getTitle() + routine);
-        }
-
-        return responses;
+        return setRoutineResponse(routines);
     }
 
     @Override
