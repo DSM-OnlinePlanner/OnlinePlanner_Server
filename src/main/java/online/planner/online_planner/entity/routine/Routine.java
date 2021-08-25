@@ -45,7 +45,7 @@ public class Routine {
 
     private LocalDate writeAt;
 
-    @OneToMany(mappedBy = "routineId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL)
     private List<RoutineWeek> routineWeeks;
 
     public Routine updateSucceed() {
