@@ -22,7 +22,7 @@ public class RoutineWeek {
     @JoinColumn(name = "routine_id")
     private Routine routine;
 
-    private long routineId;
+    private long rouId;
 
     private int dayOfWeek;
 }

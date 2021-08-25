@@ -72,7 +72,7 @@ public class RoutineServiceImpl implements RoutineService{
         List<RoutineResponse> responses = new ArrayList<>();
 
         for(RoutineWeek routineWeek : routines) {
-            Routine routine = routineRepository.findByRoutineId(routineWeek.getRoutineId())
+            Routine routine = routineRepository.findByRoutineId(routineWeek.getRouId())
                     .orElseThrow(RoutineNotFounException::new);
 
             responses.add(
@@ -123,7 +123,7 @@ public class RoutineServiceImpl implements RoutineService{
             if(!routineWeekRepository.existsByRoutine_RoutineIdAndDayOfWeek(routine.getRoutineId(), weeks.getDayOfWeek()))
                 routineWeekRepository.save(
                         RoutineWeek.builder()
-                                .routineId(routine.getRoutineId())
+                                .rouId(routine.getRoutineId())
                                 .dayOfWeek(weeks.getDayOfWeek())
                                 .routine(routine)
                                 .build()
@@ -207,7 +207,7 @@ public class RoutineServiceImpl implements RoutineService{
             routineWeekRepository.save(
                     RoutineWeek.builder()
                             .dayOfWeek(weeks.getDayOfWeek())
-                            .routineId(routine.getRoutineId())
+                            .rouId(routine.getRoutineId())
                             .build()
             );
         }
