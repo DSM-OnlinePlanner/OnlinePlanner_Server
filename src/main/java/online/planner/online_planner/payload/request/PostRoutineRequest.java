@@ -19,12 +19,9 @@ public class PostRoutineRequest {
     @NotBlank
     private List<Weeks> weeks;
     @JsonFormat(pattern = "HH:mm:ss")
-    @NotBlank(message = "startTime is empty")
     private LocalTime startTime;
     @JsonFormat(pattern = "HH:mm:ss")
-    @NotBlank(message = "endTime is empty")
     private LocalTime endTime;
-    @NotBlank(message = "push is empty")
     private boolean isPushed;
     private Priority priority;
 }
