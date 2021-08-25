@@ -74,18 +74,18 @@ public class RoutineServiceImpl implements RoutineService{
         for(RoutineWeek routineWeek : routines) {
             Routine routine = routineWeek.getRoutine();
 
-            RoutineResponse routineResponse = RoutineResponse.builder()
-                    .routineId(routine.getRoutineId())
-                    .title(routine.getTitle())
-                    .content(routine.getContent())
-                    .isSuccess(routine.getIsSucceed())
-                    .isPushed(routine.getIsPushed())
-                    .startTime(routine.getStartTime())
-                    .endTime(routine.getEndTime())
-                    .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
-                    .build();
-
-            responses.add(routineResponse);
+            responses.add(
+                    RoutineResponse.builder()
+                            .routineId(routine.getRoutineId())
+                            .title(routine.getTitle())
+                            .content(routine.getContent())
+                            .isSuccess(routine.getIsSucceed())
+                            .isPushed(routine.getIsPushed())
+                            .startTime(routine.getStartTime())
+                            .endTime(routine.getEndTime())
+                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
+                            .build()
+            );
         }
 
         return responses;
@@ -144,14 +144,14 @@ public class RoutineServiceImpl implements RoutineService{
         System.out.println(dayOfWeek);
 
         Page<RoutineWeek> routines = routineWeekRepository
-                .findDistinctByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
+                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
                         user.getEmail(),
                         dayOfWeek,
                         LocalTime.now(),
                         LocalTime.now(),
                         PageRequest.of(
-                                0,
-                                MAIN_PAGE_NUM
+                                pageNum,
+                                PAGE_NUM
                         )
                 );
 
@@ -170,7 +170,7 @@ public class RoutineServiceImpl implements RoutineService{
         System.out.println(dayOfWeek);
 
         Page<RoutineWeek> routines = routineWeekRepository
-                .findDistinctByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
+                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
                         user.getEmail(),
                         dayOfWeek,
                         LocalTime.now(),
@@ -180,6 +180,9 @@ public class RoutineServiceImpl implements RoutineService{
                                 MAIN_PAGE_NUM
                         )
                 );
+
+        if(!routines.isEmpty())
+            System.out.println(routines.toList().get(0).getDayOfWeek());
 
         return setRoutineResponse(routines);
     }
