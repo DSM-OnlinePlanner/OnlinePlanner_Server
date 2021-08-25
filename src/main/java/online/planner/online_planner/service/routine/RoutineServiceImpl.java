@@ -139,19 +139,19 @@ public class RoutineServiceImpl implements RoutineService{
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
-        LocalTime end = ChronoUnit.HOURS.addTo(LocalDateTime.now(ZoneId.of("Asia/Seoul")), 1).toLocalTime();
-
         int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
+        System.out.println(dayOfWeek);
+
         Page<RoutineWeek> routines = routineWeekRepository
-                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
+                .findDistinctByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
                         user.getEmail(),
                         dayOfWeek,
                         LocalTime.now(),
-                        end,
+                        LocalTime.now(),
                         PageRequest.of(
-                                pageNum,
-                                PAGE_NUM
+                                0,
+                                MAIN_PAGE_NUM
                         )
                 );
 
@@ -165,16 +165,16 @@ public class RoutineServiceImpl implements RoutineService{
 
         System.out.println(LocalTime.now(ZoneId.of("Asia/Seoul")));
 
-        LocalTime end = ChronoUnit.HOURS.addTo(LocalDateTime.now(ZoneId.of("Asia/Seoul")), 1).toLocalTime();
-
         int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
+        System.out.println(dayOfWeek);
+
         Page<RoutineWeek> routines = routineWeekRepository
-                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
+                .findDistinctByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
                         user.getEmail(),
                         dayOfWeek,
                         LocalTime.now(),
-                        end,
+                        LocalTime.now(),
                         PageRequest.of(
                                 0,
                                 MAIN_PAGE_NUM
