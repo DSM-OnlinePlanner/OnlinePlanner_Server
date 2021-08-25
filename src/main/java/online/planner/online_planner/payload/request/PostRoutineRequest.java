@@ -16,7 +16,6 @@ public class PostRoutineRequest {
     private String title;
     @NotNull
     private String content;
-    @NotBlank
     private List<Weeks> weeks;
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime startTime;
