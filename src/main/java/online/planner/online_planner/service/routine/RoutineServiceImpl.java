@@ -43,7 +43,6 @@ public class RoutineServiceImpl implements RoutineService{
     private final RoutineRepository routineRepository;
     private final RoutineWeekRepository routineWeekRepository;
     private final UserLevelRepository userLevelRepository;
-    private final AchievementRepository achievementRepository;
 
     private final JwtProvider jwtProvider;
     private final UserLevelUtil userLevelUtil;
@@ -73,22 +72,20 @@ public class RoutineServiceImpl implements RoutineService{
         List<RoutineResponse> responses = new ArrayList<>();
 
         for(RoutineWeek routineWeek : routines) {
-            Routine routine = routineWeek.getRoutine();
-
             responses.add(
                     RoutineResponse.builder()
-                            .routineId(routine.getRoutineId())
-                            .title(routine.getTitle())
-                            .content(routine.getContent())
-                            .isSuccess(routine.getIsSucceed())
-                            .isPushed(routine.getIsPushed())
-                            .startTime(routine.getStartTime())
-                            .endTime(routine.getEndTime())
-                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
+                            .routineId(routineWeek.getRoutine().getRoutineId())
+                            .title(routineWeek.getRoutine().getTitle())
+                            .content(routineWeek.getRoutine().getContent())
+                            .isSuccess(routineWeek.getRoutine().getIsSucceed())
+                            .isPushed(routineWeek.getRoutine().getIsPushed())
+                            .startTime(routineWeek.getRoutine().getStartTime())
+                            .endTime(routineWeek.getRoutine().getEndTime())
+                            .dayOfWeeks(setRoutineWeeks(routineWeek.getRoutine().getRoutineId()))
                             .build()
             );
 
-            System.out.println(routine.getTitle() + Arrays.toString(routines.toList().toArray()));
+            System.out.println(routineWeek.getRoutine().getTitle() + Arrays.toString(routines.toList().toArray()));
         }
 
         return responses;
@@ -184,8 +181,10 @@ public class RoutineServiceImpl implements RoutineService{
                         )
                 );
 
-        if(!routines.isEmpty())
+        if(!routines.isEmpty()) {
             System.out.println(routines.toList().get(0).getDayOfWeek());
+            System.out.println(routines.toList().get(0).getRoutine().getTitle());
+        }
 
         return setRoutineResponse(routines);
     }
