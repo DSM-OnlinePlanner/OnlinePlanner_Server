@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Stream;
@@ -86,6 +87,8 @@ public class RoutineServiceImpl implements RoutineService{
                             .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
                             .build()
             );
+
+            System.out.println(routine.getTitle() + Arrays.toString(routines.toList().toArray()));
         }
 
         return responses;
