@@ -99,6 +99,8 @@ public class RoutineServiceImpl implements RoutineService{
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(UserLevelNotFoundException::new);
 
+        System.out.println(postRoutineRequest.getWeeks());
+
         Routine routine = routineRepository.save(
                 Routine.builder()
                         .title(postRoutineRequest.getTitle())
@@ -115,7 +117,7 @@ public class RoutineServiceImpl implements RoutineService{
         );
 
         for(Weeks weeks : postRoutineRequest.getWeeks()) {
-            if(routineWeekRepository.existsByRoutine_RoutineIdAndDayOfWeek(routine.getRoutineId(), weeks.getDayOfWeek()))
+            if(!routineWeekRepository.existsByRoutine_RoutineIdAndDayOfWeek(routine.getRoutineId(), weeks.getDayOfWeek()))
                 routineWeekRepository.save(
                         RoutineWeek.builder()
                                 .routine(routine)
