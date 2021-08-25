@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -21,4 +22,5 @@ public interface RoutineRepository extends JpaRepository<Routine, Long> {
     int countByEmailAndIsSucceedAndWriteAt(String email, Boolean isSucceed, LocalDate writeAt);
 
     List<Routine> findAllByIsPushed(Boolean isPushed);
+    Optional<Routine> findByRoutineId(long routineId);
 }

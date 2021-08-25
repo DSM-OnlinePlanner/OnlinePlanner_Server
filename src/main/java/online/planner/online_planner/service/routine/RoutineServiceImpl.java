@@ -72,20 +72,23 @@ public class RoutineServiceImpl implements RoutineService{
         List<RoutineResponse> responses = new ArrayList<>();
 
         for(RoutineWeek routineWeek : routines) {
+            Routine routine = routineRepository.findByRoutineId(routineWeek.getRoutineId())
+                    .orElseThrow(RoutineNotFounException::new);
+
             responses.add(
                     RoutineResponse.builder()
-                            .routineId(routineWeek.getRoutine().getRoutineId())
-                            .title(routineWeek.getRoutine().getTitle())
-                            .content(routineWeek.getRoutine().getContent())
-                            .isSuccess(routineWeek.getRoutine().getIsSucceed())
-                            .isPushed(routineWeek.getRoutine().getIsPushed())
-                            .startTime(routineWeek.getRoutine().getStartTime())
-                            .endTime(routineWeek.getRoutine().getEndTime())
-                            .dayOfWeeks(setRoutineWeeks(routineWeek.getRoutine().getRoutineId()))
+                            .routineId(routine.getRoutineId())
+                            .title(routine.getTitle())
+                            .content(routine.getContent())
+                            .isSuccess(routine.getIsSucceed())
+                            .isPushed(routine.getIsPushed())
+                            .startTime(routine.getStartTime())
+                            .endTime(routine.getEndTime())
+                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
                             .build()
             );
 
-            System.out.println(routineWeek.getRoutine().getTitle() + Arrays.toString(routines.toList().toArray()));
+            System.out.println(routine.getTitle() + routine);
         }
 
         return responses;
@@ -120,8 +123,9 @@ public class RoutineServiceImpl implements RoutineService{
             if(!routineWeekRepository.existsByRoutine_RoutineIdAndDayOfWeek(routine.getRoutineId(), weeks.getDayOfWeek()))
                 routineWeekRepository.save(
                         RoutineWeek.builder()
-                                .routine(routine)
+                                .routineId(routine.getRoutineId())
                                 .dayOfWeek(weeks.getDayOfWeek())
+                                .routine(routine)
                                 .build()
                 );
         }
@@ -183,7 +187,6 @@ public class RoutineServiceImpl implements RoutineService{
 
         if(!routines.isEmpty()) {
             System.out.println(routines.toList().get(0).getDayOfWeek());
-            System.out.println(routines.toList().get(0).getRoutine().getTitle());
         }
 
         return setRoutineResponse(routines);
@@ -204,7 +207,7 @@ public class RoutineServiceImpl implements RoutineService{
             routineWeekRepository.save(
                     RoutineWeek.builder()
                             .dayOfWeek(weeks.getDayOfWeek())
-                            .routine(routine)
+                            .routineId(routine.getRoutineId())
                             .build()
             );
         }
