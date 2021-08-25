@@ -23,9 +23,13 @@ public enum ErrorCode {
     DEVICE_TOKEN_NOT_FOUND("device token not found", 404),
     ACHIEVEMENT_NOT_FOUND("achievement not found", 404),
     NOT_SEND_EMAIL("user email not found", 404),
-    ALREADY_USER_SIGNED("already user signed", 409),
-    ALREADY_USER_MAIL_SEND("mail already send", 409),
-    AUTH_CODE_FAILED("Auth Code auth Failed", 409),
+    FAILED_PLANNER("planner already failed", 403),
+    SUCCEED_PLANNER("planner already succeed", 403),
+    FAILED_ROUTINE("routine already failed", 403),
+    SUCCEED_ROUTINE("routine already succeed", 403),
+    ALREADY_USER_SIGNED("already user signed", 403),
+    ALREADY_USER_MAIL_SEND("mail already send", 403),
+    AUTH_CODE_FAILED("Auth Code auth Failed", 403),
     CONVERT_FAILED("convert failed", 500),
     DECODING_FAILED("aes256 decode failed", 500);
 

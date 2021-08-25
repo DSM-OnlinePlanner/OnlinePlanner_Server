@@ -21,6 +21,8 @@ public interface RoutineRepository extends JpaRepository<Routine, Long> {
     int countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, Boolean isSuccess, LocalDate writeAt, LocalDate writeAt2);
     int countByEmailAndIsSucceedAndWriteAt(String email, Boolean isSucceed, LocalDate writeAt);
 
+    List<Routine> findAllByIsFailedOrIsSucceed(Boolean isFailed, Boolean isSucceed);
+
     List<Routine> findAllByIsPushed(Boolean isPushed);
     Optional<Routine> findByRoutineId(long routineId);
 }

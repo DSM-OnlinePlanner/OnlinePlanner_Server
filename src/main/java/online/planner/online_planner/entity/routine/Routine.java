@@ -41,6 +41,8 @@ public class Routine {
 
     private Boolean isSucceed;
 
+    private Boolean isFailed;
+
     private Boolean isPushed;
 
     private LocalDate writeAt;
@@ -49,7 +51,7 @@ public class Routine {
     private List<RoutineWeek> routineWeeks;
 
     public Routine updateSucceed() {
-        this.isSucceed = !isSucceed;
+        this.isSucceed = true;
 
         return this;
     }
@@ -62,6 +64,12 @@ public class Routine {
 
     public Routine updatePriority(Priority priority) {
         this.priority = priority;
+
+        return this;
+    }
+
+    public Routine updateFailed() {
+        this.isFailed = true;
 
         return this;
     }

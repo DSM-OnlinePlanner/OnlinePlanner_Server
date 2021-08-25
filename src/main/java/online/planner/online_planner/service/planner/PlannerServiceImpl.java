@@ -8,9 +8,7 @@ import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
-import online.planner.online_planner.error.exceptions.PlannerNotFoundException;
-import online.planner.online_planner.error.exceptions.UserLevelNotFoundException;
-import online.planner.online_planner.error.exceptions.UserNotFoundException;
+import online.planner.online_planner.error.exceptions.*;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
 import online.planner.online_planner.util.AchieveUtil;
@@ -58,6 +56,8 @@ public class PlannerServiceImpl implements PlannerService{
                         .startTime(plannerRequest.getStartTime())
                         .endTime(plannerRequest.getEndTime())
                         .isSuccess(false)
+                        .isFailed(false)
+                        .isPushed(false)
                         .priority(plannerRequest.getPriority())
                         .want(plannerRequest.getWant())
                         .expType(ExpType.PLANNER)
@@ -116,6 +116,9 @@ public class PlannerServiceImpl implements PlannerService{
 
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(UserLevelNotFoundException::new);
+
+        if(planner.getIsFailed())
+            throw new FailedPlannerException();
 
         userLevelUtil.userLevelManagement(userLevel, planner.getExpType());
 
@@ -211,6 +214,22 @@ public class PlannerServiceImpl implements PlannerService{
         notNull.setIfNotNull(planner::setEndTime, latePlannerRequest.getEndTime());
 
         plannerRepository.save(planner);
+    }
+
+    @Override
+    public void failedPlanner(String token, Long plannerId) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
+                .orElseThrow(PlannerNotFoundException::new);
+
+        if(planner.getIsSuccess())
+            throw new SucceedRoutineException();
+
+        plannerRepository.save(
+                planner.updateFailed()
+        );
     }
 
     @Override

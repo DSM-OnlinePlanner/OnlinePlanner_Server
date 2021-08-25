@@ -49,10 +49,12 @@ public class Planner {
 
     private Boolean isPushed;
 
+    private Boolean isFailed;
+
     private LocalDate writeAt;
 
     public Planner checkSuccess() {
-        this.isSuccess = !isSuccess;
+        this.isSuccess = true;
 
         return this;
     }
@@ -66,6 +68,12 @@ public class Planner {
     public Planner updatePriority(Priority priority, Want want) {
         this.priority = priority;
         this.want = want;
+
+        return this;
+    }
+
+    public Planner updateFailed() {
+        this.isFailed = true;
 
         return this;
     }

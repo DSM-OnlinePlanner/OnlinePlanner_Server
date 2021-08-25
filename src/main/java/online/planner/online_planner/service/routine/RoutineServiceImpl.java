@@ -12,10 +12,7 @@ import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
-import online.planner.online_planner.error.exceptions.ConvertFailedException;
-import online.planner.online_planner.error.exceptions.RoutineNotFounException;
-import online.planner.online_planner.error.exceptions.UserLevelNotFoundException;
-import online.planner.online_planner.error.exceptions.UserNotFoundException;
+import online.planner.online_planner.error.exceptions.*;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.RoutineResponse;
 import online.planner.online_planner.util.AchieveUtil;
@@ -116,6 +113,7 @@ public class RoutineServiceImpl implements RoutineService{
                         .isPushed(postRoutineRequest.isPushed())
                         .writeAt(LocalDate.now(ZoneId.of("Asia/Seoul")))
                         .isSucceed(false)
+                        .isFailed(false)
                         .build()
         );
 
@@ -210,7 +208,7 @@ public class RoutineServiceImpl implements RoutineService{
         if(!routines.isEmpty()) {
             System.out.println(routines.toList().get(0).getDayOfWeek());
         }
-        
+
         List<RoutineResponse> responses = new ArrayList<>();
 
         for(RoutineWeek routineWeek : routines) {
@@ -315,11 +313,13 @@ public class RoutineServiceImpl implements RoutineService{
         Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RoutineNotFounException::new);
 
-
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(UserLevelNotFoundException::new);
 
         userLevelUtil.userLevelManagement(userLevel, routine.getExpType());
+
+        if(routine.getIsFailed())
+            throw new FailedRoutineException();
 
         routineRepository.save(
                 routine.updateSucceed()
@@ -330,6 +330,22 @@ public class RoutineServiceImpl implements RoutineService{
                 userLevel,
                 false,
                 true
+        );
+    }
+
+    @Override
+    public void failedRoutine(String token, Long routineId) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
+                .orElseThrow(RoutineNotFounException::new);
+
+        if(routine.getIsSucceed())
+            throw new SucceedRoutineException();
+
+        routineRepository.save(
+                routine.updateFailed()
         );
     }
 

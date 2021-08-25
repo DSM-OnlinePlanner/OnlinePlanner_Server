@@ -20,6 +20,7 @@ public class RoutineResponse {
     private LocalTime endTime;
     private Boolean isSuccess;
     private Boolean isPushed;
+    private Boolean isFailed;
     private Priority priority;
     private List<String> dayOfWeeks;
 }

@@ -15,5 +15,6 @@ public interface RoutineService {
     void updateIsPushed(String token, Long routineId);
     void updatePriority(String token, UpdateRoutinePriorityRequest updateRoutinePriorityRequest, Long routineId);
     void checkRoutine(String token, Long routineId);
+    void failedRoutine(String token, Long routineId);
     void deleteRoutine(String token, Long routineId);
 }
