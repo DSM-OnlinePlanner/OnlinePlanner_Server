@@ -43,55 +43,55 @@ public class StatisticsServiceImpl implements StatisticsService {
         int maxPlannerWeek = plannerRepository
                 .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
-                        weekEnd,
-                        weekStart
+                        weekStart,
+                        weekEnd
                 );
         int maxRoutineWeek = routineRepository
                 .countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
                         true,
-                        weekEnd,
-                        weekStart
+                        weekStart,
+                        weekEnd
                 );
         int succeedPlannerWeek = plannerRepository
                 .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
-                        weekEnd,
-                        weekStart
+                        weekStart,
+                        weekEnd
                 );
         int succeedRoutineWeek = routineRepository
                 .countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
                         true,
-                        weekEnd,
-                        weekStart
+                        weekStart,
+                        weekEnd
                 );
 
         int maxPlannerMonth = plannerRepository
                 .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
-                        monthEnd,
-                        monthStart
+                        monthStart,
+                        monthEnd
                 );
         int maxRoutineMonth = routineRepository
                 .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
-                        monthEnd,
-                        monthStart
+                        monthStart,
+                        monthEnd
                 );
         int succeedPlannerMonth = plannerRepository
                 .countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
                         true,
-                        monthEnd,
-                        monthStart
+                        monthStart,
+                        monthEnd
                 );
         int succeedRoutineMonth = routineRepository
                 .countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
                         true,
-                        monthEnd,
-                        monthStart
+                        monthStart,
+                        monthEnd
                 );
 
         LocalDate sevenDaysAgo = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(7);
