@@ -142,7 +142,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 );
 
         return PlannerStatisticsResponse.builder()
-                .statistics((double) (succeedPlannerToday / maxPlannerToday * 100))
+                .statistics(succeedPlannerToday == 0 ? 0 : (double) (succeedPlannerToday / maxPlannerToday * 100))
                 .build();
     }
 
