@@ -6,6 +6,7 @@ import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.error.exceptions.NoticeNotFoundException;
 import online.planner.online_planner.error.exceptions.UserNotFoundException;
+import online.planner.online_planner.payload.response.ExistNoticeResponse;
 import online.planner.online_planner.payload.response.NoticeResponse;
 import online.planner.online_planner.util.JwtProvider;
 import org.springframework.data.domain.Page;
@@ -46,5 +47,15 @@ public class NoticeServiceImpl implements NoticeService {
                 .orElseThrow(NoticeNotFoundException::new);
 
         noticeRepository.deleteByEmailAndNoticeId(user.getEmail(), noticeId);
+    }
+
+    @Override
+    public ExistNoticeResponse existNotice(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        return ExistNoticeResponse.builder()
+                .isNoticed(noticeRepository.existsByEmail(user.getEmail()))
+                .build();
     }
 }

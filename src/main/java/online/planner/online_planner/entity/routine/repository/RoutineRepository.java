@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
-    Page<Routine> findAllByEmailAndStartTimeLessThanEqualAndEndTimeGreaterThanEqualOrderByStartTimeAsc(String email, LocalTime startTime, LocalTime endTime, Pageable pageable);
+    Page<Routine> findAllByEmailAndTitleContainingOrderByStartTimeAsc(String email, String title, Pageable pageable);
     Optional<Routine> findByRoutineIdAndEmail(long routineId, String email);
     void deleteByRoutineId(long routineId);
     int countByEmail(String email);
