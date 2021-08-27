@@ -98,10 +98,12 @@ public class StatisticsServiceImpl implements StatisticsService {
         List<PointResponse> pointResponses = new ArrayList<>();
 
         for(int i = 0; i < 7; i++) {
+            LocalDate date = sevenDaysAgo.plusDays(i);
+
             int succeedPlanner = plannerRepository
-                    .countByEmailAndIsSuccessAndWriteAt(user.getEmail(), true, sevenDaysAgo);
+                    .countByEmailAndIsSuccessAndWriteAt(user.getEmail(), true, date);
             int succeedRoutine = routineRepository
-                    .countByEmailAndIsSucceedAndWriteAt(user.getEmail(), true, sevenDaysAgo);
+                    .countByEmailAndIsSucceedAndWriteAt(user.getEmail(), true, date);
 
             pointResponses.add(
                     PointResponse.builder()
@@ -109,8 +111,6 @@ public class StatisticsServiceImpl implements StatisticsService {
                             .succeedNum(succeedPlanner + succeedRoutine)
                             .build()
             );
-
-            sevenDaysAgo.plusDays(1);
         }
 
         return StatisticsResponse.builder()
