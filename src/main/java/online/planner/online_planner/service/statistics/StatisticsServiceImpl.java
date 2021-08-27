@@ -47,15 +47,15 @@ public class StatisticsServiceImpl implements StatisticsService {
                         weekEnd
                 );
         int maxRoutineWeek = routineRepository
-                .countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
+                .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
-                        true,
                         weekStart,
                         weekEnd
                 );
         int succeedPlannerWeek = plannerRepository
-                .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
+                .countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
+                        true,
                         weekStart,
                         weekEnd
                 );
