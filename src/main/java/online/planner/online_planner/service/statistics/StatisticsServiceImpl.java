@@ -97,18 +97,16 @@ public class StatisticsServiceImpl implements StatisticsService {
         LocalDate sevenDaysAgo = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(7);
         List<PointResponse> pointResponses = new ArrayList<>();
 
-        for(int i = 0; i < 7; i++) {
+        for(int i = 0; i <= 7; i++) {
             LocalDate date = sevenDaysAgo.plusDays(i);
 
             int succeedPlanner = plannerRepository
-                    .countByEmailAndIsSuccessAndWriteAt(user.getEmail(), true, date);
-            int succeedRoutine = routineRepository
-                    .countByEmailAndIsSucceedAndWriteAt(user.getEmail(), true, date);
+                    .countByEmailAndIsSuccessAndStartDateLessThanEqualAndEndDateGreaterThanEqual(user.getEmail(), true, date, date);
 
             pointResponses.add(
                     PointResponse.builder()
-                            .date(sevenDaysAgo.getDayOfMonth())
-                            .succeedNum(succeedPlanner + succeedRoutine)
+                            .date(date.getDayOfMonth())
+                            .succeedNum(succeedPlanner)
                             .build()
             );
         }
