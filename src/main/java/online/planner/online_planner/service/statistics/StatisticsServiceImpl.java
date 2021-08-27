@@ -6,6 +6,7 @@ import online.planner.online_planner.entity.routine.repository.RoutineRepository
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.error.exceptions.UserNotFoundException;
+import online.planner.online_planner.payload.response.PlannerStatisticsResponse;
 import online.planner.online_planner.payload.response.PointResponse;
 import online.planner.online_planner.payload.response.StatisticsResponse;
 import online.planner.online_planner.util.JwtProvider;
@@ -119,4 +120,31 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .pointResponses(pointResponses)
                 .build();
     }
+
+    @Override
+    public PlannerStatisticsResponse getStatistics(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        int maxPlannerToday = plannerRepository
+                .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
+                        user.getEmail(),
+                        LocalDate.now(),
+                        LocalDate.now()
+                );
+
+        int succeedPlannerToday = plannerRepository
+                .countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
+                        user.getEmail(),
+                        true,
+                        LocalDate.now(),
+                        LocalDate.now()
+                );
+
+        return PlannerStatisticsResponse.builder()
+                .statistics((double) (succeedPlannerToday / maxPlannerToday * 100))
+                .build();
+    }
+
+
 }
