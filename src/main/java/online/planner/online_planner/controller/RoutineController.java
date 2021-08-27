@@ -69,6 +69,12 @@ public class RoutineController {
         routineService.checkRoutine(token, routineId);
     }
 
+    @PutMapping("/failed/{routineId}")
+    public void failedRoutine(@RequestHeader("Authorization") String token,
+                              @PathVariable Long routineId) {
+        routineService.failedRoutine(token, routineId);
+    }
+
     @PutMapping("/pushed/{routineId}")
     public void updateRoutineIsPushed(@RequestHeader("Authorization") String token,
                                       @PathVariable Long routineId) {
