@@ -11,6 +11,7 @@ import online.planner.online_planner.entity.user_level.repository.UserLevelRepos
 import online.planner.online_planner.error.exceptions.*;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
+import online.planner.online_planner.payload.response.SearchPlannerResponse;
 import online.planner.online_planner.util.AchieveUtil;
 import online.planner.online_planner.util.JwtProvider;
 import online.planner.online_planner.util.NotNull;
@@ -104,6 +105,27 @@ public class PlannerServiceImpl implements PlannerService{
                 );
 
         return planners.toList();
+    }
+
+    @Override
+    public SearchPlannerResponse searchPlanner(String token, String title) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        Page<PlannerResponse> plannerResponses = plannerRepository
+                .findAllByEmailAndTitleContainingOrderByStartDateAsc(
+                        user.getEmail(),
+                        title,
+                        PageRequest.of(
+                                0,
+                                3
+                        )
+                );
+
+        return SearchPlannerResponse.builder()
+                .plannerResponses(plannerResponses.toList())
+                .searchNum(plannerRepository.countByEmail(user.getEmail()))
+                .build();
     }
 
     @Override
