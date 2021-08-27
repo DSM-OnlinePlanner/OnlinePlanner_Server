@@ -1,12 +1,10 @@
 package online.planner.online_planner.controller;
 
 import lombok.RequiredArgsConstructor;
+import online.planner.online_planner.payload.response.PlannerStatisticsResponse;
 import online.planner.online_planner.payload.response.StatisticsResponse;
 import online.planner.online_planner.service.statistics.StatisticsService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/statistics")
@@ -18,5 +16,10 @@ public class StatisticsController {
     @GetMapping
     public StatisticsResponse getStatistics(@RequestHeader("Authorization") String token) {
         return statisticsService.getMyStatistics(token);
+    }
+
+    @GetMapping("/planner")
+    public PlannerStatisticsResponse getPlannerStatistics(@RequestHeader("Authorization") String token) {
+        return statisticsService.getStatistics(token);
     }
 }

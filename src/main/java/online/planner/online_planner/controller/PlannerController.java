@@ -3,6 +3,7 @@ package online.planner.online_planner.controller;
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.PlannerResponse;
+import online.planner.online_planner.payload.response.SearchPlannerResponse;
 import online.planner.online_planner.service.planner.PlannerService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,12 @@ public class PlannerController {
     public List<PlannerResponse> getMainPlannerList(@RequestHeader("Authorization") String token,
                                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return plannerService.mainPlanner(token, date);
+    }
+
+    @GetMapping("/search")
+    public SearchPlannerResponse searchPlanner(@RequestHeader("Authorization") String token,
+                                               @RequestParam String title) {
+        return plannerService.searchPlanner(token, title);
     }
 
     @PostMapping

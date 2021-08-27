@@ -3,6 +3,7 @@ package online.planner.online_planner.controller;
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.RoutineResponse;
+import online.planner.online_planner.payload.response.SearchRoutineResponse;
 import online.planner.online_planner.service.routine.RoutineService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,12 @@ public class RoutineController {
     public List<RoutineResponse> readRoutine(@RequestHeader("Authorization") String token,
                                              @PathVariable Integer pageNum) {
         return routineService.readRoutine(token, pageNum);
+    }
+
+    @GetMapping("/search")
+    public SearchRoutineResponse searchRoutine(@RequestHeader("Authorization") String token,
+                                               @RequestParam String title) {
+        return routineService.searchRoutine(token, title);
     }
 
     @PostMapping
