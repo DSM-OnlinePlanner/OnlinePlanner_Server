@@ -1,7 +1,6 @@
 package online.planner.online_planner.service.routine;
 
 import lombok.RequiredArgsConstructor;
-import online.planner.online_planner.entity.achivement.repository.AchievementRepository;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.routine.Routine;
 import online.planner.online_planner.entity.routine.repository.RoutineRepository;
@@ -15,6 +14,7 @@ import online.planner.online_planner.entity.user_level.repository.UserLevelRepos
 import online.planner.online_planner.error.exceptions.*;
 import online.planner.online_planner.payload.request.*;
 import online.planner.online_planner.payload.response.RoutineResponse;
+import online.planner.online_planner.payload.response.SearchRoutineResponse;
 import online.planner.online_planner.util.AchieveUtil;
 import online.planner.online_planner.util.JwtProvider;
 import online.planner.online_planner.util.NotNull;
@@ -25,9 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Stream;
@@ -65,12 +63,11 @@ public class RoutineServiceImpl implements RoutineService{
         return weeks;
     }
 
-    private List<RoutineResponse> setRoutineResponse(Page<RoutineWeek> routines) {
+    private List<RoutineResponse> setRoutineResponse(Page<Routine> routines) {
         List<RoutineResponse> responses = new ArrayList<>();
 
-        for(RoutineWeek routineWeek : routines) {
-            Routine routine = routineRepository.findByRoutineId(routineWeek.getRouId())
-                    .orElseThrow(RoutineNotFounException::new);
+        for(Routine routine : routines) {
+            List<RoutineWeek> routineWeeks = routineWeekRepository.findAllByRoutine_RoutineId(routine.getRoutineId());
 
             responses.add(
                     RoutineResponse.builder()
@@ -232,6 +229,27 @@ public class RoutineServiceImpl implements RoutineService{
         }
 
         return responses;
+    }
+
+    @Override
+    public SearchRoutineResponse searchRoutine(String token, String title) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        Page<Routine> routines = routineRepository
+                .findAllByEmailAndTitleContainingOrderByStartTimeAsc(
+                        user.getEmail(),
+                        title,
+                        PageRequest.of(
+                                0,
+                                MAIN_PAGE_NUM
+                        )
+                );
+
+        return SearchRoutineResponse.builder()
+                .routineResponses(setRoutineResponse(routines))
+                .searchNum(routineRepository.countByEmail(user.getEmail()))
+                .build();
     }
 
     @Override
