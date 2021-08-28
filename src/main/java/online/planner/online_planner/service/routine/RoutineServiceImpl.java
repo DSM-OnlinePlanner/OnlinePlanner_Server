@@ -248,7 +248,7 @@ public class RoutineServiceImpl implements RoutineService{
 
         return SearchRoutineResponse.builder()
                 .routineResponses(setRoutineResponse(routines))
-                .searchNum(routineRepository.countByEmail(user.getEmail()))
+                .searchNum(routineRepository.countByEmailAndTitleContaining(user.getEmail(), title))
                 .build();
     }
 

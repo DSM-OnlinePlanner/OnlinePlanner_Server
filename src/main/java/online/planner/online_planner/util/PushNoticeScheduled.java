@@ -2,6 +2,8 @@ package online.planner.online_planner.util;
 
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.entity.device_token.repository.DeviceTokenRepository;
+import online.planner.online_planner.entity.notice.Notice;
+import online.planner.online_planner.entity.notice.repository.NoticeRepository;
 import online.planner.online_planner.entity.planner.Planner;
 import online.planner.online_planner.entity.planner.repository.PlannerRepository;
 import online.planner.online_planner.entity.routine.Routine;
@@ -11,7 +13,9 @@ import online.planner.online_planner.entity.routine_date.repository.RoutineWeekR
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +29,7 @@ public class PushNoticeScheduled {
     private final RoutineWeekRepository routineWeekRepository;
     private final RoutineRepository routineRepository;
     private final PlannerRepository plannerRepository;
+    private final NoticeRepository noticeRepository;
 
     private final FcmUtil fcmUtil;
 
@@ -39,16 +44,6 @@ public class PushNoticeScheduled {
                 end.toLocalDate()
         );
 
-        List<String> tokens = new ArrayList<>();
-
-        for (Planner planner : pushPlanner) {
-            plannerRepository.save(
-                    planner.updatePush()
-            );
-
-            tokens.addAll(deviceTokenRepository.findAllDeviceTokenByEmail(planner.getEmail()));
-        }
-
         int startHour = start.getHour();
         if(startHour > 12)
             startHour -= 12;
@@ -57,9 +52,31 @@ public class PushNoticeScheduled {
         if(endHour > 12)
             endHour -= 12;
 
+        String notice = String.format("%d시 ~ %d시에 할 일이 있습니다!", startHour, endHour);
+
+        List<String> tokens = new ArrayList<>();
+
+        for (Planner planner : pushPlanner) {
+            plannerRepository.save(
+                    planner.updatePush()
+            );
+
+            noticeRepository.save(
+                    Notice.builder()
+                            .email(planner.getEmail())
+                            .isSee(false)
+                            .title(notice)
+                            .noticeDate(LocalDate.now())
+                            .noticemAt(LocalTime.now())
+                            .build()
+            );
+
+            tokens.addAll(deviceTokenRepository.findAllDeviceTokenByEmail(planner.getEmail()));
+        }
+
         fcmUtil.sendPushMessage(tokens,
                 "[OnlinePlanner]할 일이 있습니다!",
-                String.format("%d시 ~ %d시에 할 일이 있습니다!", startHour, endHour));
+                notice);
     }
 
     @Scheduled(cron = "0 0 */1 * * *")
@@ -79,14 +96,6 @@ public class PushNoticeScheduled {
 
         List<String> tokens = new ArrayList<>();
 
-        for(RoutineWeek routineWeek : routineWeeks) {
-            routineRepository.save(
-                    routineWeek.getRoutine().updatePushed()
-            );
-
-            tokens.addAll(deviceTokenRepository.findAllDeviceTokenByEmail(routineWeek.getRoutine().getEmail()));
-        }
-
         int startHour = start.getHour();
         if(startHour > 12)
             startHour -= 12;
@@ -95,9 +104,30 @@ public class PushNoticeScheduled {
         if(endHour > 12)
             endHour -= 12;
 
+        String notice = String.format("%d시 ~ %d시에 할 일이 있습니다!", startHour, endHour);
+
+        for(RoutineWeek routineWeek : routineWeeks) {
+            routineRepository.save(
+                    routineWeek.getRoutine().updatePushed()
+            );
+
+            noticeRepository.save(
+                    Notice.builder()
+                            .email(routineWeek.getRoutine().getEmail())
+                            .isSee(false)
+                            .title(notice)
+                            .noticeDate(LocalDate.now())
+                            .noticemAt(LocalTime.now())
+                            .build()
+            );
+
+            tokens.addAll(deviceTokenRepository.findAllDeviceTokenByEmail(routineWeek.getRoutine().getEmail()));
+        }
+
         fcmUtil.sendPushMessage(tokens,
                 "[OnlinePlanner]루틴이 있습니다!",
-                String.format("%d시 ~ %d시에 할 일이 있습니다!", startHour, endHour));
+                notice
+        );
     }
 
     @Scheduled(cron = "0 0 0 */1 * *")

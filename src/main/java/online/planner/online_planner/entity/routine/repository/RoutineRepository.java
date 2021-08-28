@@ -16,6 +16,7 @@ public interface RoutineRepository extends JpaRepository<Routine, Long> {
     Optional<Routine> findByRoutineIdAndEmail(long routineId, String email);
     void deleteByRoutineId(long routineId);
     int countByEmail(String email);
+    int countByEmailAndTitleContaining(String email, String title);
     int countByIsSucceedAndEmail(Boolean isSucceed, String email);
     int countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, LocalDate writeAt, LocalDate writeAt2);
     int countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, Boolean isSuccess, LocalDate writeAt, LocalDate writeAt2);

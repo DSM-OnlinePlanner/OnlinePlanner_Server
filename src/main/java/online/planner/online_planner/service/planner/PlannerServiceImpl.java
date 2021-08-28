@@ -124,7 +124,7 @@ public class PlannerServiceImpl implements PlannerService{
 
         return SearchPlannerResponse.builder()
                 .plannerResponses(plannerResponses.toList())
-                .searchNum(plannerRepository.countByEmail(user.getEmail()))
+                .searchNum(plannerRepository.countByEmailAndTitleContaining(user.getEmail(), title))
                 .build();
     }
 
