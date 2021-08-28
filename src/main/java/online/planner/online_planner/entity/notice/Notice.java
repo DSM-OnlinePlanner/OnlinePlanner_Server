@@ -29,4 +29,12 @@ public class Notice {
     private LocalDate noticeDate;
 
     private LocalTime noticemAt;
+
+    private Boolean isSee;
+
+    public Notice updateIsSee() {
+        this.isSee = true;
+
+        return this;
+    }
 }
