@@ -56,7 +56,8 @@ jobs:
             git fetch --all
             git reset --hard origin/main
             git pull origin main
-            cp /home/ubuntu/op_fcm/online-planner-c5272-firebase-adminsdk-nqcf6-af929a2855.json /home/ubuntu/OnlinePlanner_Server/src/main/java/online/planner/online_planner/util/
+            cp /home/ubuntu/op_fcm/online-planner-c5272-firebase-adminsdk-nqcf6-af929a2855.json /home/ubuntu/OnlinePlanner_Server/src/main/resource
+            cat /home/ubuntu/OnlinePlanner_Server/src/main/resource/online-planner-c5272-firebase-adminsdk-nqcf6-af929a2855.json
             gradle build
             docker rm -f op_server
             docker build --tag op_server .
