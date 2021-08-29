@@ -67,8 +67,6 @@ public class RoutineServiceImpl implements RoutineService{
         List<RoutineResponse> responses = new ArrayList<>();
 
         for(Routine routine : routines) {
-            List<RoutineWeek> routineWeeks = routineWeekRepository.findAllByRoutine_RoutineId(routine.getRoutineId());
-
             responses.add(
                     RoutineResponse.builder()
                             .routineId(routine.getRoutineId())
@@ -187,6 +185,11 @@ public class RoutineServiceImpl implements RoutineService{
         System.out.println(LocalTime.now(ZoneId.of("Asia/Seoul")));
 
         int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        if(dayOfWeek == 1)
+            dayOfWeek = 7;
+        else
+            dayOfWeek -= 1;
 
         System.out.println(dayOfWeek);
 
