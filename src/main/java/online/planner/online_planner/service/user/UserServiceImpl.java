@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.entity.achivement.Achievement;
 import online.planner.online_planner.entity.achivement.enums.Achieve;
 import online.planner.online_planner.entity.achivement.repository.AchievementRepository;
+import online.planner.online_planner.entity.device_token.DeviceToken;
 import online.planner.online_planner.entity.device_token.repository.DeviceTokenRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
@@ -76,10 +77,10 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void logout(String deviceToken) {
-        deviceTokenRepository.findByDeviceToken(deviceToken)
+        DeviceToken device = deviceTokenRepository.findByDeviceToken(deviceToken)
                 .orElseThrow(DeviceTokenNotFoundException::new);
 
-        deviceTokenRepository.deleteByDeviceToken(deviceToken);
+        deviceTokenRepository.deleteByEmailAndDeviceToken(device.getEmail(), device.getDeviceToken());
     }
 
     @Override

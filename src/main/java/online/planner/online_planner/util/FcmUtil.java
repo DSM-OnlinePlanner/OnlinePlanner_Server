@@ -7,6 +7,7 @@ import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.MulticastMessage;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
@@ -20,10 +21,10 @@ public class FcmUtil {
 
     public void sendPushMessage(List<String> tokens, String title, String content) {
         try{
-            FileInputStream fileInputStream = new FileInputStream(keyDir);
+            ClassPathResource resource = new ClassPathResource(keyDir);
 
             FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(fileInputStream))
+                    .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
                     .build();
 
             if(FirebaseApp.getApps().isEmpty()) {
