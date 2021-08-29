@@ -99,6 +99,12 @@ public class PlannerController {
         plannerService.latePlanner(token, latePlannerRequest, plannerId);
     }
 
+    @PutMapping("/failed/{plannerId}")
+    public void failedPlanner(@RequestHeader("Authorization") String token,
+                              @PathVariable Long plannerId) {
+        plannerService.failedPlanner(token, plannerId);
+    }
+
     @DeleteMapping("/{plannerId}")
     public void deletePlanner(@RequestHeader("Authorization") String token,
                               @PathVariable Long plannerId) {

@@ -74,9 +74,11 @@ public class PushNoticeScheduled {
             tokens.addAll(deviceTokenRepository.findAllDeviceTokenByEmail(planner.getEmail()));
         }
 
-        fcmUtil.sendPushMessage(tokens,
-                "[OnlinePlanner]할 일이 있습니다!",
-                notice);
+        if(!tokens.isEmpty()) {
+            fcmUtil.sendPushMessage(tokens,
+                    "[OnlinePlanner]할 일이 있습니다!",
+                    notice);
+        }
     }
 
     @Scheduled(cron = "0 0 */1 * * *")
@@ -124,10 +126,12 @@ public class PushNoticeScheduled {
             tokens.addAll(deviceTokenRepository.findAllDeviceTokenByEmail(routineWeek.getRoutine().getEmail()));
         }
 
-        fcmUtil.sendPushMessage(tokens,
-                "[OnlinePlanner]루틴이 있습니다!",
-                notice
-        );
+        if(!tokens.isEmpty()) {
+            fcmUtil.sendPushMessage(tokens,
+                    "[OnlinePlanner]루틴이 있습니다!",
+                    notice
+            );
+        }
     }
 
     @Scheduled(cron = "0 0 0 */1 * *")
