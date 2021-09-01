@@ -17,7 +17,12 @@ public class AchievementController {
 
     @GetMapping
     public List<AchievementResponse> getAchieve(@RequestHeader("Authorization") String token,
-                                                @RequestBody ReadAchieveRequest request) {
-        return achievementService.getAchievement(token, request);
+                                                @RequestParam Boolean isSucceed) {
+        return achievementService.getAchievement(
+                token,
+                ReadAchieveRequest.builder()
+                        .isSucceed(isSucceed)
+                        .build()
+        );
     }
 }
