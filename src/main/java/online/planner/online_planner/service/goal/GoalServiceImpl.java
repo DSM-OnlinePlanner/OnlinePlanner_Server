@@ -1,6 +1,7 @@
 package online.planner.online_planner.service.goal;
 
 import lombok.RequiredArgsConstructor;
+import online.planner.online_planner.entity.achivement.enums.Achieve;
 import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.goal.Goal;
 import online.planner.online_planner.entity.goal.enums.GoalType;
@@ -16,6 +17,7 @@ import online.planner.online_planner.payload.request.PostGoalRequest;
 import online.planner.online_planner.payload.request.UpdateGoalRequest;
 import online.planner.online_planner.payload.response.GoalResponse;
 import online.planner.online_planner.payload.response.GoalResponses;
+import online.planner.online_planner.util.AchieveUtil;
 import online.planner.online_planner.util.JwtProvider;
 import online.planner.online_planner.util.UserLevelUtil;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,7 @@ public class GoalServiceImpl implements GoalService {
 
     private final JwtProvider jwtProvider;
     private final UserLevelUtil userLevelUtil;
+    private final AchieveUtil achieveUtil;
 
     @Override
     public void writeGoal(String token, PostGoalRequest postGoalRequest) {
@@ -48,8 +51,10 @@ public class GoalServiceImpl implements GoalService {
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(UserLevelNotFoundException::new);
 
-        if(goalRepository.countByEmail(user.getEmail()) <= 0)
+        if(goalRepository.countByEmail(user.getEmail()) <= 0) {
             userLevelUtil.userLevelManagement(userLevel, ExpType.FIRST_GOAL);
+            achieveUtil.achieveManagement(userLevel, Achieve.FIRST_GOAL);
+        }
 
         goalRepository.save(
                 Goal.builder()
