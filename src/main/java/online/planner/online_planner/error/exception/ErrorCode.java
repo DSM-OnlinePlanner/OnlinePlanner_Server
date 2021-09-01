@@ -30,6 +30,7 @@ public enum ErrorCode {
     ALREADY_USER_SIGNED("already user signed", 403),
     ALREADY_USER_MAIL_SEND("mail already send", 403),
     AUTH_CODE_FAILED("Auth Code auth Failed", 403),
+    USER_NOT_SAME_DELETE_FAILED("User delete account failed", 403),
     CONVERT_FAILED("convert failed", 500),
     DECODING_FAILED("aes256 decode failed", 500);
 

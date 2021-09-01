@@ -13,4 +13,5 @@ public interface AchievementRepository extends JpaRepository<Achievement, Long> 
     boolean existsByEmailAndIsSucceedAndAchieve(String email, boolean succeed, Achieve achieve);
     Optional<Achievement> findByEmailAndAchieve(String email, Achieve achieve);
     <T> List<T> findByEmailAndIsSucceed(String email, boolean succeed);
+    void deleteAllByEmail(String email);
 }

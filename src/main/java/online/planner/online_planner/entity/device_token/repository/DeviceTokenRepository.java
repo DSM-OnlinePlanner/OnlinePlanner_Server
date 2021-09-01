@@ -15,6 +15,7 @@ public interface DeviceTokenRepository extends JpaRepository<DeviceToken, Device
     Optional<DeviceToken> findByDeviceToken(String deviceToken);
     void deleteByEmailAndDeviceToken(String email, String deviceToken);
     Optional<DeviceToken> findByEmailAndDeviceToken(String email, String deviceToken);
+    void deleteAllByEmail(String email);
 
     @Query("select d.deviceToken from DeviceToken d where d.email = ?1")
     List<String> findAllDeviceTokenByEmail(String email);

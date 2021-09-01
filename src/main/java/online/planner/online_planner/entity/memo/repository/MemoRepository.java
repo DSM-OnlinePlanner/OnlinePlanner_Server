@@ -14,4 +14,6 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
     Optional<Memo> findByMemoIdAndEmail(long memoId, String email);
     void deleteByMemoIdAndEmail(long memoId, String email);
     int countByEmail(String email);
+
+    void deleteAllByEmail(String email);
 }

@@ -14,4 +14,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     void deleteByEmailAndNoticeId(String email, Long noticeId);
     Optional<Notice> findByNoticeIdAndEmail(Long noticeId, String email);
     boolean existsByEmailAndIsSee(String email, Boolean isSee);
+
+    void deleteAllByEmail(String email);
 }

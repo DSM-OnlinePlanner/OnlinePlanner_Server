@@ -13,4 +13,6 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
     <T> List<T> findAllByEmailAndGoalTypeAndGoalDateGreaterThanEqualAndGoalDateLessThanEqualOrderByGoalDateAsc(String email, GoalType goalType, LocalDate start, LocalDate end);
     void deleteByGoalIdAndEmail(Long goalId, String email);
     int countByEmail(String email);
+
+    void deleteAllByEmail(String email);
 }

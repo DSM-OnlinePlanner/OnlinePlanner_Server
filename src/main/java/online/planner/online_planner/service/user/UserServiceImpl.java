@@ -6,15 +6,19 @@ import online.planner.online_planner.entity.achivement.enums.Achieve;
 import online.planner.online_planner.entity.achivement.repository.AchievementRepository;
 import online.planner.online_planner.entity.device_token.DeviceToken;
 import online.planner.online_planner.entity.device_token.repository.DeviceTokenRepository;
+import online.planner.online_planner.entity.goal.repository.GoalRepository;
+import online.planner.online_planner.entity.memo.repository.MemoRepository;
+import online.planner.online_planner.entity.notice.repository.NoticeRepository;
+import online.planner.online_planner.entity.planner.repository.PlannerRepository;
+import online.planner.online_planner.entity.routine.repository.RoutineRepository;
+import online.planner.online_planner.entity.token.repository.TokenRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
 import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.enums.TierLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
-import online.planner.online_planner.error.exceptions.AlreadyUserSignedException;
-import online.planner.online_planner.error.exceptions.DeviceTokenNotFoundException;
-import online.planner.online_planner.error.exceptions.UserLevelNotFoundException;
-import online.planner.online_planner.error.exceptions.UserNotFoundException;
+import online.planner.online_planner.error.exceptions.*;
+import online.planner.online_planner.payload.request.DeleteAccountRequest;
 import online.planner.online_planner.payload.request.PasswordChangeRequest;
 import online.planner.online_planner.payload.request.SignUpRequest;
 import online.planner.online_planner.payload.response.UserResponse;
@@ -32,6 +36,12 @@ public class UserServiceImpl implements UserService{
     private final UserLevelRepository userLevelRepository;
     private final DeviceTokenRepository deviceTokenRepository;
     private final AchievementRepository achievementRepository;
+    private final TokenRepository tokenRepository;
+    private final GoalRepository goalRepository;
+    private final MemoRepository memoRepository;
+    private final NoticeRepository noticeRepository;
+    private final PlannerRepository plannerRepository;
+    private final RoutineRepository routineRepository;
 
     private final JwtProvider jwtProvider;
     private final AES256 aes256;
@@ -124,5 +134,30 @@ public class UserServiceImpl implements UserService{
                 .map(user -> user.updatePassword(aes256.AES_Encode(passwordChangeRequest.getPassword())))
                 .map(userRepository::save)
                 .orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAccount(String token, DeleteAccountRequest deleteAccountRequest) {
+        User user = userRepository.findByEmail(deleteAccountRequest.getEmail())
+                .filter(user1 -> aes256.AES_Decode(user1.getPassword()).equals(deleteAccountRequest.getPassword()))
+                .orElseThrow(UserNotFoundException::new);
+
+        User check = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        if (user != check)
+            throw new UserNotSameDeleteFailedException();
+
+        tokenRepository.deleteAllByEmail(user.getEmail());
+        userLevelRepository.deleteAllByEmail(user.getEmail());
+        deviceTokenRepository.deleteAllByEmail(user.getEmail());
+        achievementRepository.deleteAllByEmail(user.getEmail());
+        goalRepository.deleteAllByEmail(user.getEmail());
+        memoRepository.deleteAllByEmail(user.getEmail());
+        noticeRepository.deleteAllByEmail(user.getEmail());
+        plannerRepository.deleteAllByEmail(user.getEmail());
+        routineRepository.deleteAllByEmail(user.getEmail());
+        userRepository.deleteAllByEmail(user.getEmail());
     }
 }

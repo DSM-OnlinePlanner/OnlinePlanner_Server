@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface UserLevelRepository extends JpaRepository<UserLevel, Long> {
     Optional<UserLevel> findByEmail(String email);
+
+    void deleteAllByEmail(String email);
 }
