@@ -5,11 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import online.planner.online_planner.entity.achivement.enums.Achieve;
+import online.planner.online_planner.entity.achivement.enums.AchieveConvertor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -25,6 +23,7 @@ public class Achievement {
 
     private String email;
 
+    @Convert(converter = AchieveConvertor.class)
     private Achieve achieve;
 
     private Boolean isSucceed;

@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @Builder
 public class AchievementResponse {
     private Long achieveId;
-    private Achieve achieve;
+    private String achieve;
     private boolean isSucceed;
     private LocalDate achieveDate;
     private LocalTime achieveAt;
