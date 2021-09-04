@@ -10,6 +10,7 @@ import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -27,9 +28,10 @@ public class CalenderServiceImpl implements CalendarService {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
-        YearMonth yearMonth = YearMonth.from(date);
-        LocalDate startDate = yearMonth.atDay(1);
-        LocalDate endDate = yearMonth.atEndOfMonth();
+        YearMonth start = YearMonth.from(date.minusMonths(1));
+        YearMonth end = YearMonth.from(date.plusMonths(1));
+        LocalDate startDate = start.atDay(1);
+        LocalDate endDate = end.atEndOfMonth();
 
         return plannerRepository
                 .findAllByEmailAndStartDateGreaterThanEqualOrStartDateLessThanEqualAndEndDateGreaterThanEqualOrEndDateLessThanEqual(
