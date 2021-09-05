@@ -74,6 +74,8 @@ public class RoutineServiceImpl implements RoutineService{
                             .content(routine.getContent())
                             .isSuccess(routine.getIsSucceed())
                             .isPushed(routine.getIsPushed())
+                            .priority(routine.getPriority())
+                            .isFailed(routine.getIsFailed())
                             .startTime(routine.getStartTime())
                             .endTime(routine.getEndTime())
                             .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
@@ -148,26 +150,7 @@ public class RoutineServiceImpl implements RoutineService{
                 )
         );
 
-        List<RoutineResponse> responses = new ArrayList<>();
-
-        for(Routine routine : routines) {
-            responses.add(
-                    RoutineResponse.builder()
-                            .routineId(routine.getRoutineId())
-                            .title(routine.getTitle())
-                            .content(routine.getContent())
-                            .isSuccess(routine.getIsSucceed())
-                            .isPushed(routine.getIsPushed())
-                            .startTime(routine.getStartTime())
-                            .endTime(routine.getEndTime())
-                            .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))
-                            .build()
-            );
-
-            System.out.println(routine.getTitle() + routine);
-        }
-
-        return responses;
+        return setRoutineResponse(routines);
     }
 
     @Override
@@ -215,6 +198,8 @@ public class RoutineServiceImpl implements RoutineService{
                             .content(routine.getContent())
                             .isSuccess(routine.getIsSucceed())
                             .isPushed(routine.getIsPushed())
+                            .priority(routine.getPriority())
+                            .isFailed(routine.getIsFailed())
                             .startTime(routine.getStartTime())
                             .endTime(routine.getEndTime())
                             .dayOfWeeks(setRoutineWeeks(routine.getRoutineId()))

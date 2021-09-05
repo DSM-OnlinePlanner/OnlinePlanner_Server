@@ -19,6 +19,7 @@ import online.planner.online_planner.util.UserLevelUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -255,6 +256,7 @@ public class PlannerServiceImpl implements PlannerService{
     }
 
     @Override
+    @Transactional
     public void deletePlanner(String token, Long plannerId) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
