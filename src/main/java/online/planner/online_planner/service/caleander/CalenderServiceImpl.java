@@ -34,10 +34,8 @@ public class CalenderServiceImpl implements CalendarService {
         LocalDate endDate = end.atEndOfMonth();
 
         return plannerRepository
-                .findAllByEmailAndStartDateGreaterThanEqualOrStartDateLessThanEqualAndEndDateGreaterThanEqualOrEndDateLessThanEqual(
+                .findAllByEmailAndStartDateGreaterThanEqualAndEndDateLessThanEqual(
                         user.getEmail(),
-                        startDate,
-                        endDate,
                         startDate,
                         endDate
                 );

@@ -15,7 +15,7 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
     <T> Page<T> findAllByEmailAndTitleContainingOrderByStartDateAsc(String email, String title, Pageable pageable);
     void deleteByPlannerIdAndEmail(long plannerId, String email);
     Optional<Planner> findByPlannerIdAndEmail(Long plannerId, String email);
-    <T> List<T> findAllByEmailAndStartDateGreaterThanEqualOrStartDateLessThanEqualAndEndDateGreaterThanEqualOrEndDateLessThanEqual(String email, LocalDate startDate, LocalDate startDate2, LocalDate endDate, LocalDate endDate2);
+    <T> List<T> findAllByEmailAndStartDateGreaterThanEqualAndEndDateLessThanEqual(String email, LocalDate startDate, LocalDate endDate);
     int countByIsSuccessAndEmail(Boolean isSuccess, String email);
     int countByEmail(String email);
     int countByEmailAndTitleContaining(String email, String title);
