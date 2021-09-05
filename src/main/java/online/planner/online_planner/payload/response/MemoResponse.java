@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Builder
 public class MemoResponse {
     private Long memoId;
-    private String memo;
+    private String content;
     private MemoType memoType;
     private LocalDate memoAt;
 }
