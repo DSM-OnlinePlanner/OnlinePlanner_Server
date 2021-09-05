@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class CalenderResponse {
+    private String title;
+    private Priority priority;
     private Want want;
     private boolean isSucceed;
     private LocalDate startDate;
