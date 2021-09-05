@@ -140,24 +140,17 @@ public class RoutineServiceImpl implements RoutineService{
 
         System.out.println(dayOfWeek);
 
-        Page<RoutineWeek> routines = routineWeekRepository
-                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeLessThanEqualAndRoutine_EndTimeGreaterThanEqual(
-                        user.getEmail(),
-                        dayOfWeek,
-                        LocalTime.now(),
-                        LocalTime.now(),
-                        PageRequest.of(
-                                pageNum,
-                                PAGE_NUM
-                        )
-                );
+        Page<Routine> routines = routineRepository.findAllByEmailOrderByWriteAtDesc(
+                user.getEmail(),
+                PageRequest.of(
+                        pageNum,
+                        PAGE_NUM
+                )
+        );
 
         List<RoutineResponse> responses = new ArrayList<>();
 
-        for(RoutineWeek routineWeek : routines) {
-            Routine routine = routineRepository.findByRoutineId(routineWeek.getRouId())
-                    .orElseThrow(RoutineNotFounException::new);
-
+        for(Routine routine : routines) {
             responses.add(
                     RoutineResponse.builder()
                             .routineId(routine.getRoutineId())

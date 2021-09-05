@@ -23,6 +23,8 @@ public interface RoutineRepository extends JpaRepository<Routine, Long> {
 
     List<Routine> findAllByIsFailedOrIsSucceed(Boolean isFailed, Boolean isSucceed);
 
+    Page<Routine> findAllByEmailOrderByWriteAtDesc(String email, Pageable pageable);
+
     void deleteAllByEmail(String email);
     List<Routine> findAllByIsPushed(Boolean isPushed);
     Optional<Routine> findByRoutineId(long routineId);
