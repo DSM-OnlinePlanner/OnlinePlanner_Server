@@ -264,6 +264,8 @@ public class RoutineServiceImpl implements RoutineService{
         Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RoutineNotFounException::new);
 
+        System.out.println(updateTimeRequest.getEndTime());
+
         notNull.setIfNotNull(routine::setStartTime, updateTimeRequest.getStartTime());
         notNull.setIfNotNull(routine::setEndTime, updateTimeRequest.getEndTime());
     }
