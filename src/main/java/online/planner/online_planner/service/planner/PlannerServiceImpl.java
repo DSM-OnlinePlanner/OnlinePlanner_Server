@@ -10,6 +10,7 @@ import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
 import online.planner.online_planner.error.exceptions.*;
 import online.planner.online_planner.payload.request.*;
+import online.planner.online_planner.payload.response.PageResponse;
 import online.planner.online_planner.payload.response.PlannerResponse;
 import online.planner.online_planner.payload.response.SearchPlannerResponse;
 import online.planner.online_planner.util.AchieveUtil;
@@ -38,7 +39,7 @@ public class PlannerServiceImpl implements PlannerService{
     private final NotNull notNull;
     private final AchieveUtil achieveUtil;
 
-    public static final Integer MAX_PLANNER_PAGE = 10;
+    public static final Integer MAX_PLANNER_PAGE = 40;
 
     @Override
     public void postPlanner(String token,PlannerRequest plannerRequest) {
@@ -126,6 +127,18 @@ public class PlannerServiceImpl implements PlannerService{
         return SearchPlannerResponse.builder()
                 .plannerResponses(plannerResponses.toList())
                 .searchNum(plannerRepository.countByEmailAndTitleContaining(user.getEmail(), title))
+                .build();
+    }
+
+    @Override
+    public PageResponse getMaxPage(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        int plannerNum = plannerRepository.countByEmail(user.getEmail());
+
+        return PageResponse.builder()
+                .maxPage(plannerNum == 0 ? 0 : (plannerNum / MAX_PLANNER_PAGE) == 0 ? 1 : (plannerNum / MAX_PLANNER_PAGE) + 1)
                 .build();
     }
 

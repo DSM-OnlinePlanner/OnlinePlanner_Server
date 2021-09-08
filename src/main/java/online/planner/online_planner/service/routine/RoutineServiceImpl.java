@@ -13,6 +13,7 @@ import online.planner.online_planner.entity.user_level.UserLevel;
 import online.planner.online_planner.entity.user_level.repository.UserLevelRepository;
 import online.planner.online_planner.error.exceptions.*;
 import online.planner.online_planner.payload.request.*;
+import online.planner.online_planner.payload.response.PageResponse;
 import online.planner.online_planner.payload.response.RoutineResponse;
 import online.planner.online_planner.payload.response.SearchRoutineResponse;
 import online.planner.online_planner.util.AchieveUtil;
@@ -44,7 +45,7 @@ public class RoutineServiceImpl implements RoutineService{
     private final NotNull notNull;
     private final AchieveUtil achieveUtil;
 
-    private final int PAGE_NUM = 10;
+    private final int PAGE_NUM = 40;
     private final int MAIN_PAGE_NUM = 3;
 
     private List<String> setRoutineWeeks(Long routineId) {
@@ -265,6 +266,16 @@ public class RoutineServiceImpl implements RoutineService{
         System.out.println(routineWeeks);
 
         routineWeekRepository.saveAll(routineWeeks);
+    }
+
+    @Override
+    public PageResponse getMaxPage(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        return PageResponse.builder()
+                .maxPage(routineRepository.countByEmail(user.getEmail()) / PAGE_NUM)
+                .build();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package online.planner.online_planner.service.routine;
 
 import online.planner.online_planner.payload.request.*;
+import online.planner.online_planner.payload.response.PageResponse;
 import online.planner.online_planner.payload.response.RoutineResponse;
 import online.planner.online_planner.payload.response.SearchRoutineResponse;
 
@@ -11,6 +12,7 @@ public interface RoutineService {
     List<RoutineResponse> readRoutine(String token, Integer pageNum);
     List<RoutineResponse> mainRoutine(String token);
     SearchRoutineResponse searchRoutine(String token, String title);
+    PageResponse getMaxPage(String token);
     void updateRoutineWeek(String token, UpdateDayOfWeekRequest updateDayOfWeekRequest, Long routineId);
     void updateRoutineTime(String token, UpdateTimeRequest updateTimeRequest, Long routineId);
     void updateTitleAndContent(String token, UpdateTitleAndContentRequest updateTitleAndContentRequest, Long routineId);
