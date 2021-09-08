@@ -55,6 +55,14 @@ public class AchieveUtil {
                     achieveManagement(user, Achieve.PLANNER_1000);
                     userLevelUtil.userLevelManagement(user, ExpType.PLANNER_1000);
                 }
+            } else if(routineNum == 1 && achievementRepository.existsByEmailAndIsSucceedAndAchieve(user.getEmail(), false, Achieve.FIRST_PLANNER)) {
+                if(isRoutine) {
+                    achieveManagement(user, Achieve.FIRST_ROUTINE);
+                    userLevelUtil.userLevelManagement(user, ExpType.FIRST_ROUTINE);
+                }else {
+                    achieveManagement(user, Achieve.FIRST_PLANNER);
+                    userLevelUtil.userLevelManagement(user, ExpType.FIRST_PLANNER);
+                }
             }
         } else {
             if(routineNum == 1 && achievementRepository.existsByEmailAndIsSucceedAndAchieve(user.getEmail(), false, Achieve.SUCCEED_ROUTINE)) {

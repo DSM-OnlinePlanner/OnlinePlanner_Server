@@ -209,6 +209,8 @@ public class RoutineServiceImpl implements RoutineService{
             System.out.println(routine.getTitle() + routine);
         }
 
+        System.out.println(responses);
+
         return responses;
     }
 
