@@ -183,6 +183,8 @@ public class RoutineServiceImpl implements RoutineService{
             System.out.println(routines.toList().get(0).getDayOfWeek());
         }
 
+        System.out.println(routines);
+
         List<RoutineResponse> responses = new ArrayList<>();
 
         for(RoutineWeek routineWeek : routines) {
