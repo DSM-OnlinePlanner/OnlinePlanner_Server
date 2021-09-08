@@ -170,7 +170,7 @@ public class RoutineServiceImpl implements RoutineService{
         System.out.println(dayOfWeek);
 
         Page<RoutineWeek> routines = routineWeekRepository
-                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(
+                .findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeLessThanEqualAndRoutine_EndTimeGreaterThanEqual(
                         user.getEmail(),
                         dayOfWeek,
                         LocalTime.now(),

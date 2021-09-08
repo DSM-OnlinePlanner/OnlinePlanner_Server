@@ -15,7 +15,7 @@ public interface RoutineWeekRepository extends JpaRepository<RoutineWeek, Long> 
     <T> List<T> findAllByRoutine_RoutineId(long routineId);
     void deleteAllByRoutine_RoutineId(long routineId);
     List<RoutineWeek> findAllByDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(int dayOfWeek, LocalTime routine_startTime, LocalTime routine_endTime);
-    Page<RoutineWeek> findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeGreaterThanEqualAndRoutine_EndTimeLessThanEqual(String routine_email, int dayOfWeek, LocalTime routine_startTime, LocalTime routine_endTime, Pageable pageable);
+    Page<RoutineWeek> findAllByRoutine_EmailAndDayOfWeekAndRoutine_StartTimeLessThanEqualAndRoutine_EndTimeGreaterThanEqual(String routine_email, int dayOfWeek, LocalTime routine_startTime, LocalTime routine_endTime, Pageable pageable);
 
     void deleteAllByRoutine(Routine routine);
 }
