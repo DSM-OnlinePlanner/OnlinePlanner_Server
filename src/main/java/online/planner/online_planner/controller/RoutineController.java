@@ -44,21 +44,21 @@ public class RoutineController {
 
     @PutMapping("/{routineId}")
     public void updateTitleAndContent(@RequestHeader("Authorization") String token,
-                                      @Valid @RequestBody UpdateTitleAndContentRequest updateTitleAndContentRequest,
+                                      @RequestBody UpdateTitleAndContentRequest updateTitleAndContentRequest,
                                       @PathVariable Long routineId) {
         routineService.updateTitleAndContent(token, updateTitleAndContentRequest, routineId);
     }
 
     @PutMapping("/time/{routineId}")
     public void updateRoutineTime(@RequestHeader("Authorization") String token,
-                                  @Valid @RequestBody UpdateTimeRequest updateTimeRequest,
+                                  @RequestBody UpdateTimeRequest updateTimeRequest,
                                   @PathVariable Long routineId) {
         routineService.updateRoutineTime(token, updateTimeRequest, routineId);
     }
 
     @PutMapping("/week/{routineId}")
     public void updateRoutineWeek(@RequestHeader("Authorization") String token,
-                                  @Valid @RequestBody UpdateDayOfWeekRequest updateDayOfWeekRequest,
+                                  @RequestBody UpdateDayOfWeekRequest updateDayOfWeekRequest,
                                   @PathVariable Long routineId) {
         routineService.updateRoutineWeek(token, updateDayOfWeekRequest, routineId);
     }

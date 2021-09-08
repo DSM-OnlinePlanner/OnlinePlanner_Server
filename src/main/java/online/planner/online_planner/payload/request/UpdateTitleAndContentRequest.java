@@ -6,8 +6,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 public class UpdateTitleAndContentRequest {
-    @NotBlank
     private String title;
-    @NotBlank
     private String content;
 }

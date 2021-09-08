@@ -7,8 +7,6 @@ import java.time.LocalTime;
 
 @Getter
 public class UpdateTimeRequest {
-    @NotNull
     private LocalTime startTime;
-    @NotNull
     private LocalTime endTime;
 }
