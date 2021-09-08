@@ -246,6 +246,8 @@ public class RoutineServiceImpl implements RoutineService{
 
         routineWeekRepository.deleteAllByRoutine_RoutineId(routine.getRoutineId());
 
+        System.out.println(updateDayOfWeekRequest.getDayOfWeeks());
+
         for(Weeks weeks : updateDayOfWeekRequest.getDayOfWeeks()) {
             routineWeekRepository.save(
                     RoutineWeek.builder()
@@ -264,10 +266,15 @@ public class RoutineServiceImpl implements RoutineService{
         Routine routine = routineRepository.findByRoutineIdAndEmail(routineId, user.getEmail())
                 .orElseThrow(RoutineNotFounException::new);
 
+        System.out.println(updateTimeRequest.getStartTime());
         System.out.println(updateTimeRequest.getEndTime());
+
+        System.out.println(routine.getStartTime());
 
         notNull.setIfNotNull(routine::setStartTime, updateTimeRequest.getStartTime());
         notNull.setIfNotNull(routine::setEndTime, updateTimeRequest.getEndTime());
+
+        routineRepository.save(routine);
     }
 
     @Override
@@ -280,6 +287,8 @@ public class RoutineServiceImpl implements RoutineService{
 
         notNull.setIfNotNull(routine::setTitle, updateTitleAndContentRequest.getTitle());
         notNull.setIfNotNull(routine::setContent, updateTitleAndContentRequest.getContent());
+
+        routineRepository.save(routine);
     }
 
     @Override
