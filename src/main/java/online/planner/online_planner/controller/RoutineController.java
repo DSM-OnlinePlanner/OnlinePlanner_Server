@@ -2,6 +2,7 @@ package online.planner.online_planner.controller;
 
 import lombok.RequiredArgsConstructor;
 import online.planner.online_planner.payload.request.*;
+import online.planner.online_planner.payload.response.PageResponse;
 import online.planner.online_planner.payload.response.RoutineResponse;
 import online.planner.online_planner.payload.response.SearchRoutineResponse;
 import online.planner.online_planner.service.routine.RoutineService;
@@ -18,6 +19,11 @@ import java.util.List;
 public class RoutineController {
 
     private final RoutineService routineService;
+
+    @GetMapping("/page")
+    public PageResponse getMaxPage(@RequestHeader("Authorization") String token) {
+        return routineService.getMaxPage(token);
+    }
 
     @GetMapping("/main")
     public List<RoutineResponse> readRoutineMain(@RequestHeader("Authorization") String token) {
