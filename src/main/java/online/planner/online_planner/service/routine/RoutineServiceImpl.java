@@ -257,6 +257,7 @@ public class RoutineServiceImpl implements RoutineService{
                     RoutineWeek.builder()
                             .dayOfWeek(weeks.getDayOfWeek())
                             .rouId(routine.getRoutineId())
+                            .routine(routine)
                             .build()
             );
         }
