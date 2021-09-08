@@ -248,15 +248,22 @@ public class RoutineServiceImpl implements RoutineService{
 
         System.out.println(updateDayOfWeekRequest.getDayOfWeeks());
 
+        List<RoutineWeek> routineWeeks = new ArrayList<>();
+
         for(Weeks weeks : updateDayOfWeekRequest.getDayOfWeeks()) {
             System.out.println(weeks.toString() + weeks.getDayOfWeek());
-            routineWeekRepository.save(
+
+            routineWeeks.add(
                     RoutineWeek.builder()
                             .dayOfWeek(weeks.getDayOfWeek())
                             .rouId(routine.getRoutineId())
                             .build()
             );
         }
+
+        System.out.println(routineWeeks);
+
+        routineWeekRepository.saveAll(routineWeeks);
     }
 
     @Override
