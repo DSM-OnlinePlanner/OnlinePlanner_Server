@@ -28,10 +28,10 @@ public class UserLevelUtil {
         int exp, level;
 
         exp = userLevel.getUserExp() + expType.getGiveExp();
-        if(userLevel.getTierLevel().getMax_exp() < exp) {
+        if(userLevel.getTierLevel().getMax_exp() <= exp) {
             exp = 0;
             level = userLevel.getUserLv() + 1;
-            if(level > userLevel.getTierLevel().getEndLevel()) {
+            if(level >= userLevel.getTierLevel().getEndLevel()) {
                 tierLevel = Stream.of(TierLevel.values())
                         .filter(tierLevel1 -> tierLevel1.getStartLevel().equals(level))
                         .findFirst()

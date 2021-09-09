@@ -93,8 +93,9 @@ public class PlannerController {
 
     @PutMapping("/priority/{plannerId}")
     public void updatePlannerPriority(@RequestHeader("Authorization") String token,
-                                      @RequestHeader UpdatePlannerPriorityRequest updatePlannerPriorityRequest,
+                                      @RequestBody UpdatePlannerPriorityRequest updatePlannerPriorityRequest,
                                       @PathVariable Long plannerId) {
+
         plannerService.updatePriority(token, updatePlannerPriorityRequest, plannerId);
     }
 
