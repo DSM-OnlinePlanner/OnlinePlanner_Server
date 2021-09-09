@@ -8,6 +8,8 @@ import online.planner.online_planner.entity.exp.enums.ExpType;
 import online.planner.online_planner.entity.goal.enums.GoalType;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
 
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Goal {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long goalId;
 
     private String email;
