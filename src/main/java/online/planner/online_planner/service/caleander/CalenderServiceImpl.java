@@ -1,6 +1,7 @@
 package online.planner.online_planner.service.caleander;
 
 import lombok.RequiredArgsConstructor;
+import online.planner.online_planner.entity.planner.Planner;
 import online.planner.online_planner.entity.planner.repository.PlannerRepository;
 import online.planner.online_planner.entity.user.User;
 import online.planner.online_planner.entity.user.repository.UserRepository;
@@ -10,8 +11,10 @@ import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,12 +36,27 @@ public class CalenderServiceImpl implements CalendarService {
         LocalDate startDate = start.atDay(1);
         LocalDate endDate = end.atEndOfMonth();
 
-        List<CalenderResponse> calenderResponses = plannerRepository
+        List<Planner> planners = plannerRepository
                 .findAllByEmailAndStartDateGreaterThanEqualAndEndDateLessThanEqual(
                         user.getEmail(),
                         startDate,
                         endDate
                 );
+
+        List<CalenderResponse> calenderResponses = new ArrayList<>();
+
+        for(Planner planner : planners) {
+            calenderResponses.add(
+                    CalenderResponse.builder()
+                            .startDate(LocalDateTime.of(planner.getStartDate(), planner.getStartTime()))
+                            .endDate(LocalDateTime.of(planner.getEndDate(), planner.getEndTime()))
+                            .priority(planner.getPriority())
+                            .want(planner.getWant())
+                            .title(planner.getTitle())
+                            .isSucceed(planner.getIsSuccess())
+                            .build()
+            );
+        }
 
         return calenderResponses;
     }

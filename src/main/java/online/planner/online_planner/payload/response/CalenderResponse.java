@@ -6,6 +6,7 @@ import online.planner.online_planner.entity.planner.enums.Priority;
 import online.planner.online_planner.entity.planner.enums.Want;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -15,8 +16,6 @@ public class CalenderResponse {
     private Priority priority;
     private Want want;
     private boolean isSucceed;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 }
