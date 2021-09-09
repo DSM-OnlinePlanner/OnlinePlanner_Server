@@ -23,9 +23,9 @@ public class PlannerResponse {
     private LocalTime endTime;
     private LocalDate startDate;
     private LocalDate endDate;
-    private boolean isSuccess;
-    private boolean isPushed;
-    private boolean isFailed;
+    private Boolean isSuccess;
+    private Boolean isPushed;
+    private Boolean isFailed;
 
     public void setPriorityAndWant(Want want, Priority priority) {
         this.want = want;
