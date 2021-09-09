@@ -33,11 +33,13 @@ public class CalenderServiceImpl implements CalendarService {
         LocalDate startDate = start.atDay(1);
         LocalDate endDate = end.atEndOfMonth();
 
-        return plannerRepository
+        List<CalenderResponse> calenderResponses = plannerRepository
                 .findAllByEmailAndStartDateGreaterThanEqualAndEndDateLessThanEqual(
                         user.getEmail(),
                         startDate,
                         endDate
                 );
+
+        return calenderResponses;
     }
 }
