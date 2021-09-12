@@ -29,11 +29,11 @@ public class UserLevelUtil {
 
         exp = userLevel.getUserExp() + expType.getGiveExp();
         if(userLevel.getTierLevel().getMax_exp() <= exp) {
-            exp = 0;
+            exp = userLevel.getTierLevel().getMax_exp() - exp;
             level = userLevel.getUserLv() + 1;
             if(level >= userLevel.getTierLevel().getEndLevel()) {
                 tierLevel = Stream.of(TierLevel.values())
-                        .filter(tierLevel1 -> tierLevel1.getStartLevel().equals(level))
+                        .filter(tierLevel1 -> tierLevel1.getStartLevel() <= level && tierLevel1.getEndLevel() >= level)
                         .findFirst()
                         .orElseThrow(ConvertFailedException::new);
                 userLevelRepository.save(
