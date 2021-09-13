@@ -9,6 +9,7 @@ import online.planner.online_planner.error.exceptions.UserNotFoundException;
 import online.planner.online_planner.payload.response.PlannerStatisticsResponse;
 import online.planner.online_planner.payload.response.PointResponse;
 import online.planner.online_planner.payload.response.StatisticsResponse;
+import online.planner.online_planner.payload.response.WebStatisticsResponse;
 import online.planner.online_planner.util.JwtProvider;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +103,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             LocalDate date = sevenDaysAgo.plusDays(i);
 
             int succeedPlanner = plannerRepository
-                    .countByEmailAndIsSuccessAndStartDateLessThanEqualAndEndDateGreaterThanEqual(user.getEmail(), true, date, date);
+                    .countByEmailAndIsSuccessAndWriteAt(user.getEmail(), true, date);
 
             pointResponses.add(
                     PointResponse.builder()
@@ -143,6 +144,58 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         return PlannerStatisticsResponse.builder()
                 .statistics(succeedPlannerToday == 0 ? 0 : (double) ((succeedPlannerToday / maxPlannerToday) * 100))
+                .build();
+    }
+
+    @Override
+    public WebStatisticsResponse getWebStatics(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getEmail(token))
+                .orElseThrow(UserNotFoundException::new);
+
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(7);
+        List<PointResponse> sevenDatesPlannerNum = new ArrayList<>();
+        List<PointResponse> fourTeenDatesPlannerNum = new ArrayList<>();
+        List<PointResponse> sevenDatesSuccessNum = new ArrayList<>();
+        List<PointResponse> fourTeenDatesSuccessNum = new ArrayList<>();
+
+        for(int i = 0; i < 15; i++) {
+            today.plusDays(i);
+            int plannerNum = plannerRepository.countByEmailAndWriteAt(user.getEmail(), today);
+            int successNum = plannerRepository.countByEmailAndIsSuccessAndWriteAt(user.getEmail(), true, today);
+            if(i <= 6) {
+                sevenDatesPlannerNum.add(
+                       PointResponse.builder()
+                               .date(today.getDayOfMonth())
+                               .succeedNum(plannerNum)
+                               .build()
+               );
+                sevenDatesSuccessNum.add(
+                        PointResponse.builder()
+                                .date(today.getDayOfMonth())
+                                .succeedNum(successNum)
+                                .build()
+                );
+            }else {
+                fourTeenDatesPlannerNum.add(
+                        PointResponse.builder()
+                                .date(today.getDayOfMonth())
+                                .succeedNum(plannerNum)
+                                .build()
+                );
+                fourTeenDatesSuccessNum.add(
+                        PointResponse.builder()
+                                .date(today.getDayOfMonth())
+                                .succeedNum(successNum)
+                                .build()
+                );
+            }
+        }
+
+        return WebStatisticsResponse.builder()
+                .sevenDatesPlannerNum(sevenDatesPlannerNum)
+                .sevenDatesSuccessNum(sevenDatesSuccessNum)
+                .fourTeenDatesPlannerNum(fourTeenDatesPlannerNum)
+                .fourTeenDatesSuccessNum(fourTeenDatesSuccessNum)
                 .build();
     }
 
