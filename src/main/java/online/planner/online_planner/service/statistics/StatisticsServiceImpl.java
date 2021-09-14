@@ -51,10 +51,11 @@ public class StatisticsServiceImpl implements StatisticsService {
                 );
 
         int succeedPlannerWeek = plannerRepository
-                .countDistinctByIsSuccessAndEmailAndStartDateGreaterThanEqualOrEmailAndEndDateLessThanEqual(
+                .countDistinctByIsSuccessAndEmailAndStartDateGreaterThanEqualOrIsSuccessAndEmailAndEndDateLessThanEqual(
                     true,
                     user.getEmail(),
                     weekStart,
+                    true,
                     user.getEmail(),
                     weekEnd
                 );
@@ -68,10 +69,11 @@ public class StatisticsServiceImpl implements StatisticsService {
                 );
 
         int succeedPlannerMonth = plannerRepository
-                .countDistinctByIsSuccessAndEmailAndStartDateGreaterThanEqualOrEmailAndEndDateLessThanEqual(
+                .countDistinctByIsSuccessAndEmailAndStartDateGreaterThanEqualOrIsSuccessAndEmailAndEndDateLessThanEqual(
                         true,
                         user.getEmail(),
                         monthStart,
+                        true,
                         user.getEmail(),
                         monthEnd
                 );
