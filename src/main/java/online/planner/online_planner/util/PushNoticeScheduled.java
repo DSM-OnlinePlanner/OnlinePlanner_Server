@@ -33,7 +33,7 @@ public class PushNoticeScheduled {
 
     private final FcmUtil fcmUtil;
 
-    @Scheduled(cron = "0 0 */1 * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void pushPlannerNotice() {
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = ChronoUnit.HOURS.addTo(start, 1);
@@ -81,7 +81,7 @@ public class PushNoticeScheduled {
         }
     }
 
-    @Scheduled(cron = "0 0 */1 * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void pushRoutineNotice() {
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
