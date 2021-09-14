@@ -43,32 +43,36 @@ public class StatisticsServiceImpl implements StatisticsService {
         LocalDate monthEnd = YearMonth.now().atEndOfMonth();
 
         int maxPlannerWeek = plannerRepository
-                .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
+                .countDistinctByEmailAndStartDateGreaterThanEqualOrEmailAndEndDateLessThanEqual(
                         user.getEmail(),
                         weekStart,
+                        user.getEmail(),
                         weekEnd
                 );
 
         int succeedPlannerWeek = plannerRepository
-                .countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
-                        user.getEmail(),
-                        true,
-                        weekStart,
-                        weekEnd
+                .countDistinctByIsSuccessAndEmailAndStartDateGreaterThanEqualOrEmailAndEndDateLessThanEqual(
+                    true,
+                    user.getEmail(),
+                    weekStart,
+                    user.getEmail(),
+                    weekEnd
                 );
 
         int maxPlannerMonth = plannerRepository
-                .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
+                .countDistinctByEmailAndStartDateGreaterThanEqualOrEmailAndEndDateLessThanEqual(
                         user.getEmail(),
                         monthStart,
+                        user.getEmail(),
                         monthEnd
                 );
 
         int succeedPlannerMonth = plannerRepository
-                .countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
-                        user.getEmail(),
+                .countDistinctByIsSuccessAndEmailAndStartDateGreaterThanEqualOrEmailAndEndDateLessThanEqual(
                         true,
+                        user.getEmail(),
                         monthStart,
+                        user.getEmail(),
                         monthEnd
                 );
 
