@@ -48,21 +48,9 @@ public class StatisticsServiceImpl implements StatisticsService {
                         weekStart,
                         weekEnd
                 );
-        int maxRoutineWeek = routineRepository
-                .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
-                        user.getEmail(),
-                        weekStart,
-                        weekEnd
-                );
+
         int succeedPlannerWeek = plannerRepository
                 .countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
-                        user.getEmail(),
-                        true,
-                        weekStart,
-                        weekEnd
-                );
-        int succeedRoutineWeek = routineRepository
-                .countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
                         true,
                         weekStart,
@@ -75,21 +63,9 @@ public class StatisticsServiceImpl implements StatisticsService {
                         monthStart,
                         monthEnd
                 );
-        int maxRoutineMonth = routineRepository
-                .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
-                        user.getEmail(),
-                        monthStart,
-                        monthEnd
-                );
+
         int succeedPlannerMonth = plannerRepository
                 .countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
-                        user.getEmail(),
-                        true,
-                        monthStart,
-                        monthEnd
-                );
-        int succeedRoutineMonth = routineRepository
-                .countByEmailAndIsSucceedAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
                         user.getEmail(),
                         true,
                         monthStart,
@@ -114,10 +90,10 @@ public class StatisticsServiceImpl implements StatisticsService {
         }
 
         return StatisticsResponse.builder()
-                .maxWeek(maxPlannerWeek + maxRoutineWeek)
-                .weekSucceed(succeedPlannerWeek + succeedRoutineWeek)
-                .maxMonth(maxPlannerMonth + maxRoutineMonth)
-                .monthSucceed(succeedPlannerMonth + succeedRoutineMonth)
+                .maxWeek(maxPlannerWeek)
+                .weekSucceed(succeedPlannerWeek)
+                .maxMonth(maxPlannerMonth)
+                .monthSucceed(succeedPlannerMonth)
                 .pointResponses(pointResponses)
                 .build();
     }

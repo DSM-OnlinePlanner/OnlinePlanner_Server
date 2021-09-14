@@ -137,8 +137,16 @@ public class PushNoticeScheduled {
     @Scheduled(cron = "0 0 0 */1 * *")
     public void initRoutineIsPushed() {
         List<Routine> routines = routineRepository.findAllByIsPushed(true);
+        List<Routine> routines1 = routineRepository.findAllByIsSucceed(true);
+        List<Routine> routines2 = routineRepository.findAllByIsFailed(true);
 
         for(Routine routine : routines)
             routine.updatePushed();
+
+        for(Routine routine : routines1)
+            routine.getIsSucceed();
+
+        for(Routine routine : routines2)
+            routine.updateFailed();
     }
 }
