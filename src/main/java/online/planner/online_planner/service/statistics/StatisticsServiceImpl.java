@@ -138,13 +138,13 @@ public class StatisticsServiceImpl implements StatisticsService {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(14);
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(13);
         List<PointResponse> sevenDatesPlannerNum = new ArrayList<>();
         List<PointResponse> fourTeenDatesPlannerNum = new ArrayList<>();
         List<PointResponse> sevenDatesSuccessNum = new ArrayList<>();
         List<PointResponse> fourTeenDatesSuccessNum = new ArrayList<>();
 
-        for(int i = 0; i < 15; i++) {
+        for(int i = 0; i < 14; i++) {
             LocalDate date = today.plusDays(i);
 
             int plannerNum = plannerRepository.countByEmailAndWriteAt(user.getEmail(), date);
