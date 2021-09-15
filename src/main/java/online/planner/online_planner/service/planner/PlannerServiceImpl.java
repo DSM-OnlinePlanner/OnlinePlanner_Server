@@ -244,10 +244,14 @@ public class PlannerServiceImpl implements PlannerService{
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
                 .orElseThrow(PlannerNotFoundException::new);
 
+        System.out.println(planner.getStartDate());
+
         notNull.setIfNotNull(planner::setStartDate, latePlannerRequest.getStartDate());
         notNull.setIfNotNull(planner::setEndDate, latePlannerRequest.getEndDate());
         notNull.setIfNotNull(planner::setStartTime, latePlannerRequest.getStartTime());
         notNull.setIfNotNull(planner::setEndTime, latePlannerRequest.getEndTime());
+
+        System.out.println(planner.getStartDate());
 
         plannerRepository.save(planner);
     }
