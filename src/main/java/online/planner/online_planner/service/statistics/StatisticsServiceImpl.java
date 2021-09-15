@@ -128,7 +128,8 @@ public class StatisticsServiceImpl implements StatisticsService {
                 );
 
         return PlannerStatisticsResponse.builder()
-                .statistics(succeedPlannerToday == 0 ? 0 : (double) ((succeedPlannerToday / maxPlannerToday) * 100))
+                .maxPlannerToday(maxPlannerToday)
+                .successPlannerToday(succeedPlannerToday)
                 .build();
     }
 
@@ -137,39 +138,40 @@ public class StatisticsServiceImpl implements StatisticsService {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(7);
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul")).minusDays(14);
         List<PointResponse> sevenDatesPlannerNum = new ArrayList<>();
         List<PointResponse> fourTeenDatesPlannerNum = new ArrayList<>();
         List<PointResponse> sevenDatesSuccessNum = new ArrayList<>();
         List<PointResponse> fourTeenDatesSuccessNum = new ArrayList<>();
 
         for(int i = 0; i < 15; i++) {
-            today.plusDays(i);
-            int plannerNum = plannerRepository.countByEmailAndWriteAt(user.getEmail(), today);
-            int successNum = plannerRepository.countByEmailAndIsSuccessAndWriteAt(user.getEmail(), true, today);
+            LocalDate date = today.plusDays(i);
+
+            int plannerNum = plannerRepository.countByEmailAndWriteAt(user.getEmail(), date);
+            int successNum = plannerRepository.countByEmailAndIsSuccessAndWriteAt(user.getEmail(), true, date);
             if(i <= 6) {
                 sevenDatesPlannerNum.add(
                        PointResponse.builder()
-                               .date(today.getDayOfMonth())
+                               .date(date.getDayOfMonth())
                                .succeedNum(plannerNum)
                                .build()
                );
                 sevenDatesSuccessNum.add(
                         PointResponse.builder()
-                                .date(today.getDayOfMonth())
+                                .date(date.getDayOfMonth())
                                 .succeedNum(successNum)
                                 .build()
                 );
             }else {
                 fourTeenDatesPlannerNum.add(
                         PointResponse.builder()
-                                .date(today.getDayOfMonth())
+                                .date(date.getDayOfMonth())
                                 .succeedNum(plannerNum)
                                 .build()
                 );
                 fourTeenDatesSuccessNum.add(
                         PointResponse.builder()
-                                .date(today.getDayOfMonth())
+                                .date(date.getDayOfMonth())
                                 .succeedNum(successNum)
                                 .build()
                 );

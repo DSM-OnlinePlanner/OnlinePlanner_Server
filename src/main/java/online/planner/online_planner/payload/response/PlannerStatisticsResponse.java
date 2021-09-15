@@ -6,5 +6,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class PlannerStatisticsResponse {
-    private Double statistics;
+    private int maxPlannerToday;
+    private int successPlannerToday;
 }
