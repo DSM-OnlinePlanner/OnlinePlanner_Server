@@ -110,17 +110,20 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .orElseThrow(UserNotFoundException::new);
 
         int maxPlannerToday = plannerRepository
-                .countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
+                .countDistinctByEmailAndStartDateGreaterThanEqualOrEmailAndEndDateLessThanEqual(
                         user.getEmail(),
                         LocalDate.now(),
+                        user.getEmail(),
                         LocalDate.now()
                 );
 
         int succeedPlannerToday = plannerRepository
-                .countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(
-                        user.getEmail(),
+                .countDistinctByIsSuccessAndEmailAndStartDateGreaterThanEqualOrIsSuccessAndEmailAndEndDateLessThanEqual(
                         true,
+                        user.getEmail(),
                         LocalDate.now(),
+                        true,
+                        user.getEmail(),
                         LocalDate.now()
                 );
 
