@@ -60,7 +60,7 @@ public class PlannerServiceImpl implements PlannerService{
                         .endTime(plannerRequest.getEndTime())
                         .isSuccess(false)
                         .isFailed(false)
-                        .isPushed(false)
+                        .isPushed(plannerRequest.isPushed())
                         .priority(plannerRequest.getPriority())
                         .want(plannerRequest.getWant())
                         .expType(ExpType.PLANNER)
