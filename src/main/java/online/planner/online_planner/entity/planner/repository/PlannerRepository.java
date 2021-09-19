@@ -19,9 +19,6 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
     int countByIsSuccessAndEmail(Boolean isSuccess, String email);
     int countByEmail(String email);
     int countByEmailAndTitleContaining(String email, String title);
-    int countByEmailAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, LocalDate writeAt, LocalDate writeAt2);
-    int countByEmailAndIsSuccessAndWriteAtGreaterThanEqualAndWriteAtLessThanEqual(String email, Boolean isSuccess, LocalDate writeAt, LocalDate writeAt2);
-    int countByEmailAndIsSuccessAndStartDateLessThanEqualAndEndDateGreaterThanEqual(String email, Boolean isSuccess, LocalDate startDate, LocalDate endDate);
     int countByEmailAndIsSuccessAndWriteAt(String email, Boolean isSuccess, LocalDate writeAt);
     int countByEmailAndWriteAt(String email, LocalDate writeAt);
     int countDistinctByEmailAndStartDateGreaterThanEqualOrEmailAndEndDateLessThanEqual(String email, LocalDate startDate, String email2, LocalDate endDate);
