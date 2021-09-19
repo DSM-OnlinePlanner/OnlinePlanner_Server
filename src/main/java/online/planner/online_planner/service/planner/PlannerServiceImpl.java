@@ -83,9 +83,8 @@ public class PlannerServiceImpl implements PlannerService{
                 .orElseThrow(UserNotFoundException::new);
 
         Page<PlannerResponse> planners = plannerRepository
-                .findAllByEmailAndIsSuccessAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
+                .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
-                        false,
                         date,
                         date,
                         PageRequest.of(pageNum, MAX_PLANNER_PAGE)
@@ -100,8 +99,9 @@ public class PlannerServiceImpl implements PlannerService{
                 .orElseThrow(UserNotFoundException::new);
 
         Page<PlannerResponse> planners = plannerRepository
-                .findAllByEmailAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
+                .findAllByEmailAndIsSuccessAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateAsc(
                         user.getEmail(),
+                        false,
                         date,
                         date,
                         PageRequest.of(0, 3)
