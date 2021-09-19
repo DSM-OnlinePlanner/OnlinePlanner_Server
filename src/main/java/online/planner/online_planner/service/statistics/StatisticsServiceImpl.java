@@ -112,14 +112,14 @@ public class StatisticsServiceImpl implements StatisticsService {
         int maxPlannerToday = plannerRepository
                 .countByEmailAndWriteAt(
                         user.getEmail(),
-                        LocalDate.now()
+                        LocalDate.now(ZoneId.of("Asia/Seoul"))
                 );
 
         int succeedPlannerToday = plannerRepository
                 .countByEmailAndIsSuccessAndWriteAt(
-                    user.getEmail(),
-                    true,
-                    LocalDate.now()
+                        user.getEmail(),
+                        true,
+                        LocalDate.now(ZoneId.of("Asia/Seoul"))
                 );
 
         return PlannerStatisticsResponse.builder()
