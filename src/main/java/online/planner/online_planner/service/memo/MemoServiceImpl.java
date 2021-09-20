@@ -59,7 +59,7 @@ public class MemoServiceImpl implements MemoService {
                 Memo.builder()
                         .email(user.getEmail())
                         .memoType(postMemoRequest.getMemoType())
-                        .memoAt(LocalDate.now())
+                        .memoAt(LocalDate.now(ZoneId.of("Asia/Seoul")))
                         .content(postMemoRequest.getMemo())
                         .build()
         );
