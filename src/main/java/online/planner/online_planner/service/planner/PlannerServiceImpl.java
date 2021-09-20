@@ -214,14 +214,16 @@ public class PlannerServiceImpl implements PlannerService{
     }
 
     @Override
-    public void updatePlannerPushed(String token, Long plannerId) {
+    public void updatePlannerPushed(String token, Long plannerId, Boolean isPushed) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
 
         Planner planner = plannerRepository.findByPlannerIdAndEmail(plannerId, user.getEmail())
                 .orElseThrow(PlannerNotFoundException::new);
 
-        plannerRepository.save(planner.updatePush());
+        if (planner.getIsPushed() != isPushed) {
+            plannerRepository.save(planner.updatePush());
+        }
     }
 
     @Override

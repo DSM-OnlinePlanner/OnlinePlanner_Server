@@ -87,8 +87,9 @@ public class PlannerController {
 
     @PutMapping("/push/{plannerId}")
     public void updatePlannerPushed(@RequestHeader("Authorization") String token,
-                                    @PathVariable Long plannerId) {
-        plannerService.updatePlannerPushed(token, plannerId);
+                                    @PathVariable Long plannerId,
+                                    @RequestParam Boolean isPushed) {
+        plannerService.updatePlannerPushed(token, plannerId, isPushed);
     }
 
     @PutMapping("/priority/{plannerId}")

@@ -18,7 +18,7 @@ public interface PlannerService {
     void updatePlannerTitleAndContent(String token, UpdateTitleAndContentRequest updateTitleAndContentRequest, Long plannerId);
     void updatePlannerDate(String token, UpdateDateRequest updateDateRequest, Long plannerId);
     void updatePlannerTime(String token, UpdateTimeRequest updateTimeRequest, Long plannerId);
-    void updatePlannerPushed(String token, Long plannerId);
+    void updatePlannerPushed(String token, Long plannerId, Boolean isPushed);
     void updatePriority(String token, UpdatePlannerPriorityRequest updatePlannerPriorityRequest, Long plannerId);
     void latePlanner(String token, LatePlannerRequest latePlannerRequest, Long plannerId);
     void failedPlanner(String token, Long plannerId);

@@ -50,9 +50,9 @@ public class MemoServiceImpl implements MemoService {
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(UserLevelNotFoundException::new);
 
-        if(memoRepository.countByEmail(user.getEmail()) <= 0) {
+        if(memoRepository.countByEmail(user.getEmail()) == 0) {
             userLevelUtil.userLevelManagement(userLevel, ExpType.FIRST_MEMO);
-            achieveUtil.achieveManagement(userLevel, Achieve.FIRST_GOAL);
+            achieveUtil.achieveManagement(userLevel, Achieve.FIRST_MEMO);
         }
 
         memoRepository.save(

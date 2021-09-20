@@ -51,7 +51,7 @@ public class GoalServiceImpl implements GoalService {
         UserLevel userLevel = userLevelRepository.findByEmail(user.getEmail())
                 .orElseThrow(UserLevelNotFoundException::new);
 
-        if(goalRepository.countByEmail(user.getEmail()) <= 0) {
+        if(goalRepository.countByEmail(user.getEmail()) == 0) {
             userLevelUtil.userLevelManagement(userLevel, ExpType.FIRST_GOAL);
             achieveUtil.achieveManagement(userLevel, Achieve.FIRST_GOAL);
         }
