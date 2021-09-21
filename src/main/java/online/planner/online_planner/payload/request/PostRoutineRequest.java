@@ -21,6 +21,6 @@ public class PostRoutineRequest {
     private LocalTime startTime;
     @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime endTime;
-    private boolean isPushed;
+    private Boolean isPushed;
     private Priority priority;
 }

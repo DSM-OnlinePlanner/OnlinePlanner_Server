@@ -60,11 +60,10 @@ public class PlannerServiceImpl implements PlannerService{
                         .endTime(plannerRequest.getEndTime())
                         .isSuccess(false)
                         .isFailed(false)
-                        .isPushed(plannerRequest.isPushed())
+                        .isPushed(plannerRequest.getIsPushed())
                         .priority(plannerRequest.getPriority())
                         .want(plannerRequest.getWant())
                         .expType(ExpType.PLANNER)
-                        .isPushed(plannerRequest.isPushed())
                         .writeAt(LocalDate.now(ZoneId.of("Asia/Seoul")))
                         .build()
         );

@@ -108,7 +108,7 @@ public class RoutineServiceImpl implements RoutineService{
                         .priority(postRoutineRequest.getPriority())
                         .startTime(postRoutineRequest.getStartTime())
                         .expType(ExpType.ROUTINE)
-                        .isPushed(postRoutineRequest.isPushed())
+                        .isPushed(postRoutineRequest.getIsPushed())
                         .writeAt(LocalDate.now(ZoneId.of("Asia/Seoul")))
                         .isSucceed(false)
                         .isFailed(false)
