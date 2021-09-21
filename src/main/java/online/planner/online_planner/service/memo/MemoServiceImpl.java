@@ -72,8 +72,9 @@ public class MemoServiceImpl implements MemoService {
 
         LocalDate weekStart = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 1);
         LocalDate weekEnd = date.with(WeekFields.of(Locale.KOREA).dayOfWeek(), 7);
-        LocalDate monthStart = YearMonth.now(ZoneId.of("Asia/Seoul")).atDay(1);
-        LocalDate monthEnd = YearMonth.now(ZoneId.of("Asia/Seoul")).atEndOfMonth();
+        LocalDate monthStart = YearMonth.of(date.getYear(), date.getMonth()).atDay(1);
+        LocalDate monthEnd = YearMonth.of(date.getYear(), date.getMonth()).atEndOfMonth();
+
 
         List<MemoResponse> todayMemos = memoRepository.findAllByEmailAndMemoTypeAndMemoAtOrderByMemoAtAsc(
                 user.getEmail(),
