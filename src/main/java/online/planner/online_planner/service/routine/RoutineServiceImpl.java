@@ -264,7 +264,7 @@ public class RoutineServiceImpl implements RoutineService{
     public PageResponse getMaxPage(String token) {
         User user = userRepository.findByEmail(jwtProvider.getEmail(token))
                 .orElseThrow(UserNotFoundException::new);
-        
+
         int routineNum = routineRepository.countByEmail(user.getEmail());
 
         return PageResponse.builder()
