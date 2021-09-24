@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PushMessageTestController {
 
-    private FcmUtil fcmUtil;
+    private final FcmUtil fcmUtil;
 
     @GetMapping("/test/push/{deviceToken}")
     public void testPush(@PathVariable String deviceToken) {
