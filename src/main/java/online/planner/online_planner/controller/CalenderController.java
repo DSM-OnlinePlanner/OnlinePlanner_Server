@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/calender")
 @RequiredArgsConstructor
 public class CalenderController {

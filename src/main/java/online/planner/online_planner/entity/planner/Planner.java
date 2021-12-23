@@ -49,6 +49,8 @@ public class Planner {
 
     private Boolean isPushed;
 
+    private Boolean isPushSuccess;
+
     private Boolean isFailed;
 
     private LocalDate writeAt;

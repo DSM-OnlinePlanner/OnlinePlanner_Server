@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,15 +34,19 @@ public class PushNoticeScheduled {
 
     private final FcmUtil fcmUtil;
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public void pushPlannerNotice() {
-        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         LocalDateTime end = ChronoUnit.HOURS.addTo(start, 1);
 
-        List<Planner> pushPlanner = plannerRepository.findAllByIsPushedAndStartDateGreaterThanEqualAndEndDateLessThanEqual(
+        List<Planner> pushPlanner = plannerRepository
+                .findAllByIsPushedAndIsPushSuccessAndStartDateGreaterThanEqualAndEndDateLessThanAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(
+                true,
                 false,
-                start.toLocalDate(),
-                end.toLocalDate()
+                LocalDate.now(),
+                LocalDate.now(),
+                start.toLocalTime(),
+                end.toLocalTime()
         );
 
         int startHour = start.getHour();
@@ -55,13 +60,14 @@ public class PushNoticeScheduled {
         String notice = String.format("%d시 ~ %d시에 할 일이 있습니다!", startHour, endHour);
 
         List<String> tokens = new ArrayList<>();
+        List<Notice> notices = new ArrayList<>();
 
         for (Planner planner : pushPlanner) {
             plannerRepository.save(
                     planner.updatePush()
             );
 
-            noticeRepository.save(
+            notices.add(
                     Notice.builder()
                             .email(planner.getEmail())
                             .isSee(false)
@@ -71,22 +77,24 @@ public class PushNoticeScheduled {
                             .build()
             );
 
+            System.out.println(deviceTokenRepository.findAllDeviceTokenByEmail(planner.getEmail()));
+
             tokens.addAll(deviceTokenRepository.findAllDeviceTokenByEmail(planner.getEmail()));
         }
 
-        if(!tokens.isEmpty()) {
-            fcmUtil.sendPushMessage(tokens,
-                    "[OnlinePlanner]할 일이 있습니다!",
-                    notice);
-        }
+        noticeRepository.saveAll(notices);
+
+        fcmUtil.sendPushMessage(tokens,
+                "[OnlinePlanner]할 일이 있습니다!",
+                notice);
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public void pushRoutineNotice() {
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
-        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime start = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         LocalDateTime end = ChronoUnit.HOURS.addTo(start, 1);
 
         List<RoutineWeek> routineWeeks = routineWeekRepository
@@ -108,12 +116,14 @@ public class PushNoticeScheduled {
 
         String notice = String.format("%d시 ~ %d시에 할 일이 있습니다!", startHour, endHour);
 
+        List<Notice> notices = new ArrayList<>();
+
         for(RoutineWeek routineWeek : routineWeeks) {
             routineRepository.save(
                     routineWeek.getRoutine().updatePushed()
             );
 
-            noticeRepository.save(
+            notices.add(
                     Notice.builder()
                             .email(routineWeek.getRoutine().getEmail())
                             .isSee(false)
@@ -125,6 +135,8 @@ public class PushNoticeScheduled {
 
             tokens.addAll(deviceTokenRepository.findAllDeviceTokenByEmail(routineWeek.getRoutine().getEmail()));
         }
+
+        noticeRepository.saveAll(notices);
 
         if(!tokens.isEmpty()) {
             fcmUtil.sendPushMessage(tokens,

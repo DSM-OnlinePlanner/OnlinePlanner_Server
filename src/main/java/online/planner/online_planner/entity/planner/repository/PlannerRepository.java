@@ -27,4 +27,5 @@ public interface PlannerRepository extends JpaRepository<Planner, Long> {
 
     void deleteAllByEmail(String email);
     List<Planner> findAllByIsPushedAndStartDateGreaterThanEqualAndEndDateLessThanEqual(Boolean isPushed, LocalDate startDate, LocalDate endDate);
+    List<Planner> findAllByIsPushedAndIsPushSuccessAndStartDateGreaterThanEqualAndEndDateLessThanAndStartTimeGreaterThanEqualAndEndTimeLessThanEqual(Boolean isPushed, Boolean isPushSuccess, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime);
 }

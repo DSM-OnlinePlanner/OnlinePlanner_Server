@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/goal")
 @RequiredArgsConstructor
 public class GoalController {

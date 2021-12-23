@@ -8,6 +8,7 @@ import online.planner.online_planner.service.statistics.StatisticsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/statistics")
 @RequiredArgsConstructor
 public class StatisticsController {

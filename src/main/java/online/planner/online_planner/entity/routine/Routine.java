@@ -45,6 +45,8 @@ public class Routine {
 
     private Boolean isPushed;
 
+    private Boolean isPushSuccess;
+
     private LocalDate writeAt;
 
     @OneToMany(mappedBy = "routine", cascade = CascadeType.REMOVE)
